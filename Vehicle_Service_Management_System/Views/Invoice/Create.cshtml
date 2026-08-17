@@ -1,0 +1,1308 @@
+﻿@model Vehicle_Service_Management_System.Application.ViewModels.Invoice.InvoiceCreateViewModel
+
+@{
+    Layout = null;
+
+    var pageSize = 7;
+    var totalItems = Model.SparePartsUsed?.Count ?? 0;
+    var totalPages = Math.Max(
+        1,
+        (int)Math.Ceiling((double)totalItems / pageSize));
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Create Invoice | Vehicle Service Management</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+            :root {
+                --primary: #0d6efd;
+                --primary-dark: #0a58ca;
+                --background: #f4f6fa;
+                --border: #e5e7eb;
+                --text: #1f2937;
+                --muted: #6b7280;
+            }
+
+            body {
+                background: var(--background);
+                font-family: "Segoe UI", system-ui, sans-serif;
+                padding: 30px 15px;
+            }
+
+            .create-wrapper {
+                max-width: 1100px;
+                margin: auto;
+                background: #fff;
+                border-radius: 16px;
+                padding: 30px;
+                box-shadow: 0 15px 45px rgba(0,0,0,.10);
+            }
+
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+
+                .page-header h1 {
+                    margin: 0;
+                    color: var(--text);
+                    font-size: 1.8rem;
+                    font-weight: 700;
+                }
+
+                .page-header i {
+                    color: var(--primary);
+                }
+
+            .form-section {
+                background: #f8fafc;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 22px;
+                margin-bottom: 20px;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin-bottom: 18px;
+                color: var(--text);
+            }
+
+            .form-label {
+                font-weight: 600;
+                color: #374151;
+            }
+
+            .form-control,
+            .form-select {
+                border-radius: 9px;
+                border: 1px solid #d1d5db;
+            }
+
+                .form-control:focus,
+                .form-select:focus {
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(13,110,253,.12);
+                }
+
+            .readonly-field {
+                background: #eef2f7 !important;
+            }
+
+            .table-wrapper {
+                overflow-x: auto;
+            }
+
+            .table {
+                margin-bottom: 0;
+            }
+
+                .table thead th {
+                    background: #1e3a5f;
+                    color: white;
+                    white-space: nowrap;
+                }
+
+            .quantity-input {
+                width: 90px;
+                margin: auto;
+                text-align: center;
+            }
+
+            .selected-row {
+                background: #eff6ff !important;
+            }
+
+            .pagination-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 5px;
+                margin-top: 20px;
+                flex-wrap: wrap;
+            }
+
+            .page-button {
+                border: 1px solid #d1d5db;
+                background: white;
+                border-radius: 7px;
+                padding: 6px 12px;
+                cursor: pointer;
+            }
+
+                .page-button.active {
+                    background: var(--primary);
+                    color: white;
+                    border-color: var(--primary);
+                }
+
+                .page-button:disabled {
+                    opacity: .5;
+                    cursor: not-allowed;
+                }
+
+            .summary-card {
+                background: #f8fafc;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 20px;
+            }
+
+            .summary-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 7px 0;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+                .summary-item:last-child {
+                    border-bottom: 0;
+                }
+
+            .grand-total {
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: #166534;
+            }
+
+            .btn-primary {
+                border-radius: 50px;
+                padding: 10px 25px;
+                font-weight: 600;
+            }
+
+            .btn-secondary {
+                border-radius: 50px;
+                padding: 10px 25px;
+            }
+
+            .validation-summary-errors {
+                background: #fee2e2;
+                color: #991b1b;
+                border: 1px solid #fca5a5;
+                border-radius: 10px;
+                padding: 12px 18px;
+                margin-bottom: 20px;
+            }
+
+                .validation-summary-errors ul {
+                    margin-bottom: 0;
+                }
+
+            .stock-warning {
+                color: #dc2626;
+                font-size: .8rem;
+                margin-top: 4px;
+            }
+
+            @@media(max-width: 768px) {
+                .create-wrapper {
+                    padding: 18px;
+                }
+
+                .page-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="create-wrapper">
+
+        <!-- ========================================================= -->
+        <!-- HEADER -->
+        <!-- ========================================================= -->
+
+        <div class="page-header">
+
+            <h1>
+                <i class="bi bi-receipt"></i>
+                Create Invoice
+            </h1>
+
+            <a asp-action="Index"
+               class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Back to List
+            </a>
+
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- ALERTS -->
+        <!-- ========================================================= -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="bi bi-check-circle-fill"></i>
+                @TempData["Success"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                @TempData["Error"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
+
+        <!-- ========================================================= -->
+        <!-- FORM -->
+        <!-- ========================================================= -->
+
+        <form asp-action="Create"
+              method="post"
+              id="invoiceForm">
+
+            @Html.AntiForgeryToken()
+
+            <input asp-for="BookingId"
+                   type="hidden" />
+
+            <input asp-for="BookingNumber"
+                   type="hidden" />
+
+            <!-- Selected spare parts will be inserted here
+             ONLY when QuantityUsed > 0 -->
+            <div id="selectedPartsContainer"></div>
+
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary-errors">
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- INVOICE INFORMATION -->
+            <!-- ===================================================== -->
+
+            <div class="form-section">
+
+                <div class="section-title">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Invoice Information
+                </div>
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Booking Number
+                        </label>
+
+                        <input type="text"
+                               class="form-control readonly-field"
+                               value="@Model.BookingNumber"
+                               readonly />
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="LabourCharge"
+                               class="form-label">
+                            Labour Charge
+                        </label>
+
+                        <input asp-for="LabourCharge"
+                               id="LabourCharge"
+                               class="form-control readonly-field"
+                               readonly />
+
+                        <span asp-validation-for="LabourCharge"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="GSTPercentage"
+                               class="form-label">
+                            GST %
+                        </label>
+
+                        <input asp-for="GSTPercentage"
+                               id="GSTPercentage"
+                               class="form-control"
+                               type="number"
+                               step="0.01"
+                               min="0"
+                               max="100" />
+
+                        <span asp-validation-for="GSTPercentage"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="DiscountPercentage"
+                               class="form-label">
+                            Discount %
+                        </label>
+
+                        <input asp-for="DiscountPercentage"
+                               id="DiscountPercentage"
+                               class="form-control"
+                               type="number"
+                               step="0.01"
+                               min="0"
+                               max="100" />
+
+                        <span asp-validation-for="DiscountPercentage"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-8">
+
+                        <label asp-for="Remarks"
+                               class="form-label">
+                            Remarks
+                        </label>
+
+                        <textarea asp-for="Remarks"
+                                  class="form-control"
+                                  rows="2"
+                                  placeholder="Additional remarks">
+                    </textarea>
+
+                        <span asp-validation-for="Remarks"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <div class="form-check">
+
+                            <input asp-for="IsPaid"
+                                   class="form-check-input"
+                                   id="IsPaid" />
+
+                            <label asp-for="IsPaid"
+                                   class="form-check-label">
+                                Invoice is Paid
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- SPARE PARTS -->
+            <!-- ===================================================== -->
+
+            <div class="form-section">
+
+                <div class="section-title">
+                    <i class="bi bi-box-seam"></i>
+                    Spare Parts
+                </div>
+
+                <div class="alert alert-info">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    Enter a quantity only for the spare parts you want
+                    to add to this invoice.
+
+                    <strong>
+                        Only selected parts will be submitted.
+                    </strong>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table class="table table-bordered table-hover align-middle">
+
+                        <thead>
+
+                            <tr>
+                                <th>#</th>
+                                <th>Spare Part</th>
+                                <th>Available Stock</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="sparePartsTableBody">
+
+                            @if (Model.SparePartsUsed != null &&
+                                 Model.SparePartsUsed.Any())
+                            {
+                                for (int i = 0;
+                                     i < Model.SparePartsUsed.Count;
+                                     i++)
+                                {
+                                    var part =
+                                        Model.SparePartsUsed[i];
+
+                                    <tr class="spare-part-row"
+                                        data-index="@i"
+                                        data-id="@part.SparePartId"
+                                        data-name="@part.SparePartName"
+                                        data-price="@part.UnitPrice"
+                                        data-stock="@part.AvailableStock">
+
+                                        <td>
+                                            @(i + 1)
+                                        </td>
+
+                                        <td>
+                                            <strong>
+                                                @part.SparePartName
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            <span class="badge bg-secondary">
+                                                @part.AvailableStock
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            ₹ @part.UnitPrice.ToString("N2")
+                                        </td>
+
+                                        <td>
+
+                                            <input type="number"
+                                                   class="form-control quantity-input part-quantity"
+                                                   min="0"
+                                                   max="@part.AvailableStock"
+                                                   value="@part.QuantityUsed"
+                                                   data-index="@i"
+                                                   data-id="@part.SparePartId"
+                                                   data-price="@part.UnitPrice"
+                                                   data-stock="@part.AvailableStock" />
+
+                                            <div class="stock-warning d-none">
+                                                Quantity exceeds stock.
+                                            </div>
+
+                                        </td>
+
+                                        <td class="line-total">
+                                            ₹ @((part.UnitPrice *
+                                                                                       part.QuantityUsed)
+                                                                                       .ToString("N2"))
+                            </td>
+
+                        </tr>
+                    }
+                }
+                    else
+                {
+                    <tr>
+                        <td colspan="6"
+                            class="text-center text-muted py-4">
+                            No spare parts currently available.
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- PAGINATION -->
+    <!-- ================================================= -->
+    @if (totalItems > pageSize)
+    {
+        <div class="pagination-wrapper">
+
+            <button type="button"
+                    id="previousPage"
+                    class="page-button">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <span id="pageButtons"></span>
+
+            <button type="button"
+                    id="nextPage"
+                    class="page-button">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+
+        </div>
+
+        <div class="text-center text-muted mt-2">
+            Showing
+            <span id="showingStart">1</span>
+            -
+            <span id="showingEnd">
+                @Math.Min(pageSize, totalItems)
+            </span>
+            of
+            @totalItems
+        </div>
+    }
+
+</div>
+
+<!-- ===================================================== -->
+<!-- SUMMARY -->
+<!-- ===================================================== -->
+
+<div class="form-section">
+
+    <div class="section-title">
+        <i class="bi bi-calculator"></i>
+        Invoice Summary
+    </div>
+
+    <div class="summary-card">
+
+        <div class="summary-item">
+            <span>Labour Charge</span>
+            <strong id="summaryLabour">
+                ₹ @Model.LabourCharge.ToString("N2")
+            </strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Spare Parts</span>
+            <strong id="summaryParts">
+                ₹ 0.00
+            </strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Subtotal</span>
+            <strong id="summarySubtotal">
+                ₹ @Model.LabourCharge.ToString("N2")
+            </strong>
+        </div>
+
+        <div class="summary-item">
+            <span>
+                Discount
+                (<span id="discountLabel">
+                @Model.DiscountPercentage
+            </span>%)
+        </span>
+
+        <strong id="summaryDiscount">
+            ₹ 0.00
+        </strong>
+    </div>
+
+    <div class="summary-item">
+        <span>
+            GST
+            (<span id="gstLabel">
+            @Model.GSTPercentage
+        </span>%)
+    </span>
+
+    <strong id="summaryGST">
+        ₹ 0.00
+    </strong>
+</div>
+
+<div class="summary-item">
+
+    <span class="fw-bold">
+        Grand Total
+    </span>
+
+    <span class="grand-total"
+          id="summaryGrandTotal">
+        ₹ @Model.LabourCharge.ToString("N2")
+    </span>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- BUTTONS -->
+<!-- ===================================================== -->
+
+<div class="d-flex justify-content-end gap-2">
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Cancel
+    </a>
+
+    <button type="submit"
+            class="btn btn-primary"
+            id="createInvoiceButton">
+
+        <i class="bi bi-check-circle"></i>
+
+        Create Invoice
+
+    </button>
+
+</div>
+
+</form>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            // =========================================================
+            // VARIABLES
+            // =========================================================
+
+            const pageSize = @pageSize;
+            let currentPage = 1;
+
+            const rows =
+                Array.from(
+                    document.querySelectorAll(".spare-part-row")
+                );
+
+            const totalItems = rows.length;
+
+            const totalPages =
+                Math.max(
+                    1,
+                    Math.ceil(totalItems / pageSize)
+                );
+
+            // =========================================================
+            // ELEMENTS
+            // =========================================================
+
+            const previousButton =
+                document.getElementById("previousPage");
+
+            const nextButton =
+                document.getElementById("nextPage");
+
+            const pageButtons =
+                document.getElementById("pageButtons");
+
+            const showingStart =
+                document.getElementById("showingStart");
+
+            const showingEnd =
+                document.getElementById("showingEnd");
+
+            const invoiceForm =
+                document.getElementById("invoiceForm");
+
+            const selectedPartsContainer =
+                document.getElementById(
+                    "selectedPartsContainer"
+                );
+
+            // =========================================================
+            // FORMAT CURRENCY
+            // =========================================================
+
+            function currency(value) {
+
+                return "₹ " +
+                    Number(value || 0)
+                        .toLocaleString(
+                            "en-IN",
+                            {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }
+                        );
+            }
+
+            // =========================================================
+            // UPDATE ROW TOTAL
+            // =========================================================
+
+            function updateRow(row) {
+
+                const input =
+                    row.querySelector(".part-quantity");
+
+                const price =
+                    parseFloat(
+                        input.dataset.price
+                    ) || 0;
+
+                const stock =
+                    parseInt(
+                        input.dataset.stock
+                    ) || 0;
+
+                let quantity =
+                    parseInt(input.value) || 0;
+
+                const warning =
+                    row.querySelector(".stock-warning");
+
+                if (quantity < 0) {
+
+                    quantity = 0;
+
+                    input.value = 0;
+                }
+
+                if (quantity > stock) {
+
+                    warning.classList.remove(
+                        "d-none"
+                    );
+
+                    input.classList.add(
+                        "is-invalid"
+                    );
+
+                } else {
+
+                    warning.classList.add(
+                        "d-none"
+                    );
+
+                    input.classList.remove(
+                        "is-invalid"
+                    );
+                }
+
+                const total =
+                    price * quantity;
+
+                row.querySelector(".line-total")
+                    .textContent =
+                    currency(total);
+
+                if (quantity > 0 &&
+                    quantity <= stock) {
+
+                    row.classList.add(
+                        "selected-row"
+                    );
+
+                } else {
+
+                    row.classList.remove(
+                        "selected-row"
+                    );
+                }
+
+                calculateSummary();
+            }
+
+            // =========================================================
+            // CALCULATE SUMMARY
+            // =========================================================
+
+            function calculateSummary() {
+
+                const labour =
+                    parseFloat(
+                        document.getElementById(
+                            "LabourCharge"
+                        ).value
+                    ) || 0;
+
+                const gstPercentage =
+                    parseFloat(
+                        document.getElementById(
+                            "GSTPercentage"
+                        ).value
+                    ) || 0;
+
+                const discountPercentage =
+                    parseFloat(
+                        document.getElementById(
+                            "DiscountPercentage"
+                        ).value
+                    ) || 0;
+
+                let sparePartsTotal = 0;
+
+                rows.forEach(function(row) {
+
+                    const input =
+                        row.querySelector(
+                            ".part-quantity"
+                        );
+
+                    const quantity =
+                        parseInt(input.value) || 0;
+
+                    const price =
+                        parseFloat(
+                            input.dataset.price
+                        ) || 0;
+
+                    const stock =
+                        parseInt(
+                            input.dataset.stock
+                        ) || 0;
+
+                    if (quantity > 0 &&
+                        quantity <= stock) {
+
+                        sparePartsTotal +=
+                            price * quantity;
+                    }
+                });
+
+                const subtotal =
+                    labour +
+                    sparePartsTotal;
+
+                const discountAmount =
+                    subtotal *
+                    (discountPercentage / 100);
+
+                const discountedSubtotal =
+                    subtotal -
+                    discountAmount;
+
+                const gstAmount =
+                    Math.round(
+                        (
+                            discountedSubtotal *
+                            (gstPercentage / 100)
+                        ) * 100
+                    ) / 100;
+
+                const grandTotal =
+                    discountedSubtotal +
+                    gstAmount;
+
+                document.getElementById(
+                    "summaryLabour"
+                ).textContent =
+                    currency(labour);
+
+                document.getElementById(
+                    "summaryParts"
+                ).textContent =
+                    currency(sparePartsTotal);
+
+                document.getElementById(
+                    "summarySubtotal"
+                ).textContent =
+                    currency(subtotal);
+
+                document.getElementById(
+                    "summaryDiscount"
+                ).textContent =
+                    currency(discountAmount);
+
+                document.getElementById(
+                    "summaryGST"
+                ).textContent =
+                    currency(gstAmount);
+
+                document.getElementById(
+                    "summaryGrandTotal"
+                ).textContent =
+                    currency(grandTotal);
+
+                document.getElementById(
+                    "discountLabel"
+                ).textContent =
+                    discountPercentage.toFixed(2);
+
+                document.getElementById(
+                    "gstLabel"
+                ).textContent =
+                    gstPercentage.toFixed(2);
+            }
+
+            // =========================================================
+            // PAGINATION
+            // =========================================================
+
+            function renderPage() {
+
+                if (!rows.length)
+                    return;
+
+                const start =
+                    (currentPage - 1) *
+                    pageSize;
+
+                const end =
+                    Math.min(
+                        start + pageSize,
+                        totalItems
+                    );
+
+                rows.forEach(function(row, index) {
+
+                    row.style.display =
+                        index >= start &&
+                            index < end
+                            ? ""
+                            : "none";
+                });
+
+                if (showingStart) {
+
+                    showingStart.textContent =
+                        start + 1;
+                }
+
+                if (showingEnd) {
+
+                    showingEnd.textContent =
+                        end;
+                }
+
+                renderPageButtons();
+
+                if (previousButton) {
+
+                    previousButton.disabled =
+                        currentPage === 1;
+                }
+
+                if (nextButton) {
+
+                    nextButton.disabled =
+                        currentPage === totalPages;
+                }
+            }
+
+            function renderPageButtons() {
+
+                if (!pageButtons)
+                    return;
+
+                pageButtons.innerHTML = "";
+
+                for (
+                    let page = 1;
+                    page <= totalPages;
+                    page++
+                ) {
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+                    button.type = "button";
+
+                    button.className =
+                        "page-button";
+
+                    button.textContent =
+                        page;
+
+                    if (page === currentPage) {
+
+                        button.classList.add(
+                            "active"
+                        );
+                    }
+
+                    button.addEventListener(
+                        "click",
+                        function() {
+
+                            currentPage =
+                                page;
+
+                            renderPage();
+                        }
+                    );
+
+                    pageButtons.appendChild(
+                        button
+                    );
+                }
+            }
+
+            if (previousButton) {
+
+                previousButton.addEventListener(
+                    "click",
+                    function() {
+
+                        if (currentPage > 1) {
+
+                            currentPage--;
+
+                            renderPage();
+                        }
+                    }
+                );
+            }
+
+            if (nextButton) {
+
+                nextButton.addEventListener(
+                    "click",
+                    function() {
+
+                        if (
+                            currentPage <
+                            totalPages
+                        ) {
+
+                            currentPage++;
+
+                            renderPage();
+                        }
+                    }
+                );
+            }
+
+            // =========================================================
+            // QUANTITY EVENTS
+            // =========================================================
+
+            document.querySelectorAll(
+                ".part-quantity"
+            ).forEach(function(input) {
+
+                input.addEventListener(
+                    "input",
+                    function() {
+
+                        updateRow(
+                            input.closest(
+                                ".spare-part-row"
+                            )
+                        );
+                    }
+                );
+            });
+
+            document.getElementById(
+                "GSTPercentage"
+            ).addEventListener(
+                "input",
+                calculateSummary
+            );
+
+            document.getElementById(
+                "DiscountPercentage"
+            ).addEventListener(
+                "input",
+                calculateSummary
+            );
+
+            // =========================================================
+            // IMPORTANT:
+            // CREATE ONLY SELECTED FORM VALUES
+            // =========================================================
+
+            invoiceForm.addEventListener(
+                "submit",
+                function(event) {
+
+                    // Remove previously generated inputs.
+                    selectedPartsContainer.innerHTML = "";
+
+                    let selectedCount = 0;
+                    let invalidStock = false;
+
+                    rows.forEach(function(row) {
+
+                        const input =
+                            row.querySelector(
+                                ".part-quantity"
+                            );
+
+                        const quantity =
+                            parseInt(input.value) || 0;
+
+                        const stock =
+                            parseInt(
+                                input.dataset.stock
+                            ) || 0;
+
+                        const id =
+                            parseInt(
+                                input.dataset.id
+                            ) || 0;
+
+                        const price =
+                            parseFloat(
+                                input.dataset.price
+                            ) || 0;
+
+                        const name =
+                            row.dataset.name || "";
+
+                        // -------------------------------------------------
+                        // Ignore zero quantities.
+                        // -------------------------------------------------
+
+                        if (quantity <= 0)
+                            return;
+
+                        // -------------------------------------------------
+                        // Client-side stock validation.
+                        // Server validates again.
+                        // -------------------------------------------------
+
+                        if (quantity > stock) {
+
+                            invalidStock = true;
+
+                            input.classList.add(
+                                "is-invalid"
+                            );
+
+                            return;
+                        }
+
+                        // -------------------------------------------------
+                        // IMPORTANT:
+                        // ONLY NOW create model-bound inputs.
+                        // -------------------------------------------------
+
+                        const index =
+                            selectedCount;
+
+                        createHiddenInput(
+                            `SparePartsUsed[${index}].SparePartId`,
+                            id
+                        );
+
+                        createHiddenInput(
+                            `SparePartsUsed[${index}].SparePartName`,
+                            name
+                        );
+
+                        createHiddenInput(
+                            `SparePartsUsed[${index}].UnitPrice`,
+                            price
+                        );
+
+                        createHiddenInput(
+                            `SparePartsUsed[${index}].AvailableStock`,
+                            stock
+                        );
+
+                        createHiddenInput(
+                            `SparePartsUsed[${index}].QuantityUsed`,
+                            quantity
+                        );
+
+                        selectedCount++;
+                    });
+
+                    // -----------------------------------------------------
+                    // STOP INVALID STOCK
+                    // -----------------------------------------------------
+
+                    if (invalidStock) {
+
+                        event.preventDefault();
+
+                        alert(
+                            "One or more spare-part quantities exceed available stock."
+                        );
+
+                        return;
+                    }
+
+                    // -----------------------------------------------------
+                    // Prevent double-click / duplicate submission.
+                    // -----------------------------------------------------
+
+                    const button =
+                        document.getElementById(
+                            "createInvoiceButton"
+                        );
+
+                    button.disabled = true;
+
+                    button.innerHTML =
+                        '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                        'Creating Invoice...';
+                }
+            );
+
+            function createHiddenInput(
+                name,
+                value
+            ) {
+
+                const input =
+                    document.createElement(
+                        "input"
+                    );
+
+                input.type = "hidden";
+
+                input.name = name;
+
+                input.value = value;
+
+                selectedPartsContainer.appendChild(
+                    input
+                );
+            }
+
+            // =========================================================
+            // INITIALIZE
+            // =========================================================
+
+            rows.forEach(function(row) {
+
+                updateRow(row);
+            });
+
+            renderPage();
+
+            calculateSummary();
+        });
+</script>
+
+</body>
+</html>

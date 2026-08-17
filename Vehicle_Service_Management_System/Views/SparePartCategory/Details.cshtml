@@ -1,0 +1,696 @@
+﻿@model Vehicle_Service_Management_System.Application.ViewModels.SparePartCategory.SparePartCategoryDetailsViewModel
+@{
+    Layout = null;
+
+    // Category status: Active when IsActive is true
+    bool isActive = Model.IsActive;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Details | Vehicle Service Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(144deg, #0dcaf0, #00897b);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 30px rgba(0,0,0,0.08);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        body {
+            background: #f0f2f5;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .details-wrapper {
+            max-width: 1200px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .header-gradient {
+            background: var(--primary-gradient);
+            padding: 2rem 2.5rem 1.5rem;
+            color: #fff;
+            border-radius: var(--radius) var(--radius) 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .header-gradient .page-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.02em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-gradient .page-title i {
+            font-size: 2.2rem;
+            opacity: 0.9;
+        }
+
+        .header-gradient .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-gradient .btn-light {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            backdrop-filter: blur(4px);
+            border-radius: 50px;
+            padding: 0.5rem 1.4rem;
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .header-gradient .btn-light:hover {
+            background: rgba(255,255,255,0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: #fff;
+        }
+
+        .body-content {
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+        }
+
+        .toast-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 280px;
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .toast-success.show { transform: translateX(0); }
+        .toast-success i { font-size: 1.5rem; }
+        .toast-success .toast-body { flex: 1; font-weight: 500; }
+        .toast-success .btn-close-white {
+            background: none; border: none; color: #166534; font-size: 1.2rem;
+            cursor: pointer; padding: 0.2rem; line-height: 1; opacity: 0.6;
+            transition: opacity 0.15s;
+        }
+        .toast-success .btn-close-white:hover { opacity: 1; }
+
+        .detail-card {
+            background: #f9fafc;
+            border-radius: var(--radius-sm);
+            padding: 1.75rem 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #eef2f7;
+            margin-bottom: 1.75rem;
+            transition: var(--transition);
+        }
+        .detail-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.25rem 2rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-item .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7a8e;
+            font-weight: 600;
+            margin-bottom: 0.15rem;
+        }
+
+        .detail-item .value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a2634;
+            word-break: break-word;
+        }
+
+        .badge-status {
+            font-weight: 600;
+            padding: 0.35rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+
+        .badge-status.bg-success {
+            background: #dcfce7 !important;
+            color: #166534;
+            border-color: #86efac;
+        }
+        .badge-status.bg-success i { color: #22c55e; }
+
+        .badge-status.bg-danger {
+            background: #fee2e2 !important;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+        .badge-status.bg-danger i { color: #ef4444; }
+
+        .badge-status i { font-size: 0.7rem; }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        .status-dot.active { background: #22c55e; }
+        .status-dot.inactive { background: #ef4444; }
+
+        @@keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.8); }
+        }
+
+        .stat-chip {
+            background: white;
+            border-radius: 60px;
+            padding: 0.3rem 1.2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e9edf4;
+            display: inline-block;
+            font-weight: 600;
+            color: #1a2634;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .stat-chip:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .stat-chip i {
+            color: #0d6efd;
+            margin-right: 0.4rem;
+        }
+
+        .stat-chip.stock-value {
+            background: #e8f5e9;
+            border-color: #a5d6a7;
+        }
+        .stat-chip.stock-value i { color: #2e7d32; }
+
+        .stat-chip.avg-price {
+            background: #e3f2fd;
+            border-color: #90caf9;
+        }
+        .stat-chip.avg-price i { color: #0d47a1; }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a2634;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            color: #0d6efd;
+            font-size: 1.2rem;
+        }
+
+        .table-card {
+            background: #ffffff;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            border: 1px solid #eef2f7;
+            margin-top: 0.5rem;
+            transition: var(--transition);
+        }
+        .table-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .table-responsive-custom {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 0.25rem;
+        }
+
+        .table {
+            margin: 0;
+            font-size: 0.9rem;
+            vertical-align: middle;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 650px;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #00695c, #00897b);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.85rem 1rem;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .table thead th:first-child { border-radius: 8px 0 0 0; }
+        .table thead th:last-child { border-radius: 0 8px 0 0; }
+
+        .table tbody tr {
+            background: #fff;
+            transition: var(--transition);
+            border-radius: 8px;
+        }
+        .table tbody tr:hover td { background: #f8faff; }
+        .table tbody td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #edf2f7;
+            background: #fff;
+            transition: background var(--transition);
+        }
+        .table tbody tr:last-child td { border-bottom: none; }
+
+        .col-part-name {
+            background: linear-gradient(135deg, #eef2ff, #dbeafe) !important;
+            font-weight: 600;
+            color: #1e3a5f;
+            border-radius: 8px 0 0 8px;
+        }
+        .col-part-code {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0) !important;
+            color: #065f46;
+        }
+        .col-brand {
+            background: #ede7f6 !important;
+            color: #4a148c;
+        }
+        .col-price {
+            background: #e8f5e9 !important;
+            color: #1b5e20;
+        }
+        .col-stock {
+            background: #fff8e1 !important;
+            color: #e65100;
+        }
+        .col-status {
+            background: #f3e5f5 !important;
+            color: #4a148c;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .empty-state td {
+            padding: 3rem 1rem !important;
+            text-align: center;
+            color: #94a3b8;
+            background: #fafcff !important;
+        }
+        .empty-state td i {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+        }
+
+        .action-footer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.75rem;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .action-footer .btn {
+            border-radius: 50px;
+            padding: 0.55rem 1.8rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-footer .btn-secondary {
+            border: 1px solid #d1d9e6;
+            color: #4a5568;
+            background: #fff;
+        }
+        .action-footer .btn-secondary:hover {
+            background: #eef2f7;
+            border-color: #b0bcca;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .action-footer .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(13,110,253,0.30);
+        }
+        .action-footer .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(13,110,253,0.40);
+        }
+
+        .action-footer .btn-warning {
+            background: #fbbf24;
+            border: none;
+            color: #1a2634;
+            box-shadow: 0 4px 14px rgba(251,191,36,0.30);
+        }
+        .action-footer .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(251,191,36,0.40);
+        }
+
+        .action-footer .btn-danger {
+            background: #ef4444;
+            border: none;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(239,68,68,0.30);
+        }
+        .action-footer .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(239,68,68,0.40);
+        }
+
+        .action-footer .btn-success {
+            background: #22c55e;
+            border: none;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(34,197,94,0.30);
+        }
+        .action-footer .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(34,197,94,0.40);
+        }
+
+        @@media (max-width: 768px) {
+            .header-gradient { padding: 1.5rem 1.25rem 1rem; }
+            .header-gradient .page-title { font-size: 1.4rem; }
+            .header-gradient .page-title i { font-size: 1.6rem; }
+            .body-content { padding: 1rem 1rem 1.5rem; }
+            .detail-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+            .detail-card { padding: 1.25rem 1.25rem; }
+            .action-footer { flex-direction: column; align-items: stretch; }
+            .action-footer .btn { justify-content: center; }
+        }
+
+        @@media (max-width: 576px) {
+            body { padding: 1rem 0.75rem; }
+            .details-wrapper { border-radius: var(--radius-sm); }
+            .header-gradient { border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+            .detail-card { padding: 1rem 1rem; }
+            .table tbody td { padding: 0.5rem 0.6rem; font-size: 0.78rem; }
+            .table thead th { padding: 0.5rem 0.6rem; font-size: 0.65rem; }
+            .table { min-width: 500px; }
+            .toast-container { top: 0.75rem; right: 0.75rem; left: 0.75rem; }
+            .toast-success { min-width: unset; width: 100%; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toastContainer">
+        @if (TempData["Success"] != null)
+        {
+            <div class="toast-success show" id="successToast">
+                <i class="bi bi-check-circle-fill"></i>
+                <span class="toast-body">@TempData["Success"]</span>
+                <button type="button" class="btn-close-white" onclick="this.closest('.toast-success').remove();">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="toast-success show" id="errorToast" style="background:#fee2e2; border-color:#fca5a5; color:#991b1b;">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span class="toast-body">@TempData["Error"]</span>
+                <button type="button" class="btn-close-white" style="color:#991b1b;" onclick="this.closest('.toast-success').remove();">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        }
+    </div>
+
+    <div class="details-wrapper">
+
+        <!-- HEADER -->
+        <div class="header-gradient">
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                <div class="page-title">
+                    <i class="bi bi-tags-fill"></i>
+                    <span>Category Details</span>
+                </div>
+                <div class="header-actions">
+                    <a asp-action="Index" class="btn-light">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- BODY -->
+        <div class="body-content">
+
+            <!-- DETAIL CARD -->
+            <div class="detail-card">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="label"><i class="bi bi-tag me-1"></i> Category Name</span>
+                        <span class="value">@Model.CategoryName</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label"><i class="bi bi-file-text me-1"></i> Description</span>
+                        <span class="value">@(string.IsNullOrEmpty(Model.Description) ? "—" : Model.Description)</span>
+                    </div>
+
+                    <!-- Category Status -->
+                    <div class="detail-item">
+                        <span class="label"><i class="bi bi-circle me-1"></i> Status</span>
+                        <span class="value">
+                            <span class="badge-status @(isActive ? "bg-success" : "bg-danger")">
+                                <span class="status-dot @(isActive ? "active" : "inactive")"></span>
+                                <i class="bi @(isActive ? "bi-check-circle-fill" : "bi-x-circle-fill")"></i>
+                                @(isActive ? "Active" : "Inactive")
+                            </span>
+                        </span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="label"><i class="bi bi-gear me-1"></i> Total Parts</span>
+                        <span class="value">
+                            <span class="stat-chip">
+                                <i class="bi bi-gear"></i> @Model.TotalParts
+                            </span>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label"><i class="bi bi-currency-rupee me-1"></i> Total Stock Value</span>
+                        <span class="value">
+                            <span class="stat-chip stock-value">
+                                <i class="bi bi-currency-rupee"></i> @Model.TotalStockValue.ToString("C")
+                            </span>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label"><i class="bi bi-bar-chart me-1"></i> Average Part Price</span>
+                        <span class="value">
+                            <span class="stat-chip avg-price">
+                                <i class="bi bi-bar-chart"></i> @Model.AveragePartPrice.ToString("C")
+                            </span>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label"><i class="bi bi-calendar3 me-1"></i> Created On</span>
+                        <span class="value">@Model.CreatedOn.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SPARE PARTS TABLE -->
+            @if (Model.SpareParts != null && Model.SpareParts.Any())
+            {
+                <div class="section-title">
+                    <i class="bi bi-list-ul"></i> Spare Parts in this Category
+                </div>
+
+                <div class="table-card">
+                    <div class="table-responsive-custom">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Part Name</th>
+                                    <th>Code</th>
+                                    <th>Brand</th>
+                                    <th>Unit Price</th>
+                                    <th>Stock</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var p in Model.SpareParts)
+                                {
+                                    // ✅ CORRECT: Status is based on IsActive
+                                    bool partIsActive = p.IsActive;
+                                    <tr>
+                                        <td class="col-part-name">@p.PartName</td>
+                                        <td class="col-part-code">@p.PartCode</td>
+                                        <td class="col-brand">@(string.IsNullOrEmpty(p.Brand) ? "—" : p.Brand)</td>
+                                        <td class="col-price">@p.UnitPrice.ToString("C")</td>
+                                        <td class="col-stock">@p.StockQuantity @(string.IsNullOrEmpty(p.Unit) ? "" : p.Unit)</td>
+                                        
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="section-title">
+                    <i class="bi bi-list-ul"></i> Spare Parts in this Category
+                </div>
+                <div class="table-card">
+                    <div class="table-responsive-custom">
+                        <table class="table">
+                            <tbody>
+                                <tr class="empty-state">
+                                    <td colspan="6">
+                                        <i class="bi bi-gear"></i>
+                                        No spare parts found in this category.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+            <!-- ACTION FOOTER -->
+            <div class="action-footer">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Edit Category
+                </a>
+                @if (isActive)
+                {
+                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Deactivate this category?');">
+                            <i class="bi bi-pause-circle"></i> Deactivate
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="Restore" asp-route-id="@Model.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Activate this category?');">
+                            <i class="bi bi-check-circle"></i> Activate
+                        </button>
+                    </form>
+                }
+            </div>
+
+        </div> <!-- /body-content -->
+    </div> <!-- /details-wrapper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function() {
+            'use strict';
+
+            setTimeout(function() {
+                var toast = document.getElementById('successToast');
+                if (toast) {
+                    toast.classList.remove('show');
+                    setTimeout(function() { toast.remove(); }, 500);
+                }
+                var errorToast = document.getElementById('errorToast');
+                if (errorToast) {
+                    errorToast.classList.remove('show');
+                    setTimeout(function() { toast.remove(); }, 500);
+                }
+            }, 4000);
+        })();
+    </script>
+</body>
+</html>

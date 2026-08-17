@@ -1,0 +1,518 @@
+﻿@model IEnumerable<Vehicle_Service_Management_System.Application.ViewModels.Mechanic.MechanicListViewModel>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deleted Mechanics | Vehicle Service Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+            /* ── Same root variables as Index ── */
+            :root {
+                --primary: #0d6efd;
+                --primary-gradient: linear-gradient(144deg, #0dcaf0, #00897b);
+                --success: #22c55e;
+                --danger: #ef4444;
+                --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+                --shadow-md: 0 8px 30px rgba(0,0,0,0.08);
+                --shadow-lg: 0 16px 48px rgba(0,0,0,0.12);
+                --radius: 16px;
+                --radius-sm: 10px;
+                --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+            }
+
+            body {
+                background: #f0f2f5;
+                font-family: 'Inter', -apple-system, system-ui, sans-serif;
+                padding: 2rem 1.5rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+            }
+
+            .deleted-wrapper {
+                max-width: 90vw;
+                width: 100%;
+                background: #ffffff;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-lg);
+                padding: 0;
+                overflow: hidden;
+            }
+
+            .header-gradient {
+                background: var(--primary-gradient);
+                padding: 2rem 2.5rem 1.5rem;
+                color: #fff;
+                border-radius: var(--radius) var(--radius) 0 0;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .header-gradient::before {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    right: -20%;
+                    width: 300px;
+                    height: 300px;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+                .header-gradient .page-title {
+                    font-weight: 700;
+                    font-size: 1.8rem;
+                    letter-spacing: -0.02em;
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                    .header-gradient .page-title i {
+                        font-size: 2.2rem;
+                        opacity: 0.9;
+                    }
+
+                .header-gradient .header-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    flex-wrap: wrap;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .header-gradient .btn-light {
+                    background: rgba(255,255,255,0.2);
+                    border: 1px solid rgba(255,255,255,0.3);
+                    color: #fff;
+                    backdrop-filter: blur(4px);
+                    border-radius: 50px;
+                    padding: 0.5rem 1.4rem;
+                    font-weight: 500;
+                    transition: var(--transition);
+                    text-decoration: none;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                }
+
+                    .header-gradient .btn-light:hover {
+                        background: rgba(255,255,255,0.35);
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                        color: #fff;
+                    }
+
+            .body-content {
+                padding: 1.5rem 2rem 2rem;
+            }
+
+            /* Toast Alerts */
+            .toast-container {
+                position: fixed;
+                top: 1.5rem;
+                right: 1.5rem;
+                z-index: 9999;
+            }
+
+            .toast-success {
+                background: #dcfce7;
+                color: #166534;
+                border: 1px solid #86efac;
+                border-radius: 12px;
+                padding: 0.75rem 1.25rem;
+                box-shadow: var(--shadow-md);
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                min-width: 280px;
+                transform: translateX(120%);
+                transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+            }
+
+                .toast-success.show {
+                    transform: translateX(0);
+                }
+
+                .toast-success i {
+                    font-size: 1.5rem;
+                }
+
+                .toast-success .toast-body {
+                    flex: 1;
+                    font-weight: 500;
+                }
+
+                .toast-success .btn-close-white {
+                    background: none;
+                    border: none;
+                    color: #166534;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+                    padding: 0.2rem;
+                    line-height: 1;
+                    opacity: 0.6;
+                    transition: opacity 0.15s;
+                }
+
+                    .toast-success .btn-close-white:hover {
+                        opacity: 1;
+                    }
+
+            .table-card {
+                background: #fff;
+                border-radius: var(--radius-sm);
+                box-shadow: var(--shadow-sm);
+                overflow: hidden;
+                border: 1px solid #eef2f7;
+                margin-top: 0.5rem;
+            }
+
+            .table-responsive-custom {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 0.25rem;
+            }
+
+            .table {
+                margin: 0;
+                font-size: 0.92rem;
+                vertical-align: middle;
+                border-collapse: separate;
+                border-spacing: 0;
+                min-width: 800px;
+            }
+
+                .table th, .table td {
+                    white-space: nowrap;
+                }
+
+                .table thead th {
+                    background: linear-gradient(135deg, #00695c, #00897b);
+                    color: #ffffff;
+                    font-weight: 600;
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    padding: 0.9rem 1rem;
+                    border-bottom: 2px solid #e2e8f0;
+                    border: none;
+                }
+
+                    .table thead th:first-child {
+                        border-radius: 8px 0 0 0;
+                    }
+
+                    .table thead th:last-child {
+                        border-radius: 0 8px 0 0;
+                    }
+
+                .table tbody tr {
+                    background: #fff;
+                    transition: var(--transition);
+                    border-radius: 8px;
+                }
+
+                    .table tbody tr:hover td {
+                        background: #f8faff;
+                    }
+
+                .table tbody td {
+                    padding: 0.75rem 1rem;
+                    border-bottom: 1px solid #edf2f7;
+                    background: #fff;
+                    transition: background var(--transition);
+                    white-space: nowrap;
+                }
+
+                .table tbody tr:last-child td {
+                    border-bottom: none;
+                }
+
+            /* Column colours (same as Index) */
+            .col-name {
+                background: linear-gradient(135deg, #eef2ff, #dbeafe) !important;
+                font-weight: 600;
+                color: #1e3a5f;
+                border-radius: 8px 0 0 8px;
+            }
+
+            .col-phone {
+                background: linear-gradient(135deg, #f3e5f5, #e1bee7) !important;
+                font-weight: 500;
+                color: #4a148c;
+            }
+
+            .col-email {
+                background: #ede7f6 !important;
+                color: #4a148c;
+            }
+
+            .col-specialization {
+                background: #e0f2f1 !important;
+                color: #00695c;
+            }
+
+            .col-experience {
+                background: #e3f2fd !important;
+                color: #0d47a1;
+            }
+
+            .col-salary {
+                background: #e8f5e9 !important;
+                color: #1b5e20;
+            }
+
+            .col-status {
+                background: #f3e5f5 !important;
+                color: #4a148c;
+            }
+
+            .col-actions {
+                background: #f5f5f5 !important;
+                border-radius: 0 8px 8px 0;
+                text-align: right;
+            }
+
+            .badge-status {
+                font-weight: 600;
+                padding: 0.35rem 1rem;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                letter-spacing: 0.02em;
+                border: 1px solid transparent;
+            }
+
+                .badge-status.bg-danger {
+                    background: #fee2e2 !important;
+                    color: #991b1b;
+                    border-color: #fca5a5;
+                }
+
+                    .badge-status.bg-danger i {
+                        color: #ef4444;
+                    }
+
+                .badge-status i {
+                    font-size: 0.7rem;
+                }
+
+            .fw-600 {
+                font-weight: 600;
+            }
+
+            .empty-state td {
+                padding: 3.5rem 1rem !important;
+                text-align: center;
+                color: #94a3b8;
+                font-size: 1rem;
+            }
+
+                .empty-state td i {
+                    font-size: 2.8rem;
+                    display: block;
+                    margin-bottom: 0.75rem;
+                    color: #cbd5e1;
+                }
+
+            /* Responsive */
+            @@media (max-width: 768px) {
+                .header-gradient {
+                    padding: 1.5rem 1.25rem 1rem;
+                }
+
+                    .header-gradient .page-title {
+                        font-size: 1.4rem;
+                    }
+
+                        .header-gradient .page-title i {
+                            font-size: 1.6rem;
+                        }
+
+                .body-content {
+                    padding: 1rem 1rem 1.5rem;
+                }
+            }
+
+            @@media (max-width: 576px) {
+                body {
+                    padding: 1rem 0.75rem;
+                }
+
+                .deleted-wrapper {
+                    border-radius: var(--radius-sm);
+                    max-width: 100%;
+                }
+
+                .header-gradient {
+                    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+                }
+
+                .table tbody td {
+                    padding: 0.6rem 0.5rem;
+                    font-size: 0.8rem;
+                }
+
+                .table thead th {
+                    padding: 0.5rem 0.5rem;
+                    font-size: 0.65rem;
+                }
+
+                .toast-container {
+                    top: 0.75rem;
+                    right: 0.75rem;
+                    left: 0.75rem;
+                }
+
+                .toast-success {
+                    min-width: unset;
+                    width: 100%;
+                    font-size: 0.9rem;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer">
+        @if (TempData["Success"] != null)
+        {
+            <div class="toast-success show" id="successToast">
+                <i class="bi bi-check-circle-fill"></i>
+                <span class="toast-body">@TempData["Success"]</span>
+                <button type="button" class="btn-close-white" onclick="this.closest('.toast-success').remove();">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="toast-success show" id="errorToast" style="background:#fee2e2; border-color:#fca5a5; color:#991b1b;">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span class="toast-body">@TempData["Error"]</span>
+                <button type="button" class="btn-close-white" style="color:#991b1b;" onclick="this.closest('.toast-success').remove();">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        }
+    </div>
+
+    <div class="deleted-wrapper">
+
+        <!-- Header -->
+        <div class="header-gradient">
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                <div class="page-title">
+                    <i class="bi bi-trash"></i>
+                    <span>Deleted Mechanics</span>
+                </div>
+                <div class="header-actions">
+                    <a asp-action="Index" class="btn-light">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="body-content">
+
+            <div class="table-card">
+                <div class="table-responsive-custom">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Specialization</th>
+                                <th>Experience</th>
+                                <th>Salary</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Any())
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="col-name"><span class="fw-600">@item.FullName</span></td>
+                                        <td class="col-phone"><i class="bi bi-telephone-fill me-1" style="font-size:0.65rem; opacity:0.5;"></i> @item.PhoneNumber</td>
+                                        <td class="col-email"><i class="bi bi-envelope-fill me-1" style="font-size:0.65rem; opacity:0.5;"></i> @item.Email</td>
+                                        <td class="col-specialization">@item.Specialization</td>
+                                        <td class="col-experience">@item.ExperienceYears yrs</td>
+                                        <td class="col-salary">@item.Salary.ToString("C")</td>
+                                        <td class="col-status">
+                                            <span class="badge-status bg-danger">
+                                                <i class="bi bi-x-circle-fill"></i> Deleted
+                                            </span>
+                                        </td>
+                                        <td class="col-actions">
+                                            <form asp-action="Restore" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Restore this mechanic?');">
+                                                    <i class="bi bi-arrow-counterclockwise"></i> Restore
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr class="empty-state">
+                                    <td colspan="8">
+                                        <i class="bi bi-trash"></i>
+                                        No deleted mechanics found.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div> <!-- /body-content -->
+    </div> <!-- /deleted-wrapper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function() {
+        // Auto‑dismiss toast after 4s
+        setTimeout(function() {
+        var toast = document.getElementById('successToast');
+        if (toast) {
+        toast.classList.remove('show');
+        setTimeout(function() { toast.remove(); }, 500);
+        }
+        var errorToast = document.getElementById('errorToast');
+        if (errorToast) {
+        errorToast.classList.remove('show');
+        setTimeout(function() { errorToast.remove(); }, 500);
+        }
+        }, 4000);
+        })();
+    </script>
+</body>
+</html>

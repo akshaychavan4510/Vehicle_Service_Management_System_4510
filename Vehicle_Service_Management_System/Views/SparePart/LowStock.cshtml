@@ -1,0 +1,796 @@
+﻿@model List<Vehicle_Service_Management_System.Application.ViewModels.SparePart.SparePartLowStockViewModel>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Low Stock Spare Parts | Vehicle Service Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+            /* ── Reset & Base ── */
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+
+            :root {
+                --primary: #4f46e5;
+                --primary-light: #818cf8;
+                --primary-dark: #3730a3;
+                --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+                --warning: #f59e0b;
+                --warning-light: #fbbf24;
+                --danger: #ef4444;
+                --success: #22c55e;
+                --gray-50: #f8fafc;
+                --gray-100: #f1f5f9;
+                --gray-200: #e2e8f0;
+                --gray-300: #cbd5e1;
+                --gray-400: #94a3b8;
+                --gray-500: #64748b;
+                --gray-600: #475569;
+                --gray-700: #334155;
+                --gray-800: #1e293b;
+                --gray-900: #0f172a;
+                --radius: 20px;
+                --radius-sm: 12px;
+                --radius-xs: 8px;
+                --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+                --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+                --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
+                --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.16);
+                --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            body {
+                background: var(--gray-50);
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                padding: 2rem 1.5rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+                background-image: radial-gradient(ellipse at 10% 20%, rgba(79, 70, 229, 0.04) 0%, transparent 60%), radial-gradient(ellipse at 90% 80%, rgba(124, 58, 237, 0.04) 0%, transparent 60%);
+            }
+
+            /* ── Main Wrapper ── */
+            .low-stock-wrapper {
+                max-width: 1440px;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-xl), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+                padding: 2rem 2rem 2.5rem;
+                transition: var(--transition);
+                border: 1px solid rgba(255, 255, 255, 0.6);
+            }
+
+            @@media (max-width: 576px) {
+                body {
+                    padding: 0.75rem;
+                }
+
+                .low-stock-wrapper {
+                    padding: 1.25rem 1rem 1.75rem;
+                    border-radius: var(--radius-sm);
+                    backdrop-filter: blur(8px);
+                }
+            }
+
+            /* ── Header ── */
+            .page-header {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .page-header-left {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .header-icon-wrap {
+                width: 52px;
+                height: 52px;
+                background: var(--primary-gradient);
+                border-radius: var(--radius-sm);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 1.6rem;
+                box-shadow: 0 8px 24px rgba(79, 70, 229, 0.30);
+                flex-shrink: 0;
+            }
+
+            .page-header h1 {
+                font-weight: 800;
+                font-size: 1.85rem;
+                letter-spacing: -0.03em;
+                color: var(--gray-900);
+                margin: 0;
+                line-height: 1.2;
+            }
+
+                .page-header h1 small {
+                    display: block;
+                    font-weight: 500;
+                    font-size: 0.8rem;
+                    color: var(--gray-500);
+                    letter-spacing: 0.02em;
+                    margin-top: 0.1rem;
+                }
+
+            .page-header .btn-back {
+                border-radius: 60px;
+                padding: 0.55rem 1.4rem;
+                font-weight: 600;
+                font-size: 0.85rem;
+                border: 1px solid var(--gray-200);
+                background: #fff;
+                color: var(--gray-700);
+                transition: var(--transition);
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                box-shadow: var(--shadow-sm);
+            }
+
+                .page-header .btn-back:hover {
+                    background: var(--gray-100);
+                    border-color: var(--gray-300);
+                    transform: translateY(-1px);
+                    box-shadow: var(--shadow-md);
+                }
+
+            /* ── Stats Bar ── */
+            .stats-bar {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                margin-bottom: 1.75rem;
+                padding: 0.5rem 0;
+            }
+
+            .stat-item {
+                background: #fff;
+                border-radius: var(--radius-xs);
+                padding: 0.55rem 1.2rem 0.55rem 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.65rem;
+                border: 1px solid var(--gray-200);
+                box-shadow: var(--shadow-sm);
+                font-size: 0.85rem;
+                font-weight: 500;
+                color: var(--gray-700);
+            }
+
+                .stat-item i {
+                    font-size: 1.1rem;
+                }
+
+                .stat-item .stat-number {
+                    font-weight: 700;
+                    color: var(--gray-900);
+                    margin-right: 0.15rem;
+                }
+
+                .stat-item.warning {
+                    border-color: #fcd34d;
+                    background: #fffbeb;
+                }
+
+                    .stat-item.warning i {
+                        color: var(--warning);
+                    }
+
+                .stat-item.success {
+                    border-color: #86efac;
+                    background: #f0fdf4;
+                }
+
+                    .stat-item.success i {
+                        color: var(--success);
+                    }
+
+            /* ── Table Card ── */
+            .table-card {
+                background: #fff;
+                border-radius: var(--radius-sm);
+                box-shadow: var(--shadow-md);
+                overflow: hidden;
+                border: 1px solid var(--gray-200);
+                transition: var(--transition);
+            }
+
+                .table-card:hover {
+                    box-shadow: var(--shadow-lg);
+                }
+
+            .table-responsive-custom {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 0 0.25rem;
+            }
+
+            .table {
+                margin: 0;
+                font-size: 0.88rem;
+                vertical-align: middle;
+                border-collapse: separate;
+                border-spacing: 0;
+                min-width: 720px;
+                font-family: 'Inter', sans-serif;
+            }
+
+                .table thead th {
+                    background: var(--gray-50);
+                    color: var(--gray-600);
+                    font-weight: 600;
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    padding: 0.9rem 1rem;
+                    border-bottom: 2px solid var(--gray-200);
+                    white-space: nowrap;
+                    position: sticky;
+                    top: 0;
+                    z-index: 2;
+                }
+
+                .table tbody td {
+                    padding: 0.85rem 1rem;
+                    border-bottom: 1px solid var(--gray-100);
+                    background: #fff;
+                    transition: background var(--transition);
+                }
+
+                .table tbody tr {
+                    transition: var(--transition);
+                }
+
+                    .table tbody tr:hover td {
+                        background: var(--gray-50);
+                    }
+
+                    .table tbody tr:last-child td {
+                        border-bottom: none;
+                    }
+
+                    /* Low stock row highlight */
+                    .table tbody tr.low-stock-row td {
+                        background: #fffbeb;
+                        border-left: 4px solid var(--warning);
+                    }
+
+                    .table tbody tr.low-stock-row:hover td {
+                        background: #fef3c7;
+                    }
+
+            /* Part name with icon */
+            .part-name-cell {
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                font-weight: 600;
+                color: var(--gray-800);
+            }
+
+                .part-name-cell .part-emoji {
+                    font-size: 1.3rem;
+                    line-height: 1;
+                }
+
+            /* Stock indicator */
+            .stock-cell {
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                flex-wrap: wrap;
+            }
+
+            .stock-number {
+                font-weight: 700;
+                color: var(--gray-900);
+            }
+
+            .stock-bar-wrap {
+                width: 80px;
+                height: 6px;
+                background: var(--gray-200);
+                border-radius: 20px;
+                overflow: hidden;
+                flex-shrink: 0;
+            }
+
+            .stock-bar-fill {
+                height: 100%;
+                border-radius: 20px;
+                background: var(--warning);
+                transition: width 0.6s ease;
+            }
+
+                .stock-bar-fill.danger {
+                    background: var(--danger);
+                }
+
+                .stock-bar-fill.warning {
+                    background: var(--warning);
+                }
+
+                .stock-bar-fill.success {
+                    background: var(--success);
+                }
+
+            .badge-low {
+                background: #fef3c7;
+                color: #b45309;
+                padding: 0.2rem 0.7rem;
+                border-radius: 40px;
+                font-weight: 700;
+                font-size: 0.6rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.25rem;
+                border: 1px solid #fcd34d;
+            }
+
+                .badge-low i {
+                    font-size: 0.5rem;
+                }
+
+            /* ── Actions ── */
+            .action-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                align-items: center;
+                justify-content: flex-end;
+            }
+
+            .btn-update {
+                border-radius: 60px;
+                padding: 0.3rem 1rem;
+                font-size: 0.72rem;
+                font-weight: 600;
+                border: 1px solid var(--gray-200);
+                background: #fff;
+                color: var(--gray-700);
+                transition: var(--transition);
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                box-shadow: var(--shadow-sm);
+                text-decoration: none;
+            }
+
+                .btn-update:hover {
+                    background: var(--primary);
+                    border-color: var(--primary);
+                    color: #fff;
+                    transform: translateY(-1px);
+                    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.30);
+                    text-decoration: none;
+                }
+
+                .btn-update i {
+                    font-size: 0.8rem;
+                }
+
+            .btn-detail {
+                border-radius: 60px;
+                padding: 0.3rem 0.9rem;
+                font-size: 0.72rem;
+                font-weight: 500;
+                border: 1px solid transparent;
+                background: transparent;
+                color: var(--gray-400);
+                transition: var(--transition);
+                display: inline-flex;
+                align-items: center;
+                gap: 0.3rem;
+                text-decoration: none;
+            }
+
+                .btn-detail:hover {
+                    color: var(--primary);
+                    background: var(--gray-50);
+                    text-decoration: none;
+                }
+
+            /* ── Empty State ── */
+            .empty-state td {
+                padding: 4rem 1rem !important;
+                text-align: center;
+                color: var(--gray-400);
+            }
+
+            .empty-state .empty-icon {
+                font-size: 3.6rem;
+                color: var(--success);
+                display: block;
+                margin-bottom: 0.75rem;
+            }
+
+            .empty-state .empty-title {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: var(--gray-700);
+            }
+
+            .empty-state .empty-sub {
+                font-size: 0.9rem;
+                color: var(--gray-400);
+            }
+
+            /* ── Table Footer ── */
+            .table-footer {
+                padding: 0.8rem 1.25rem;
+                background: var(--gray-50);
+                border-top: 1px solid var(--gray-200);
+                font-size: 0.85rem;
+                color: var(--gray-600);
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 0.5rem;
+                border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+            }
+
+                .table-footer strong {
+                    color: var(--gray-900);
+                    font-weight: 700;
+                }
+
+                .table-footer .footer-badge {
+                    background: #fef3c7;
+                    color: #b45309;
+                    padding: 0.2rem 0.9rem;
+                    border-radius: 40px;
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    border: 1px solid #fcd34d;
+                }
+
+            /* ── Responsive ── */
+            @@media (max-width: 768px) {
+                .page-header h1 {
+                    font-size: 1.4rem;
+                }
+
+                    .page-header h1 small {
+                        font-size: 0.7rem;
+                    }
+
+                .header-icon-wrap {
+                    width: 42px;
+                    height: 42px;
+                    font-size: 1.2rem;
+                }
+
+                .stats-bar {
+                    gap: 0.5rem;
+                }
+
+                .stat-item {
+                    padding: 0.4rem 0.8rem;
+                    font-size: 0.75rem;
+                }
+
+                .table tbody td {
+                    padding: 0.6rem 0.6rem;
+                    font-size: 0.8rem;
+                }
+
+                .table thead th {
+                    padding: 0.6rem 0.6rem;
+                    font-size: 0.6rem;
+                }
+
+                .stock-bar-wrap {
+                    width: 50px;
+                }
+
+                .btn-update {
+                    font-size: 0.65rem;
+                    padding: 0.2rem 0.7rem;
+                }
+
+                .btn-detail {
+                    font-size: 0.65rem;
+                    padding: 0.2rem 0.5rem;
+                }
+            }
+
+            @@media (max-width: 480px) {
+                .page-header {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                    .page-header .btn-back {
+                        align-self: flex-start;
+                    }
+
+                .stats-bar {
+                    flex-direction: column;
+                }
+
+                .stat-item {
+                    width: 100%;
+                }
+
+                .table-footer {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 0.3rem;
+                }
+            }
+
+            /* ── Scrollbar ── */
+            .table-responsive-custom::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            .table-responsive-custom::-webkit-scrollbar-track {
+                background: var(--gray-100);
+                border-radius: 10px;
+            }
+
+            .table-responsive-custom::-webkit-scrollbar-thumb {
+                background: var(--gray-300);
+                border-radius: 10px;
+            }
+
+                .table-responsive-custom::-webkit-scrollbar-thumb:hover {
+                    background: var(--gray-400);
+                }
+
+            /* ── Animations ── */
+            @@keyframes fadeSlideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(16px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .low-stock-wrapper {
+                animation: fadeSlideUp 0.5s ease forwards;
+            }
+
+            .table tbody tr {
+                animation: fadeSlideUp 0.4s ease forwards;
+                opacity: 0;
+            }
+
+                .table tbody tr:nth-child(1) {
+                    animation-delay: 0.04s;
+                }
+
+                .table tbody tr:nth-child(2) {
+                    animation-delay: 0.08s;
+                }
+
+                .table tbody tr:nth-child(3) {
+                    animation-delay: 0.12s;
+                }
+
+                .table tbody tr:nth-child(4) {
+                    animation-delay: 0.16s;
+                }
+
+                .table tbody tr:nth-child(5) {
+                    animation-delay: 0.20s;
+                }
+
+                .table tbody tr:nth-child(6) {
+                    animation-delay: 0.24s;
+                }
+
+                .table tbody tr:nth-child(7) {
+                    animation-delay: 0.28s;
+                }
+
+                .table tbody tr:nth-child(8) {
+                    animation-delay: 0.32s;
+                }
+
+                .table tbody tr:nth-child(9) {
+                    animation-delay: 0.36s;
+                }
+
+                .table tbody tr:nth-child(10) {
+                    animation-delay: 0.40s;
+                }
+
+                .table tbody tr.empty-state {
+                    animation-delay: 0.1s;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="low-stock-wrapper">
+
+        <!-- ─── HEADER ─── -->
+        <div class="page-header">
+            <div class="page-header-left">
+                <div class="header-icon-wrap">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div>
+                    <h1>
+                        Low Stock Alert
+                        <small>Spare parts that need reordering</small>
+                    </h1>
+                </div>
+            </div>
+            <a asp-action="Index" class="btn-back">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+
+        <!-- ─── STATS BAR ─── -->
+        <div class="stats-bar">
+            <div class="stat-item warning">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span><span class="stat-number">@Model.Count</span> low stock items</span>
+            </div>
+            @if (Model.Any())
+            {
+                var critical = Model.Count(m => m.StockQuantity <= (m.MinimumStock / 2));
+                if (critical > 0)
+                {
+                    <div class="stat-item" style="border-color:#fca5a5; background:#fef2f2;">
+                        <i class="bi bi-bell-fill" style="color:#dc2626;"></i>
+                        <span><span class="stat-number">@critical</span> critical</span>
+                    </div>
+                }
+            }
+            <div class="stat-item success">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Stock monitoring active</span>
+            </div>
+        </div>
+
+        <!-- ─── TABLE ─── -->
+        <div class="table-card">
+            <div class="table-responsive-custom">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Part Name</th>
+                            <th>Code</th>
+                            <th>Brand</th>
+                            <th>Category</th>
+                            <th>Stock</th>
+                            <th>Min Stock</th>
+                            <th>Unit Price</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                var stockPercent = item.MinimumStock > 0
+                                ? Math.Min(100, (int)((double)item.StockQuantity / item.MinimumStock * 100))
+                                : 0;
+                                var barClass = stockPercent <= 30 ? "danger" : "warning";
+                                var isCritical = item.StockQuantity <= (item.MinimumStock / 2);
+
+                                <tr class="low-stock-row">
+                                    <td>
+                                        <div class="part-name-cell">
+                                            <span class="part-emoji">🔧</span>
+                                            <span>@item.PartName</span>
+                                        </div>
+                                    </td>
+                                    <td><code style="background:var(--gray-100);padding:0.15rem 0.5rem;border-radius:6px;font-size:0.8rem;">@item.PartCode</code></td>
+                                    <td>@(string.IsNullOrEmpty(item.Brand) ? "—" : item.Brand)</td>
+                                    <td>@item.CategoryName</td>
+                                    <td>
+                                        <div class="stock-cell">
+                                            <span class="stock-number">@item.StockQuantity</span>
+                                            <div class="stock-bar-wrap">
+                                                <div class="stock-bar-fill @barClass" style="width:@(Math.Min(100, stockPercent))%;"></div>
+                                            </div>
+                                            @if (isCritical)
+                                            {
+                                                <span class="badge-low" style="background:#fecaca;color:#991b1b;border-color:#f87171;">
+                                                    <i class="bi bi-exclamation-circle-fill"></i> Critical
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge-low">
+                                                    <i class="bi bi-exclamation-circle-fill"></i> Low
+                                                </span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td><strong>@item.MinimumStock</strong></td>
+                                    <td><span style="font-weight:600;color:var(--gray-800);">@item.UnitPrice.ToString("C")</span></td>
+                                    <td class="text-end">
+                                        <div class="action-group">
+                                            <a asp-action="UpdateStock" asp-route-id="@item.Id" class="btn-update" title="Update Stock">
+                                                <i class="bi bi-box-seam"></i> Update
+                                            </a>
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn-detail" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr class="empty-state">
+                                <td colspan="8">
+                                    <i class="bi bi-check-circle-fill empty-icon"></i>
+                                    <div class="empty-title">All stocked up!</div>
+                                    <div class="empty-sub">No spare parts are currently below minimum stock.</div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ─── TABLE FOOTER ─── -->
+            <div class="table-footer">
+                <span>
+                    <i class="bi bi-database"></i>
+                    Total Records: <strong>@Model.Count</strong>
+                </span>
+                @if (Model.Any())
+                {
+                    <span class="footer-badge">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        Needs immediate attention
+                    </span>
+                }
+                else
+                {
+                    <span class="footer-badge" style="background:#dcfce7;color:#166534;border-color:#86efac;">
+                        <i class="bi bi-check-circle-fill"></i>
+                        All clear
+                    </span>
+                }
+            </div>
+        </div>
+
+    </div>
+    <!-- /.low-stock-wrapper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    </script>
+</body>
+</html>

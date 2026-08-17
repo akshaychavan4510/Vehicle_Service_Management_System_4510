@@ -1,0 +1,676 @@
+﻿@using Vehicle_Service_Management_System.Domain.Enums
+@using Vehicle_Service_Management_System.Application.ViewModels.ServiceBooking
+@model ServiceBookingUpdateViewModel
+@{
+    Layout = null;
+    var total = Model.Services?.Sum(s => s.Price * s.Quantity) ?? 0;
+    var bookingNumber = Model.BookingNumber ?? ViewBag.BookingNumber as string ?? "N/A";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Service Booking | Vehicle Service Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+            /* ── Root Variables ── */
+            :root {
+                --primary: #0d6efd;
+                --primary-dark: #0a58ca;
+                --primary-gradient: linear-gradient(144deg, #0dcaf0, #00897b);
+                --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+                --shadow-md: 0 8px 30px rgba(0,0,0,0.08);
+                --shadow-lg: 0 16px 48px rgba(0,0,0,0.12);
+                --radius: 16px;
+                --radius-sm: 10px;
+                --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+            }
+
+            body {
+                background: #f0f2f5;
+                font-family: 'Inter', -apple-system, system-ui, sans-serif;
+                padding: 2rem 1.5rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+            }
+
+            .edit-wrapper {
+                max-width: 1000px;
+                width: 100%;
+                background: #ffffff;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-lg);
+                padding: 0;
+                overflow: hidden;
+            }
+
+            /* ── Header Gradient ── */
+            .header-gradient {
+                background: linear-gradient(144deg, #0dcaf0, #00897b);
+                padding: 2rem 2.5rem 1.5rem;
+                color: #fff;
+                border-radius: var(--radius) var(--radius) 0 0;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .header-gradient::before {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    right: -20%;
+                    width: 300px;
+                    height: 300px;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+                .header-gradient .page-title {
+                    font-weight: 700;
+                    font-size: 1.8rem;
+                    letter-spacing: -0.02em;
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                    .header-gradient .page-title i {
+                        font-size: 2.2rem;
+                        opacity: 0.9;
+                    }
+
+                .header-gradient .header-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    flex-wrap: wrap;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .header-gradient .btn-light {
+                    background: rgba(255,255,255,0.2);
+                    border: 1px solid rgba(255,255,255,0.3);
+                    color: #fff;
+                    backdrop-filter: blur(4px);
+                    border-radius: 50px;
+                    padding: 0.5rem 1.4rem;
+                    font-weight: 500;
+                    transition: var(--transition);
+                    text-decoration: none;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                }
+
+                    .header-gradient .btn-light:hover {
+                        background: rgba(255,255,255,0.35);
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                        color: #fff;
+                    }
+
+            /* ── Body ── */
+            .body-content {
+                padding: 1.5rem 2rem 2rem;
+            }
+
+            /* ── Form Card ── */
+            .form-card {
+                background: #f9fafc;
+                border-radius: var(--radius-sm);
+                padding: 1.75rem 2rem;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid #eef2f7;
+            }
+
+            .form-floating-custom .form-control,
+            .form-floating-custom .form-select,
+            .form-floating-custom textarea {
+                border-radius: 10px;
+                border: 1px solid #dce2ec;
+                padding: 0.6rem 1rem;
+                transition: var(--transition);
+                font-size: 0.95rem;
+            }
+
+                .form-floating-custom .form-control:focus,
+                .form-floating-custom .form-select:focus,
+                .form-floating-custom textarea:focus {
+                    border-color: #0d6efd;
+                    box-shadow: 0 0 0 4px rgba(13,110,253,0.12);
+                }
+
+            .form-floating-custom label {
+                font-weight: 600;
+                color: #2d3748;
+                margin-bottom: 0.3rem;
+                font-size: 0.85rem;
+                display: flex;
+                align-items: center;
+                gap: 0.3rem;
+            }
+
+                .form-floating-custom label .required-star {
+                    color: #ef4444;
+                    font-weight: 700;
+                }
+
+            .form-floating-custom .text-danger {
+                font-size: 0.8rem;
+                margin-top: 0.2rem;
+            }
+
+            .validation-summary-errors {
+                background: #fee2e2;
+                border: 1px solid #fca5a5;
+                border-radius: 10px;
+                padding: 0.75rem 1rem;
+                margin-bottom: 1.5rem;
+                color: #991b1b;
+            }
+
+                .validation-summary-errors ul {
+                    margin: 0;
+                    padding-left: 1.2rem;
+                }
+
+            /* ── Service Rows ── */
+            .service-row {
+                background: #fff;
+                border-radius: var(--radius-sm);
+                padding: 0.75rem 1rem;
+                margin-bottom: 0.5rem;
+                border: 1px solid #e9edf4;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 0.5rem;
+                transition: var(--transition);
+            }
+
+                .service-row:hover {
+                    border-color: #b8d4fe;
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .service-row .col {
+                    min-width: 100px;
+                    flex: 1;
+                }
+
+                .service-row .col-remove {
+                    flex: 0 0 40px;
+                    text-align: center;
+                }
+
+                .service-row .form-control,
+                .service-row .form-select {
+                    border-radius: 8px;
+                    border: 1px solid #dce2ec;
+                    padding: 0.4rem 0.75rem;
+                    font-size: 0.9rem;
+                    transition: var(--transition);
+                }
+
+                    .service-row .form-control:focus,
+                    .service-row .form-select:focus {
+                        border-color: #0d6efd;
+                        box-shadow: 0 0 0 3px rgba(13,110,253,0.10);
+                    }
+
+                .service-row .service-total-input {
+                    background: #f1f5f9 !important;
+                    font-weight: 600;
+                    color: #1a2634;
+                    cursor: default;
+                    border: none !important;
+                }
+
+                .service-row .btn-remove {
+                    border-radius: 30px;
+                    padding: 0.2rem 0.6rem;
+                    font-size: 0.8rem;
+                    transition: var(--transition);
+                }
+
+                    .service-row .btn-remove:hover {
+                        transform: scale(1.05);
+                    }
+
+            /* ── Buttons ── */
+            .btn-primary {
+                background: var(--primary-gradient);
+                border: none;
+                padding: 0.6rem 2rem;
+                font-weight: 600;
+                border-radius: 50px;
+                box-shadow: 0 4px 14px rgba(13,110,253,0.30);
+                transition: var(--transition);
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: #fff;
+            }
+
+                .btn-primary:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 24px rgba(13,110,253,0.40);
+                    color: #fff;
+                }
+
+            .btn-secondary {
+                border-radius: 50px;
+                padding: 0.6rem 1.8rem;
+                font-weight: 500;
+                border-color: #d1d9e6;
+                transition: var(--transition);
+                background: #fff;
+                color: #4a5568;
+            }
+
+                .btn-secondary:hover {
+                    background: #eef2f7;
+                    border-color: #b0bcca;
+                    color: #1a2634;
+                }
+
+            .btn-outline-primary {
+                border-radius: 50px;
+                padding: 0.4rem 1.2rem;
+                font-weight: 500;
+                border-color: #b8d4fe;
+                color: #0d6efd;
+            }
+
+                .btn-outline-primary:hover {
+                    background: #e9f0ff;
+                    border-color: #0d6efd;
+                    transform: translateY(-2px);
+                }
+
+            .grand-total {
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: #1a2634;
+                background: #fff;
+                padding: 0.4rem 1.2rem;
+                border-radius: 30px;
+                border: 1px solid #e9edf4;
+                display: inline-block;
+            }
+
+                .grand-total span {
+                    color: #0d6efd;
+                }
+
+            /* ── Responsive ── */
+            @@media (max-width: 768px) {
+                .header-gradient {
+                    padding: 1.5rem 1.25rem 1rem;
+                }
+
+                    .header-gradient .page-title {
+                        font-size: 1.4rem;
+                    }
+
+                        .header-gradient .page-title i {
+                            font-size: 1.6rem;
+                        }
+
+                .body-content {
+                    padding: 1rem 1rem 1.5rem;
+                }
+
+                .form-card {
+                    padding: 1.25rem 1rem;
+                }
+
+                .service-row {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                    .service-row .col {
+                        min-width: unset;
+                        width: 100%;
+                    }
+
+                    .service-row .col-remove {
+                        flex: unset;
+                        text-align: right;
+                    }
+            }
+
+            @@media (max-width: 576px) {
+                body {
+                    padding: 1rem 0.75rem;
+                }
+
+                .edit-wrapper {
+                    border-radius: var(--radius-sm);
+                }
+
+                .header-gradient {
+                    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+                }
+
+                .d-flex.gap-2 {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                    .d-flex.gap-2 .btn {
+                        width: 100%;
+                        justify-content: center;
+                    }
+
+                .grand-total {
+                    display: block;
+                    text-align: center;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <div class="edit-wrapper">
+
+        <!-- ─── GRADIENT HEADER ─── -->
+        <div class="header-gradient">
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                <div class="page-title">
+                    <i class="bi bi-pencil-square"></i>
+                    <span>Edit Booking</span>
+                    <span style="font-size:1.2rem; opacity:0.8;">#@bookingNumber</span>
+                </div>
+                <div class="header-actions">
+                    <a asp-action="Index" class="btn-light">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── BODY ─── -->
+        <div class="body-content">
+
+            <div class="form-card">
+                <form asp-action="Edit" asp-route-id="@Model.Id" method="post" id="editForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+                    <div class="row g-3">
+                        <!-- Customer -->
+                        <div class="col-md-6 form-floating-custom">
+                            <label asp-for="CustomerId"><i class="bi bi-person"></i> Customer <span class="required-star">*</span></label>
+                            <select asp-for="CustomerId" class="form-select" asp-items="Model.Customers">
+                                <option value="">— Select Customer —</option>
+                            </select>
+                            <span asp-validation-for="CustomerId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Vehicle -->
+                        <div class="col-md-6 form-floating-custom">
+                            <label asp-for="VehicleId"><i class="bi bi-car-front"></i> Vehicle <span class="required-star">*</span></label>
+                            <select asp-for="VehicleId" class="form-select" asp-items="Model.Vehicles">
+                                <option value="">— Select Vehicle —</option>
+                            </select>
+                            <span asp-validation-for="VehicleId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Mechanic -->
+                        <div class="col-md-6 form-floating-custom">
+                            <label asp-for="MechanicId"><i class="bi bi-tools"></i> Mechanic</label>
+                            <select asp-for="MechanicId" class="form-select" asp-items="Model.Mechanics">
+                                <option value="">— Unassigned —</option>
+                            </select>
+                            <span asp-validation-for="MechanicId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-6 form-floating-custom">
+                            <label asp-for="Status"><i class="bi bi-funnel"></i> Status <span class="required-star">*</span></label>
+                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<BookingStatus>()">
+                                <option value="">— Select Status —</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <!-- Expected Delivery -->
+                        <div class="col-md-6 form-floating-custom">
+                            <label asp-for="ExpectedDeliveryDate"><i class="bi bi-calendar3"></i> Expected Delivery</label>
+                            <input asp-for="ExpectedDeliveryDate" class="form-control" type="date" />
+                            <span asp-validation-for="ExpectedDeliveryDate" class="text-danger"></span>
+                        </div>
+
+                        <!-- Odometer -->
+                        <div class="col-md-6 form-floating-custom">
+                            <label asp-for="OdometerReading"><i class="bi bi-speedometer2"></i> Odometer (km)</label>
+                            <input asp-for="OdometerReading" class="form-control" placeholder="e.g. 15000" />
+                            <span asp-validation-for="OdometerReading" class="text-danger"></span>
+                        </div>
+
+                        <!-- Complaint -->
+                        <div class="col-md-6 form-floating-custom">
+                            <label asp-for="Complaint"><i class="bi bi-chat"></i> Complaint</label>
+                            <input asp-for="Complaint" class="form-control" placeholder="Brief complaint description" />
+                            <span asp-validation-for="Complaint" class="text-danger"></span>
+                        </div>
+
+                        <!-- Remarks -->
+                        <div class="col-12 form-floating-custom">
+                            <label asp-for="Remarks"><i class="bi bi-sticky"></i> Remarks</label>
+                            <textarea asp-for="Remarks" class="form-control" rows="3" placeholder="Additional remarks"></textarea>
+                            <span asp-validation-for="Remarks" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- ─── SERVICES SECTION ─── -->
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h5 class="fw-bold mb-0"><i class="bi bi-list-task text-primary"></i> Services</h5>
+                        <button type="button" id="addServiceBtn" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-plus-lg"></i> Add Service
+                        </button>
+                    </div>
+
+                    <div id="servicesContainer">
+                        @for (int i = 0; i < Model.Services.Count; i++)
+                        {
+                            var svc = Model.Services[i];
+                            <div class="service-row" data-index="@i">
+                                <div class="col" style="flex:3;">
+                                    <select name="Services[@i].ServiceTypeId" class="form-select service-type-select">
+                                        <option value="">— Select Service —</option>
+                                        @foreach (var st in Model.ServiceTypeOptions)
+                                        {
+                                            var isSelected = st.Id == svc.ServiceTypeId;
+                                            <option value="@st.Id" data-price="@(st.LabourCharge.ToString("0.00"))" selected="@(isSelected ? "selected" : null)">
+                                                @st.Name - ₹@(st.LabourCharge.ToString("0.00"))
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col" style="flex:1;">
+                                    <input type="number" step="0.01" name="Services[@i].Price" class="form-control service-price" placeholder="Price" value="@svc.Price.ToString("0.00")" />
+                                </div>
+                                <div class="col" style="flex:1;">
+                                    <input type="number" step="1" min="1" name="Services[@i].Quantity" class="form-control service-qty" placeholder="Qty" value="@svc.Quantity" />
+                                </div>
+                                <div class="col" style="flex:1;">
+                                    <input type="text" name="Services[@i].TotalAmount" class="form-control service-total-input" value="@svc.TotalAmount.ToString("0.00")" readonly />
+                                </div>
+                                <div class="col-remove">
+                                    <button type="button" class="btn btn-danger btn-sm btn-remove"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Grand Total -->
+                    <div class="mt-3 text-end">
+                        <span class="grand-total">Total Amount: <span id="grandTotal">@total.ToString("0.00")</span></span>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- ─── FORM ACTIONS ─── -->
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Changes</button>
+                        <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-x-lg"></i> Cancel</a>
+                    </div>
+                </form>
+            </div>
+
+        </div> <!-- /body-content -->
+    </div> <!-- /edit-wrapper -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(function () {
+        // ─── Helpers ──────────────────────────────────────────────
+        function updateRowPrice(row) {
+        var select = row.find('.service-type-select');
+        var selected = select.find('option:selected');
+        var price = parseFloat(selected.data('price')) || 0;
+        row.find('.service-price').val(price.toFixed(2));
+        updateRowTotal(row);
+        }
+
+        function updateRowTotal(row) {
+        var price = parseFloat(row.find('.service-price').val()) || 0;
+        var qty = parseInt(row.find('.service-qty').val()) || 0;
+        var total = price * qty;
+        row.find('.service-total-input').val(total.toFixed(2));
+        }
+
+        function updateGrandTotal() {
+        var grand = 0;
+        $('.service-row').each(function () {
+        var total = parseFloat($(this).find('.service-total-input').val()) || 0;
+        grand += total;
+        });
+        $('#grandTotal').text(grand.toFixed(2));
+        }
+
+        function reindexRows() {
+        $('.service-row').each(function (idx) {
+        var row = $(this);
+        row.attr('data-index', idx);
+        row.find('select, input').each(function () {
+        var name = $(this).attr('name');
+        if (name) {
+        name = name.replace(/Services\[\d+\]/, 'Services[' + idx + ']');
+        $(this).attr('name', name);
+        }
+        var id = $(this).attr('id');
+        if (id) {
+        id = id.replace(/Services_\d+__/, 'Services_' + idx + '__');
+        $(this).attr('id', id);
+        }
+        });
+        });
+        }
+
+        function getNewRowHtml(index) {
+        // Copy options from the first select
+        var optionsHtml = $('.service-type-select:first').html();
+        return `
+        <div class="service-row" data-index="${index}">
+        <div class="col" style="flex:3;">
+        <select name="Services[${index}].ServiceTypeId" class="form-select service-type-select">
+        ${optionsHtml}
+        </select>
+        </div>
+        <div class="col" style="flex:1;">
+        <input type="number" step="0.01" name="Services[${index}].Price" class="form-control service-price" placeholder="Price" value="0.00" />
+        </div>
+        <div class="col" style="flex:1;">
+        <input type="number" step="1" min="1" name="Services[${index}].Quantity" class="form-control service-qty" placeholder="Qty" value="1" />
+        </div>
+        <div class="col" style="flex:1;">
+        <input type="text" name="Services[${index}].TotalAmount" class="form-control service-total-input" value="0.00" readonly />
+        </div>
+        <div class="col-remove">
+        <button type="button" class="btn btn-danger btn-sm btn-remove"><i class="bi bi-trash"></i></button>
+        </div>
+        </div>
+        `;
+        }
+
+        // ─── Events ────────────────────────────────────────────────
+        $('#addServiceBtn').click(function () {
+        var index = $('.service-row').length;
+        var newRow = getNewRowHtml(index);
+        $('#servicesContainer').append(newRow);
+        var row = $('#servicesContainer .service-row:last');
+        updateRowPrice(row);
+        updateGrandTotal();
+        });
+
+        $(document).on('click', '.btn-remove', function () {
+        if ($('.service-row').length > 1) {
+        $(this).closest('.service-row').remove();
+        reindexRows();
+        updateGrandTotal();
+        } else {
+        alert('At least one service is required.');
+        }
+        });
+
+        $(document).on('change', '.service-type-select', function () {
+        var row = $(this).closest('.service-row');
+        updateRowPrice(row);
+        updateGrandTotal();
+        });
+
+        $(document).on('input', '.service-price, .service-qty', function () {
+        var row = $(this).closest('.service-row');
+        updateRowTotal(row);
+        updateGrandTotal();
+        });
+
+        // ─── Initialise existing rows ─────────────────────────────
+        $('.service-row').each(function () {
+        updateRowPrice($(this));
+        });
+        updateGrandTotal();
+
+        // ─── Validate at least one service selected ──────────────
+        $('#editForm').submit(function (e) {
+        var hasService = false;
+        $('.service-type-select').each(function () {
+        if ($(this).val() && $(this).val() !== '') {
+        hasService = true;
+        return false;
+        }
+        });
+        if (!hasService) {
+        e.preventDefault();
+        alert('Please select at least one service.');
+        return false;
+        }
+        return true;
+        });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,602 @@
+﻿@model Vehicle_Service_Management_System.Application.ViewModels.Customer.CustomerDetailsViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Details | Vehicle Service Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+            /* ── Root Variables ── */
+            :root {
+                --primary-gradient: linear-gradient(135deg, #0d6efd, #6f42c1);
+                --primary: #0d6efd;
+                --primary-dark: #0a58ca;
+                --success: #22c55e;
+                --info: #0ea5e9;
+                --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+                --shadow-md: 0 8px 30px rgba(0,0,0,0.08);
+                --shadow-lg: 0 16px 48px rgba(0,0,0,0.12);
+                --radius: 20px;
+                --radius-sm: 12px;
+                --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+            }
+
+            body {
+                background: #f0f2f5;
+                font-family: 'Inter', -apple-system, system-ui, sans-serif;
+                padding: 2rem 1.5rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+            }
+
+            .details-wrapper {
+                max-width: 900px;
+                width: 100%;
+                background: #ffffff;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-lg);
+                padding: 0;
+                overflow: hidden;
+                transition: var(--transition);
+                position: relative;
+            }
+
+            /* ── Profile Header ── */
+            .profile-header {
+                background: var(--primary-gradient);
+                padding: 2.5rem 2.5rem 1.8rem;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .profile-header::before {
+                    content: '';
+                    position: absolute;
+                    top: -60%;
+                    right: -20%;
+                    width: 400px;
+                    height: 400px;
+                    background: rgba(255,255,255,0.06);
+                    border-radius: 50%;
+                }
+
+                .profile-header::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -40%;
+                    left: -10%;
+                    width: 300px;
+                    height: 300px;
+                    background: rgba(255,255,255,0.04);
+                    border-radius: 50%;
+                }
+
+                .profile-header .avatar {
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.2);
+                    backdrop-filter: blur(4px);
+                    border: 3px solid rgba(255,255,255,0.4);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 2rem;
+                    font-weight: 700;
+                    color: #fff;
+                    text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    flex-shrink: 0;
+                }
+
+                .profile-header .customer-name {
+                    font-size: 1.6rem;
+                    font-weight: 700;
+                    letter-spacing: -0.02em;
+                    margin: 0;
+                }
+
+                .profile-header .customer-sub {
+                    font-size: 0.9rem;
+                    opacity: 0.85;
+                    margin: 0;
+                }
+
+                .profile-header .header-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    flex-wrap: wrap;
+                }
+
+                .profile-header .btn-outline-light {
+                    border-color: rgba(255,255,255,0.3);
+                    color: #fff;
+                    backdrop-filter: blur(4px);
+                }
+
+                    .profile-header .btn-outline-light:hover {
+                        background: rgba(255,255,255,0.15);
+                        border-color: #fff;
+                    }
+
+            /* ── Body ── */
+            .body-content {
+                padding: 1.8rem 2.5rem 2.5rem;
+            }
+
+            /* ── Detail Cards ── */
+            .detail-card {
+                border-radius: var(--radius-sm);
+                padding: 1.5rem 2rem;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid #eef2f7;
+                margin-bottom: 1.75rem;
+                transition: var(--transition);
+                position: relative;
+            }
+
+                .detail-card:hover {
+                    box-shadow: var(--shadow-md);
+                    transform: translateY(-2px);
+                }
+
+                .detail-card::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 4px;
+                    border-radius: 4px 0 0 4px;
+                    background: var(--primary-gradient);
+                    opacity: 0.3;
+                    transition: opacity var(--transition);
+                }
+
+                .detail-card:hover::before {
+                    opacity: 1;
+                }
+
+                .detail-card h5 {
+                    font-weight: 600;
+                    color: #1a2634;
+                    margin-bottom: 1.25rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-size: 1.05rem;
+                }
+
+                    .detail-card h5 i {
+                        color: var(--primary);
+                        font-size: 1.3rem;
+                        background: rgba(13,110,253,0.1);
+                        padding: 0.3rem;
+                        border-radius: 8px;
+                    }
+
+                /* ── Card background colours (NEW) ── */
+                /* Personal Information card – soft blue/indigo gradient */
+                .detail-card:first-of-type {
+                    background: linear-gradient(135deg, #e8f0fe, #d4e4ff);
+                }
+                /* Activity Summary card – soft warm amber gradient */
+                .detail-card:last-of-type {
+                    background: linear-gradient(135deg, #fef9e7, #fdf0d5);
+                }
+
+            /* ── Detail Rows ── */
+            .detail-row {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 0.6rem 0;
+                border-bottom: 1px dashed rgba(0,0,0,0.08);
+                align-items: baseline;
+            }
+
+                .detail-row:last-child {
+                    border-bottom: none;
+                }
+
+            .detail-label {
+                font-weight: 600;
+                color: #4a5568;
+                width: 170px;
+                flex-shrink: 0;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+            }
+
+                .detail-label i {
+                    font-size: 0.9rem;
+                    color: var(--primary);
+                    opacity: 0.7;
+                }
+
+            .detail-value {
+                flex: 1;
+                color: #1a2634;
+                font-weight: 500;
+                word-break: break-word;
+            }
+
+            /* ── Badge Status with Glow ── */
+            .badge-status {
+                font-weight: 600;
+                padding: 0.3rem 0.9rem;
+                border-radius: 50px;
+                font-size: 0.8rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                box-shadow: 0 0 0 0 rgba(34,197,94,0.2);
+                transition: box-shadow 0.3s ease;
+            }
+
+                .badge-status.bg-success {
+                    background: #dcfce7 !important;
+                    color: #166534;
+                    box-shadow: 0 0 12px rgba(34,197,94,0.15);
+                }
+
+                .badge-status.bg-danger {
+                    background: #fee2e2 !important;
+                    color: #991b1b;
+                    box-shadow: 0 0 12px rgba(239,68,68,0.15);
+                }
+
+                .badge-status .dot {
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    display: inline-block;
+                    animation: pulse-dot 1.5s ease-in-out infinite;
+                }
+
+                .badge-status.bg-success .dot {
+                    background: #22c55e;
+                    box-shadow: 0 0 8px #22c55e;
+                }
+
+                .badge-status.bg-danger .dot {
+                    background: #ef4444;
+                    box-shadow: 0 0 8px #ef4444;
+                }
+
+            @@keyframes pulse-dot {
+                0%, 100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+
+                50% {
+                    opacity: 0.5;
+                    transform: scale(0.7);
+                }
+            }
+
+            /* ── Summary Grid ── */
+            .summary-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 1rem;
+            }
+
+            .summary-item {
+                background: #ffffff;
+                border-radius: var(--radius-sm);
+                padding: 1.25rem 1rem;
+                border: 1px solid #eef2f7;
+                text-align: center;
+                transition: var(--transition);
+                box-shadow: var(--shadow-sm);
+                position: relative;
+                overflow: hidden;
+            }
+
+                .summary-item:hover {
+                    box-shadow: var(--shadow-md);
+                    transform: translateY(-4px);
+                }
+
+                .summary-item .number {
+                    font-size: 1.8rem;
+                    font-weight: 700;
+                    display: block;
+                }
+
+                .summary-item .label {
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    color: #6b7a8e;
+                    letter-spacing: 0.04em;
+                    font-weight: 600;
+                    margin-top: 0.2rem;
+                }
+
+                .summary-item .sub {
+                    font-size: 0.8rem;
+                    color: #4a5568;
+                    display: block;
+                    margin-top: 0.2rem;
+                }
+
+                /* ── Individual summary colors ── */
+                .summary-item.vehicles {
+                    border-left: 4px solid #22c55e;
+                }
+
+                    .summary-item.vehicles .number {
+                        color: #22c55e;
+                    }
+
+                    .summary-item.vehicles .label i {
+                        color: #22c55e;
+                    }
+
+                .summary-item.bookings {
+                    border-left: 4px solid #0ea5e9;
+                }
+
+                    .summary-item.bookings .number {
+                        color: #0ea5e9;
+                    }
+
+                    .summary-item.bookings .label i {
+                        color: #0ea5e9;
+                    }
+
+            /* ── Action Buttons ── */
+            .btn-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
+
+                .btn-actions .btn {
+                    border-radius: 40px;
+                    padding: 0.5rem 1.2rem;
+                    font-weight: 500;
+                    transition: var(--transition);
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                }
+
+                .btn-actions .btn-outline-warning {
+                    border-color: #fcd34d;
+                    color: #b45309;
+                }
+
+                    .btn-actions .btn-outline-warning:hover {
+                        background: #fef3c7;
+                        border-color: #b45309;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(251,191,36,0.25);
+                    }
+
+                .btn-actions .btn-outline-success {
+                    border-color: #86efac;
+                    color: #15803d;
+                }
+
+                    .btn-actions .btn-outline-success:hover {
+                        background: #dcfce7;
+                        border-color: #15803d;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(34,197,94,0.25);
+                    }
+
+                .btn-actions .btn-outline-primary {
+                    border-color: #b8d4fe;
+                    color: #0d6efd;
+                }
+
+                    .btn-actions .btn-outline-primary:hover {
+                        background: #e9f0ff;
+                        border-color: #0d6efd;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(13,110,253,0.25);
+                    }
+
+                .btn-actions .btn-outline-secondary {
+                    border-color: #d1d9e6;
+                    color: #4a5568;
+                }
+
+                    .btn-actions .btn-outline-secondary:hover {
+                        background: #eef2f7;
+                        border-color: #b0bcca;
+                    }
+
+            /* ── Responsive ── */
+            @@media (max-width: 576px) {
+                .profile-header {
+                    padding: 1.5rem 1.25rem;
+                }
+
+                    .profile-header .avatar {
+                        width: 64px;
+                        height: 64px;
+                        font-size: 1.5rem;
+                    }
+
+                    .profile-header .customer-name {
+                        font-size: 1.2rem;
+                    }
+
+                .body-content {
+                    padding: 1rem 1.25rem 1.5rem;
+                }
+
+                .detail-row {
+                    flex-direction: column;
+                    padding: 0.75rem 0;
+                }
+
+                .detail-label {
+                    width: 100%;
+                    margin-bottom: 0.2rem;
+                }
+
+                .detail-card {
+                    padding: 1rem 1.25rem;
+                }
+
+                .summary-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+
+                .btn-actions .btn {
+                    flex: 1;
+                    justify-content: center;
+                }
+            }
+
+            @@media (max-width: 400px) {
+                .summary-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <div class="details-wrapper">
+
+        <!-- ─── PROFILE HEADER ─── -->
+        <div class="profile-header">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar">
+                        @{
+                            var initials = string.IsNullOrEmpty(Model.FullName) ? "?" : string.Concat(Model.FullName.Split(' ').Where(s => !string.IsNullOrEmpty(s)).Select(s => s[0]));
+                        }
+                        @initials
+                    </div>
+                    <div>
+                        <h1 class="customer-name">@Model.FullName</h1>
+                        <p class="customer-sub">Customer since @Model.CreatedOn.ToString("dd MMM yyyy")</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a asp-action="Index" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-arrow-left"></i> Back
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── BODY ─── -->
+        <div class="body-content">
+
+            <!-- ─── PERSONAL INFORMATION ─── -->
+            <div class="detail-card">
+                <h5><i class="bi bi-info-circle"></i> Personal Information</h5>
+
+                <div class="detail-row">
+                    <span class="detail-label"><i class="bi bi-person"></i> Full Name</span>
+                    <span class="detail-value">@Model.FullName</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label"><i class="bi bi-phone"></i> Phone</span>
+                    <span class="detail-value">@Model.PhoneNumber</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label"><i class="bi bi-envelope"></i> Email</span>
+                    <span class="detail-value">@(string.IsNullOrEmpty(Model.Email) ? "—" : Model.Email)</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label"><i class="bi bi-geo-alt"></i> Address</span>
+                    <span class="detail-value">@(string.IsNullOrEmpty(Model.Address) ? "—" : Model.Address)</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label"><i class="bi bi-circle-fill" style="color: var(--primary);"></i> Status</span>
+                    <span class="detail-value">
+                        @if (Model.IsDeleted)
+                        {
+                            <span class="badge-status bg-danger"><span class="dot"></span> Deleted</span>
+                        }
+                        else
+                        {
+                            <span class="badge-status bg-success"><span class="dot"></span> Active</span>
+                        }
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label"><i class="bi bi-calendar-plus"></i> Created On</span>
+                    <span class="detail-value">@Model.CreatedOn.ToString("dd-MM-yyyy HH:mm")</span>
+                </div>
+                @if (Model.ModifiedOn.HasValue)
+                {
+                    <div class="detail-row">
+                        <span class="detail-label"><i class="bi bi-pencil-square"></i> Last Modified</span>
+                        <span class="detail-value">@Model.ModifiedOn.Value.ToString("dd-MM-yyyy HH:mm")</span>
+                    </div>
+                }
+            </div>
+
+            <!-- ─── ACTIVITY SUMMARY ─── -->
+            <div class="detail-card">
+                <h5><i class="bi bi-bar-chart-fill"></i> Activity Summary</h5>
+                <div class="summary-grid">
+                    <div class="summary-item vehicles">
+                        <span class="number">@Model.VehicleCount</span>
+                        <span class="label"><i class="bi bi-car-front"></i> Vehicles</span>
+                        <span class="sub">active: @Model.ActiveVehicleCount</span>
+                    </div>
+                    <div class="summary-item bookings">
+                        <span class="number">@Model.TotalBookings</span>
+                        <span class="label"><i class="bi bi-calendar-check"></i> Bookings</span>
+                        <span class="sub">active: @Model.ActiveBookings</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── ACTION BUTTONS ─── -->
+            <div class="btn-actions">
+                @if (!Model.IsDeleted)
+                {
+                    <form asp-action="Deactivate" asp-route-id="@Model.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-warning" onclick="return confirm('Deactivate this customer?');">
+                            <i class="bi bi-pause-circle"></i> Deactivate
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="Activate" asp-route-id="@Model.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-success" onclick="return confirm('Activate this customer?');">
+                            <i class="bi bi-check-circle"></i> Activate
+                        </button>
+                    </form>
+                }
+               
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+
+        </div> <!-- /body-content -->
+    </div> <!-- /details-wrapper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

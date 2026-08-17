@@ -1,0 +1,792 @@
+﻿@model IEnumerable<Vehicle_Service_Management_System.Application.ViewModels.Invoice.InvoiceListViewModel>
+
+@{
+    Layout = null;
+    var currentPage = ViewBag.CurrentPage ?? 1;
+    var pageSize = ViewBag.PageSize ?? 10;
+    var totalRecords = ViewBag.TotalRecords ?? 0;
+    var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoices | Vehicle Service Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+            :root {
+                --primary-gradient: linear-gradient(135deg, #0d6efd, #0a58ca);
+                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
+                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.14);
+                --radius: 16px;
+                --radius-sm: 10px;
+                --transition: 0.25s ease;
+            }
+
+            body {
+                background: #f4f6fa;
+                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+                padding: 2rem 1.5rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+            }
+
+            .invoices-wrapper {
+                max-width: 1400px;
+                width: 100%;
+                background: #ffffff;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-lg);
+                padding: 2rem 2rem 2.5rem;
+                transition: var(--transition);
+            }
+
+            @@media (max-width: 576px) {
+                body {
+                    padding: 1rem 0.75rem;
+                }
+
+                .invoices-wrapper {
+                    padding: 1.25rem 1rem 1.75rem;
+                    border-radius: var(--radius-sm);
+                }
+            }
+
+            .page-header {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+                margin-bottom: 1.75rem;
+            }
+
+                .page-header h1 {
+                    font-weight: 700;
+                    font-size: 1.85rem;
+                    letter-spacing: -0.02em;
+                    color: #1a2634;
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                    .page-header h1 i {
+                        color: #0d6efd;
+                        font-size: 2rem;
+                    }
+
+                .page-header .btn-primary {
+                    background: var(--primary-gradient);
+                    border: none;
+                    padding: 0.6rem 1.4rem;
+                    font-weight: 600;
+                    border-radius: 50px;
+                    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.30);
+                    transition: var(--transition);
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                    .page-header .btn-primary:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 24px rgba(13, 110, 253, 0.40);
+                    }
+
+            .header-actions {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .filter-section {
+                background: #f8fafc;
+                border-radius: var(--radius-sm);
+                padding: 1.25rem 1.5rem;
+                margin-bottom: 1.5rem;
+                border: 1px solid #e9edf4;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .filter-row {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 0.75rem 1.5rem;
+            }
+
+                .filter-row + .filter-row {
+                    margin-top: 0.75rem;
+                }
+
+            .filter-label {
+                font-weight: 600;
+                color: #2d3748;
+                font-size: 0.85rem;
+                margin-right: 0.25rem;
+                white-space: nowrap;
+            }
+
+            .search-wrapper {
+                position: relative;
+                flex: 1 1 300px;
+                min-width: 200px;
+            }
+
+                .search-wrapper .form-control {
+                    border: 1px solid #d1d9e6;
+                    background: #fff;
+                    border-radius: 40px;
+                    padding: 0.6rem 2rem 0.6rem 1.2rem;
+                    font-size: 0.95rem;
+                    outline: none;
+                    box-shadow: none !important;
+                    width: 100%;
+                    transition: var(--transition);
+                }
+
+                    .search-wrapper .form-control:focus {
+                        border-color: #0d6efd;
+                        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.12) !important;
+                    }
+
+                    .search-wrapper .form-control::placeholder {
+                        color: #a0aec0;
+                    }
+
+            .search-clear {
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: #94a3b8;
+                cursor: pointer;
+                font-size: 1.1rem;
+                padding: 0.2rem 0.4rem;
+                display: none;
+                transition: var(--transition);
+                line-height: 1;
+                z-index: 5;
+            }
+
+                .search-clear:hover {
+                    color: #dc3545;
+                }
+
+                .search-clear.visible {
+                    display: block;
+                }
+
+            .filter-input {
+                border: 1px solid #d1d9e6;
+                background: #fff;
+                border-radius: 40px;
+                padding: 0.6rem 1.2rem;
+                font-size: 0.95rem;
+                outline: none;
+                box-shadow: none !important;
+                transition: var(--transition);
+                min-width: 150px;
+                padding-right: 0.75rem;
+            }
+
+                .filter-input:focus {
+                    border-color: #0d6efd;
+                    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.12) !important;
+                }
+
+            .date-separator {
+                color: #4a5568;
+                font-weight: 500;
+                margin: 0 0.1rem;
+            }
+
+            .filter-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+            }
+
+                .filter-buttons .btn {
+                    border-radius: 40px;
+                    padding: 0.45rem 1.4rem;
+                    font-weight: 500;
+                    border: none;
+                    transition: var(--transition);
+                }
+
+                .filter-buttons .btn-primary {
+                    background: var(--primary-gradient);
+                    color: #fff;
+                    box-shadow: 0 2px 10px rgba(13, 110, 253, 0.25);
+                }
+
+                    .filter-buttons .btn-primary:hover {
+                        transform: scale(1.02);
+                        box-shadow: 0 4px 18px rgba(13, 110, 253, 0.35);
+                    }
+
+                .filter-buttons .btn-outline-secondary {
+                    background: transparent;
+                    color: #4a5568;
+                    border: 1px solid #d1d9e6;
+                }
+
+                    .filter-buttons .btn-outline-secondary:hover {
+                        background: #e9edf4;
+                        border-color: #b0bcca;
+                    }
+
+            @@media (max-width: 768px) {
+                .filter-row {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .search-wrapper {
+                    flex: unset;
+                    min-width: unset;
+                }
+
+                .filter-input {
+                    width: 100%;
+                }
+
+                .filter-buttons {
+                    justify-content: stretch;
+                }
+
+                    .filter-buttons .btn {
+                        flex: 1;
+                        justify-content: center;
+                    }
+            }
+
+            .alert {
+                border-radius: var(--radius-sm);
+                border: none;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .alert-success {
+                background: #dcfce7;
+                color: #166534;
+            }
+
+            .alert-danger {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+            .alert i {
+                margin-right: 0.5rem;
+            }
+
+            .table-card {
+                background: #ffffff;
+                border-radius: var(--radius-sm);
+                box-shadow: var(--shadow-sm);
+                overflow: hidden;
+                border: 1px solid #eef2f7;
+                margin-top: 0.5rem;
+            }
+
+            .table-responsive-custom {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 0 0.25rem;
+            }
+
+            .table {
+                margin: 0;
+                font-size: 0.92rem;
+                vertical-align: middle;
+                border-collapse: separate;
+                border-spacing: 0;
+                min-width: 900px;
+            }
+
+                .table thead th {
+                    background: #f8fafc;
+                    color: #2d3748;
+                    font-weight: 600;
+                    font-size: 0.8rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
+                    padding: 0.9rem 1rem;
+                    border-bottom: 2px solid #e2e8f0;
+                    white-space: nowrap;
+                }
+
+                .table tbody td {
+                    padding: 0.85rem 1rem;
+                    border-bottom: 1px solid #edf2f7;
+                    background: #fff;
+                    transition: background var(--transition);
+                }
+
+                .table tbody tr:hover td {
+                    background: #fafcff;
+                }
+
+                .table tbody tr:last-child td {
+                    border-bottom: none;
+                }
+
+            .badge-status {
+                font-weight: 500;
+                padding: 0.4rem 0.9rem;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                letter-spacing: 0.02em;
+            }
+
+                .badge-status.bg-success {
+                    background: #dcfce7 !important;
+                    color: #166534;
+                }
+
+                .badge-status.bg-danger {
+                    background: #fee2e2 !important;
+                    color: #991b1b;
+                }
+
+                .badge-status i {
+                    font-size: 0.7rem;
+                }
+
+            .action-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.3rem;
+                align-items: center;
+            }
+
+                .action-group .btn {
+                    border-radius: 30px;
+                    padding: 0.25rem 0.75rem;
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    border: 1px solid transparent;
+                    transition: var(--transition);
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.3rem;
+                }
+
+                .action-group .btn-outline-info {
+                    border-color: #b8d4fe;
+                    color: #0a58ca;
+                }
+
+                    .action-group .btn-outline-info:hover {
+                        background: #e9f0ff;
+                        border-color: #0a58ca;
+                    }
+
+                .action-group .btn-outline-secondary {
+                    border-color: #d1d9e6;
+                    color: #4a5568;
+                }
+
+                    .action-group .btn-outline-secondary:hover {
+                        background: #eef2f7;
+                        border-color: #b0bcca;
+                    }
+
+                .action-group .btn-success {
+                    background: #22c55e;
+                    border: none;
+                    color: #fff;
+                    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25);
+                }
+
+                    .action-group .btn-success:hover {
+                        transform: translateY(-1px);
+                        box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+                    }
+
+                .action-group .btn-warning {
+                    background: #fbbf24;
+                    border: none;
+                    color: #1a2634;
+                    box-shadow: 0 2px 8px rgba(251, 191, 36, 0.25);
+                }
+
+                    .action-group .btn-warning:hover {
+                        transform: translateY(-1px);
+                        box-shadow: 0 4px 14px rgba(251, 191, 36, 0.35);
+                    }
+
+                .action-group .btn-danger {
+                    background: #ef4444;
+                    border: none;
+                    color: #fff;
+                    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+                }
+
+                    .action-group .btn-danger:hover {
+                        transform: translateY(-1px);
+                        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+                    }
+
+            .empty-state td {
+                padding: 3.5rem 1rem !important;
+                text-align: center;
+                color: #94a3b8;
+                font-size: 1rem;
+            }
+
+                .empty-state td i {
+                    font-size: 2.8rem;
+                    display: block;
+                    margin-bottom: 0.75rem;
+                    color: #cbd5e1;
+                }
+
+            .table-footer {
+                padding: 0.75rem 1.25rem;
+                background: #f8fafc;
+                border-top: 1px solid #eef2f7;
+                font-size: 0.9rem;
+                color: #4a5568;
+            }
+
+                .table-footer strong {
+                    color: #1a2634;
+                }
+
+            .pagination-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                padding: 0.75rem 1.25rem;
+                background: #f8fafc;
+                border-top: 1px solid #eef2f7;
+            }
+
+            .pagination-info {
+                font-size: 0.9rem;
+                color: #4a5568;
+            }
+
+                .pagination-info strong {
+                    color: #1a2634;
+                }
+
+            .pagination-controls {
+                display: flex;
+                align-items: center;
+                gap: 0.3rem;
+                flex-wrap: wrap;
+            }
+
+                .pagination-controls .page-link {
+                    border-radius: 50px;
+                    padding: 0.3rem 0.8rem;
+                    font-size: 0.85rem;
+                    border: 1px solid #d1d9e6;
+                    color: #2d3748;
+                    background: #fff;
+                    transition: var(--transition);
+                    cursor: pointer;
+                    text-decoration: none;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-width: 36px;
+                    height: 36px;
+                }
+
+                    .pagination-controls .page-link:hover {
+                        background: #e9edf4;
+                    }
+
+                    .pagination-controls .page-link.active {
+                        background: var(--primary-gradient);
+                        color: #fff;
+                        border-color: #0d6efd;
+                    }
+
+                    .pagination-controls .page-link.disabled {
+                        opacity: 0.5;
+                        pointer-events: none;
+                    }
+
+            @@media (max-width: 576px) {
+                .pagination-wrapper {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 0.75rem;
+                }
+
+                .pagination-controls {
+                    justify-content: center;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <div class="invoices-wrapper">
+
+        <div class="page-header">
+            <h1>
+                <i class="bi bi-receipt-cutoff"></i>
+                Invoice List
+            </h1>
+            <div class="header-actions">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> Generate Invoice
+                </a>
+                <a asp-action="Deleted" class="btn btn-outline-danger">
+                    <i class="bi bi-archive"></i> Deleted
+                </a>
+            </div>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-circle-fill"></i> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- ─── FILTER SECTION ─── -->
+        <form asp-action="Index" method="get" id="filterForm">
+            <input type="hidden" name="page" id="pageInput" value="@currentPage" />
+            <input type="hidden" name="pageSize" value="@pageSize" />
+
+            <div class="filter-section">
+                <div class="filter-row">
+                    <span class="filter-label"><i class="bi bi-search"></i> Search</span>
+                    <div class="search-wrapper">
+                        <input type="text" name="search" id="searchInput" value="@ViewBag.Search"
+                               class="form-control"
+                               placeholder="By invoice number, customer, vehicle…" />
+                        <button type="button" class="search-clear" id="searchClear" title="Clear search">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <span class="filter-label"><i class="bi bi-calendar3"></i> Date Range</span>
+                    <input type="date" name="dateFrom" id="dateFrom" value="@ViewBag.DateFrom" class="filter-input" />
+                    <span class="date-separator">to</span>
+                    <input type="date" name="dateTo" id="dateTo" value="@ViewBag.DateTo" class="filter-input" />
+
+                    <div class="filter-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel"></i> Filter
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- ─── TABLE ─── -->
+        <div class="table-card">
+            <div class="table-responsive-custom">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Invoice No.</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th class="text-end">Grand Total</th>
+                            <th class="text-end">Paid</th>
+                            <th class="text-end">Balance</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><span class="fw-500">@item.InvoiceNumber</span></td>
+                                    <td>@item.CustomerName</td>
+                                    <td>@item.VehicleRegistrationNumber</td>
+                                    <td class="text-end">@item.GrandTotal.ToString("N2")</td>
+                                    <td class="text-end">@item.AmountPaid.ToString("N2")</td>
+                                    <td class="text-end">@item.Balance.ToString("N2")</td>
+                                    <td>
+                                        <span class="badge-status @(item.IsPaid ? "bg-success" : "bg-danger")">
+                                            <i class="bi @(item.IsPaid ? "bi-check-circle-fill" : "bi-x-circle-fill")"></i>
+                                            @(item.IsPaid ? "Paid" : "Unpaid")
+                                        </span>
+                                    </td>
+                                    <td>@item.CreatedOn.ToString("dd-MM-yyyy")</td>
+                                    <td class="text-end">
+                                        <div class="action-group justify-content-end">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" title="Details">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a asp-action="Print" asp-route-id="@item.Id" class="btn btn-outline-secondary" title="Print" target="_blank">
+                                                <i class="bi bi-printer"></i> Print
+                                            </a>
+                                            @if (!item.IsPaid)
+                                            {
+                                                <form asp-action="MarkAsPaid" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-success" title="Mark as Paid"
+                                                            onclick="return confirm('Mark this invoice as paid?');">
+                                                        <i class="bi bi-check2"></i> Paid
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form asp-action="MarkAsUnpaid" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-warning" title="Mark as Unpaid"
+                                                            onclick="return confirm('Mark this invoice as unpaid?');">
+                                                        <i class="bi bi-arrow-counterclockwise"></i> Unpaid
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr class="empty-state">
+                                <td colspan="9">
+                                    <i class="bi bi-receipt-cutoff"></i>
+                                    No invoices found.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ─── PAGINATION ─── -->
+            @if (totalRecords > 0)
+            {
+                <div class="pagination-wrapper">
+                    <div class="pagination-info">
+                        Showing <strong>@((currentPage - 1) * pageSize + 1)</strong> –
+                        <strong>@Math.Min(currentPage * pageSize, totalRecords)</strong>
+                        of <strong>@totalRecords</strong> records
+                    </div>
+                    <div class="pagination-controls">
+                        <a href="#" class="page-link @(currentPage <= 1 ? "disabled" : "")"
+                           data-page="@(currentPage - 1)" data-action="page">‹</a>
+                        @for (int p = 1; p <= totalPages; p++)
+                        {
+                            <a href="#" class="page-link @(p == currentPage ? "active" : "")"
+                               data-page="@p" data-action="page">@p</a>
+                        }
+                        <a href="#" class="page-link @(currentPage >= totalPages ? "disabled" : "")"
+                           data-page="@(currentPage + 1)" data-action="page">›</a>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="table-footer">
+            Total Records: <strong>@totalRecords</strong>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('filterForm');
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('searchClear');
+        const dateFrom = document.getElementById('dateFrom');
+        const dateTo = document.getElementById('dateTo');
+        const pageInput = document.getElementById('pageInput');
+
+        function toggleClearButton() {
+        if (searchInput.value.length > 0) {
+        clearBtn.classList.add('visible');
+        } else {
+        clearBtn.classList.remove('visible');
+        }
+        }
+        toggleClearButton();
+        searchInput.addEventListener('input', toggleClearButton);
+
+        clearBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        searchInput.value = '';
+        toggleClearButton();
+        pageInput.value = 1;
+        form.submit();
+        });
+
+        let searchTimer = null;
+        searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function() {
+        pageInput.value = 1;
+        form.submit();
+        }, 400);
+        });
+
+        [dateFrom, dateTo].forEach(function(input) {
+        input.addEventListener('change', function() {
+        pageInput.value = 1;
+        form.submit();
+        });
+        });
+
+        document.querySelectorAll('.pagination-controls .page-link[data-action="page"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var page = parseInt(this.getAttribute('data-page'));
+        if (!isNaN(page) && page > 0) {
+        pageInput.value = page;
+        form.submit();
+        }
+        });
+        });
+
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+        setTimeout(function() {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+        }, 5000);
+        });
+        });
+    </script>
+</body>
+</html>

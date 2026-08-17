@@ -1,0 +1,579 @@
+﻿@model Vehicle_Service_Management_System.Application.ViewModels.Account.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Vehicle Service Login</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+        /* ── Reset & Base ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Background image now lives on body (not .hero) so it stays
+           visible behind BOTH the hero and the login section as the
+           page scrolls — clicking "Login" no longer cuts to a plain
+           gray background, the vehicle image continues underneath. */
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #0a58ca;
+            background-image: url('/Image/vehicleimg.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: scroll; /* fixed is re-enabled on larger screens below */
+            overflow-x: hidden;
+        }
+
+        a {
+            color: #0d6efd;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+        /* Visible keyboard focus for accessibility */
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible {
+            outline: 3px solid #f5a623;
+            outline-offset: 2px;
+        }
+
+        /* ── Hero Section (mobile-first base) ──
+           dvh instead of vh: on phones the address bar shows/hides
+           and shrinks the usable viewport, which vh doesn't account
+           for; dvh tracks the real visible area. */
+        .hero {
+            position: relative;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            padding: 1.5rem;
+            padding-top: max(1.5rem, env(safe-area-inset-top));
+            padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+        }
+
+            /* Dark overlay for text contrast, sits on top of body's image */
+            .hero::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(10, 88, 202, 0.55) 100%);
+                z-index: 0;
+            }
+
+            .hero > * {
+                position: relative;
+                z-index: 1;
+            }
+
+            .hero h1 {
+                font-size: 1.9rem;
+                font-weight: 700;
+                letter-spacing: -1px;
+                line-height: 1.15;
+            }
+
+                .hero h1 i {
+                    font-size: 1.6rem;
+                    margin-right: 0.5rem;
+                }
+
+            .hero p {
+                font-size: 1rem;
+                opacity: 0.9;
+                margin-top: 0.5rem;
+            }
+
+        /* ── Floating Login Button (mobile-first: icon only) ── */
+        .btn-login-float {
+            position: fixed;
+            top: max(1rem, env(safe-area-inset-top));
+            right: max(1rem, env(safe-area-inset-right));
+            z-index: 1000;
+            border-radius: 50px;
+            padding: 0.6rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #0d6efd, #0a58ca);
+            border: none;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(13, 110, 253, 0.4);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+            .btn-login-float:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(13, 110, 253, 0.5);
+                color: #fff;
+            }
+
+            .btn-login-float span {
+                display: none;
+                white-space: nowrap;
+            }
+
+       
+
+        @@keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(12px);
+            }
+        }
+
+        /* ── Login Section ──
+           No solid background anymore — the body's vehicle image now
+           shows through. A soft translucent wash keeps the card and
+           its surrounding whitespace readable without hiding the
+           image completely.
+           container-type turns .login-section into a query container,
+           so the card inside can respond to the SPACE IT ACTUALLY HAS
+           rather than the device's viewport width. */
+        .login-section {
+            container-type: inline-size;
+            container-name: login-area;
+            position: relative;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 1rem;
+            padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+        }
+
+            /* translucent wash over the background image behind the card */
+            .login-section::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(180deg, rgba(10, 88, 202, 0.55) 0%, rgba(8, 20, 40, 0.6) 100%);
+                z-index: 0;
+            }
+
+            .login-section > * {
+                position: relative;
+                z-index: 1;
+            }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 460px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card {
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            background: #ffffff;
+            border: 1px solid #eef2f7;
+            overflow: hidden;
+        }
+
+            .login-card .card-header {
+                border-radius: 0 !important;
+                background: linear-gradient(135deg, #0d6efd, #0a58ca) !important;
+                padding: 1.5rem 1rem !important;
+                color: #fff;
+            }
+
+                .login-card .card-header i {
+                    font-size: 2.25rem;
+                }
+
+                .login-card .card-header h4 {
+                    font-size: 1.15rem;
+                }
+
+            .login-card .card-body {
+                padding: 1.5rem !important;
+            }
+
+        /* Field labels + icon-affixed inputs */
+        .field-group {
+            margin-bottom: 1rem;
+        }
+
+            .field-group .form-label {
+                font-weight: 600;
+                font-size: 0.88rem;
+                margin-bottom: 0.4rem;
+            }
+
+        .input-affix {
+            position: relative;
+        }
+
+            .input-affix > i {
+                position: absolute;
+                left: 0.9rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #64748b;
+                font-size: 1rem;
+                pointer-events: none;
+            }
+
+            .input-affix input {
+                padding-left: 2.5rem;
+            }
+
+        .form-control-lg {
+            border-radius: 12px;
+            padding: 0.7rem 1rem;
+            border: 1px solid #dbe3ee;
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+            .form-control-lg:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.12);
+            }
+
+        /* Password show/hide toggle */
+        .toggle-password {
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+
+            .toggle-password:hover {
+                color: #0d6efd;
+            }
+
+        .row-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.1rem;
+        }
+
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .form-check-label {
+            font-size: 0.9rem;
+        }
+
+        .btn-lg {
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0d6efd, #0a58ca);
+            border: none;
+            box-shadow: 0 4px 14px rgba(13, 110, 253, 0.3);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(13, 110, 253, 0.4);
+            }
+
+            .btn-primary:active {
+                transform: translateY(0);
+            }
+
+        hr {
+            margin: 1.25rem 0;
+            border-color: #eef2f7;
+        }
+
+        /* ─────────────────────────────────────────────
+           RESPONSIVE STRATEGY — mobile-first, ascending
+           Base styles above target the smallest phones.
+           These min-width rules layer on enhancements as
+           more room becomes available, instead of starting
+           from desktop and stripping things away.
+        ───────────────────────────────────────────────── */
+
+        /* ~ small phones and up: show the "Login" label again */
+        @@media (min-width: 400px) {
+            .btn-login-float span {
+                display: inline;
+            }
+
+            .btn-login-float {
+                padding: 0.6rem 1.4rem;
+            }
+        }
+
+        /* ~ large phones / small tablets and up */
+        @@media (min-width: 576px) {
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+
+            .hero h1 i {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .login-section {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .login-card {
+                border-radius: 20px;
+            }
+
+                .login-card .card-header {
+                    padding: 2rem 1rem !important;
+                }
+
+                    .login-card .card-header i {
+                        font-size: 2.75rem;
+                    }
+
+                    .login-card .card-header h4 {
+                        font-size: 1.35rem;
+                    }
+
+                .login-card .card-body {
+                    padding: 2rem !important;
+                }
+        }
+
+        /* ~ tablets and up */
+        @@media (min-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            
+        }
+
+        /* ~ small laptops and up: re-enable the parallax background
+           now there's enough width that the effect reads well and
+           isn't fighting mobile scroll performance */
+        @@media (min-width: 992px) {
+            body {
+                background-attachment: fixed;
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* Container query: once the login-section itself has at
+           least 500px of inline space, give the card a touch more
+           breathing room — independent of the device's viewport */
+        @@container login-area (min-width: 500px) {
+            .login-wrapper {
+                max-width: 480px;
+            }
+        }
+
+        /* Very narrow devices: tighten card padding a touch further */
+        @@media (max-width: 340px) {
+            .login-card .card-body {
+                padding: 1.1rem !important;
+            }
+        }
+
+        /* Short/landscape phones: hero shouldn't force a full-height
+           scroll when there isn't much vertical room */
+        @@media (max-height: 480px) and (orientation: landscape) {
+            .hero {
+                min-height: auto;
+                padding-block: 2.5rem;
+            }
+
+        }
+
+        /* ── Reduce motion if needed ── */
+        @@media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+           
+
+            .login-wrapper {
+                animation: none;
+            }
+
+            .btn-primary, .btn-login-float {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ─── HERO SECTION ─── -->
+    <section class="hero" id="hero">
+
+        <!-- Floating Login Button -->
+        <a href="#login" class="btn-login-float">
+            <i class="bi bi-box-arrow-in-right"></i> <span>Login</span>
+        </a>
+
+        <!-- Brand -->
+        <div>
+            <h1><i class="bi bi-car-front-fill"></i> Vehicle Service</h1>
+            <p>Management System</p>
+        </div>
+
+        
+    </section>
+
+    <!-- ─── LOGIN SECTION ─── -->
+    <section class="login-section" id="login">
+
+        <div class="login-wrapper">
+
+            <div class="card border-0 login-card">
+
+                <div class="card-header text-center py-4">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <h4 class="fw-bold mt-2 mb-0">Welcome Back</h4>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-action="Login" method="post">
+                        <input asp-for="ReturnUrl" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="field-group">
+                            <label asp-for="Email" class="form-label"></label>
+                            <div class="input-affix">
+                                <i class="bi bi-envelope-fill"></i>
+                                <input asp-for="Email" class="form-control form-control-lg" placeholder="Enter Email" autocomplete="email" />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="field-group">
+                            <label asp-for="Password" class="form-label"></label>
+                            <div class="input-affix">
+                                <i class="bi bi-lock-fill"></i>
+                                <input asp-for="Password" id="passwordInput" class="form-control form-control-lg" type="password" placeholder="Enter Password" autocomplete="current-password" />
+                                <button type="button" class="toggle-password" id="togglePassword" aria-label="Show password">
+                                    <i class="bi bi-eye" id="toggleIcon"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="row-between">
+                            <div class="form-check mb-0">
+                                <input asp-for="RememberMe" class="form-check-input" />
+                                <label asp-for="RememberMe" class="form-check-label"></label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </button>
+                        </div>
+
+                        <hr />
+
+                        <div class="text-center">
+                            Don't have an account?
+                            <a asp-action="Register">Register</a>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Simple show/hide password toggle — does not affect form posting or model binding
+        (function () {
+            var toggleBtn = document.getElementById('togglePassword');
+            var pwdInput = document.getElementById('passwordInput');
+            var icon = document.getElementById('toggleIcon');
+
+            if (toggleBtn && pwdInput && icon) {
+                toggleBtn.addEventListener('click', function () {
+                    var isHidden = pwdInput.type === 'password';
+                    pwdInput.type = isHidden ? 'text' : 'password';
+                    icon.classList.toggle('bi-eye', !isHidden);
+                    icon.classList.toggle('bi-eye-slash', isHidden);
+                    toggleBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+                });
+            }
+        })();
+    </script>
+
+</body>
+</html>

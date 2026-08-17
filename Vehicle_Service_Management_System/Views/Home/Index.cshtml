@@ -1,0 +1,494 @@
+﻿@model Vehicle_Service_Management_System.Application.ViewModels.Dashboard.DashboardViewModel
+@using Vehicle_Service_Management_System.Domain.Enums
+
+@{
+    ViewData["Title"] = "Dashboard";
+
+    string BookingBadge(string status) => status switch
+    {
+        nameof(BookingStatus.Pending) => "bg-warning text-dark",
+        nameof(BookingStatus.InProgress) => "bg-primary",
+        nameof(BookingStatus.Completed) => "bg-success",
+        nameof(BookingStatus.Cancelled) => "bg-danger",
+        _ => "bg-secondary"
+    };
+
+    string PaymentBadge(string mode) => mode switch
+    {
+        nameof(PaymentMode.Cash) => "bg-success",
+        nameof(PaymentMode.UPI) => "bg-info text-dark",
+        nameof(PaymentMode.CreditCard) => "bg-primary",
+        nameof(PaymentMode.DebitCard) => "bg-primary",
+        nameof(PaymentMode.NetBanking) => "bg-secondary",
+        _ => "bg-secondary"
+    };
+}
+
+<style>
+    /* ── Greeting bar ── */
+    .greet-bar {
+        background: linear-gradient(120deg, #0f172a 0%, #1e3a8a 100%);
+        border-radius: 16px;
+        color: #fff;
+        padding: 1.5rem 1.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    }
+
+        .greet-bar h2 {
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .greet-bar p {
+            margin: 0.15rem 0 0 0;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .greet-bar .greet-date {
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 0.4rem 0.9rem;
+            border-radius: 40px;
+            white-space: nowrap;
+        }
+
+    /* ── Stat cards ── */
+    .stat-card {
+        border: 0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        height: 100%;
+        background: #fff;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+        }
+
+        .stat-card .stat-top {
+            height: 4px;
+            background: var(--accent);
+        }
+
+        .stat-card .stat-body {
+            padding: 1rem 1.1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+        }
+
+        .stat-card .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 0.15rem;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.15;
+        }
+
+        .stat-card .stat-link {
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+            .stat-card .stat-link:hover {
+                text-decoration: underline;
+            }
+
+    .acc-indigo {
+        --accent: #6366f1;
+        --accent-soft: #eef0ff;
+    }
+
+    .acc-amber {
+        --accent: #f59e0b;
+        --accent-soft: #fef3e2;
+    }
+
+    .acc-cyan {
+        --accent: #06b6d4;
+        --accent-soft: #e3f8fb;
+    }
+
+    .acc-violet {
+        --accent: #8b5cf6;
+        --accent-soft: #f2ecfe;
+    }
+
+    .acc-sky {
+        --accent: #0ea5e9;
+        --accent-soft: #e6f6fd;
+    }
+
+    .acc-rose {
+        --accent: #f43f5e;
+        --accent-soft: #fde8ec;
+    }
+
+    .acc-teal {
+        --accent: #14b8a6;
+        --accent-soft: #e2f7f4;
+    }
+
+    .acc-emerald {
+        --accent: #10b981;
+        --accent-soft: #e5f8f0;
+    }
+
+    /* ── Panel cards (recent activity) ── */
+    .panel-card {
+        border: 0;
+        border-radius: 14px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+        height: 100%;
+    }
+
+        .panel-card .card-header {
+            background: #fff;
+            border-bottom: 1px solid #eef2f6;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+        }
+
+            .panel-card .card-header a {
+                font-size: 0.78rem;
+                font-weight: 600;
+                text-decoration: none;
+            }
+
+    .empty-state {
+        text-align: center;
+        color: #94a3b8;
+        padding: 2.25rem 1rem;
+        font-size: 0.9rem;
+    }
+
+        .empty-state i {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 0.4rem;
+            opacity: 0.6;
+        }
+
+    /* ── Quick actions ── */
+    .quick-action {
+        border: 0;
+        border-radius: 12px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #fff;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        height: 100%;
+    }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        .quick-action i {
+            font-size: 1.3rem;
+        }
+</style>
+
+<div class="container-fluid">
+
+    <!-- Greeting -->
+    <div class="greet-bar">
+        <div>
+            <h2>Welcome back, @(User.Identity?.Name ?? "there") 👋</h2>
+            <p>Here's what's happening at your service center today.</p>
+        </div>
+        <div class="greet-date">
+            <i class="bi bi-calendar3"></i>
+            @DateTime.Now.ToString("dddd, dd MMM yyyy")
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <a asp-controller="Customer" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card acc-indigo">
+                    <div class="stat-top"></div>
+                    <div class="stat-body">
+                        <div class="stat-icon"><i class="bi bi-people"></i></div>
+                        <div>
+                            <div class="stat-label">Customers</div>
+                            <div class="stat-value">@Model.Customers</div>
+                            <span class="stat-link">View all <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <a asp-controller="Vehicle" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card acc-amber">
+                    <div class="stat-top"></div>
+                    <div class="stat-body">
+                        <div class="stat-icon"><i class="bi bi-car-front"></i></div>
+                        <div>
+                            <div class="stat-label">Vehicles</div>
+                            <div class="stat-value">@Model.Vehicles</div>
+                            <span class="stat-link">View all <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <a asp-controller="Mechanic" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card acc-cyan">
+                    <div class="stat-top"></div>
+                    <div class="stat-body">
+                        <div class="stat-icon"><i class="bi bi-person-workspace"></i></div>
+                        <div>
+                            <div class="stat-label">Mechanics</div>
+                            <div class="stat-value">@Model.Mechanics</div>
+                            <span class="stat-link">View all <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <a asp-controller="ServiceBooking" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card acc-violet">
+                    <div class="stat-top"></div>
+                    <div class="stat-body">
+                        <div class="stat-icon"><i class="bi bi-calendar-check"></i></div>
+                        <div>
+                            <div class="stat-label">Bookings</div>
+                            <div class="stat-value">@Model.Bookings</div>
+                            <span class="stat-link">View all <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <a asp-controller="JobCard" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card acc-sky">
+                    <div class="stat-top"></div>
+                    <div class="stat-body">
+                        <div class="stat-icon"><i class="bi bi-file-earmark-text"></i></div>
+                        <div>
+                            <div class="stat-label">Job Cards</div>
+                            <div class="stat-value">@Model.JobCards</div>
+                            <span class="stat-link">View all <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <a asp-controller="Invoice" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card acc-rose">
+                    <div class="stat-top"></div>
+                    <div class="stat-body">
+                        <div class="stat-icon"><i class="bi bi-receipt"></i></div>
+                        <div>
+                            <div class="stat-label">Invoices</div>
+                            <div class="stat-value">@Model.Invoices</div>
+                            <span class="stat-link">View all <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <a asp-controller="Payment" asp-action="Index" class="text-decoration-none">
+                <div class="stat-card acc-teal">
+                    <div class="stat-top"></div>
+                    <div class="stat-body">
+                        <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+                        <div>
+                            <div class="stat-label">Payments</div>
+                            <div class="stat-value">@Model.Payments</div>
+                            <span class="stat-link">View all <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <a asp-controller="Report" asp-action="Revenue" class="text-decoration-none">
+                <div class="stat-card acc-emerald">
+                    <div class="stat-top"></div>
+                    <div class="stat-body">
+                        <div class="stat-icon"><i class="bi bi-cash-coin"></i></div>
+                        <div>
+                            <div class="stat-label">Total Revenue</div>
+                            <div class="stat-value">₹@Model.Revenue.ToString("N0")</div>
+                            <span class="stat-link">View report <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-7">
+            <div class="card panel-card">
+                <div class="card-header">
+                    <span><i class="bi bi-calendar-check text-primary me-1"></i> Recent Service Bookings</span>
+                    <a asp-controller="ServiceBooking" asp-action="Index">View all <i class="bi bi-arrow-right"></i></a>
+                </div>
+                @if (!Model.RecentBookings.Any())
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-calendar-x"></i>
+                        No bookings yet. New bookings will show up here.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Booking #</th>
+                                    <th>Date</th>
+                                    <th>Complaint</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.RecentBookings)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@item.BookingNumber</td>
+                                        <td>@item.BookingDate.ToString("dd-MMM-yyyy")</td>
+                                        <td class="text-truncate" style="max-width:220px;">@item.Complaint</td>
+                                        <td><span class="badge @BookingBadge(item.Status.ToString())">@item.Status</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card panel-card">
+                <div class="card-header">
+                    <span><i class="bi bi-cash-stack text-success me-1"></i> Recent Payments</span>
+                    <a asp-controller="Payment" asp-action="Index">View all <i class="bi bi-arrow-right"></i></a>
+                </div>
+                @if (!Model.RecentPayments.Any())
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-wallet2"></i>
+                        No payments recorded yet.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Amount</th>
+                                    <th>Mode</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.RecentPayments)
+                                {
+                                    <tr>
+                                        <td>#@item.InvoiceId</td>
+                                        <td class="fw-semibold">₹@item.AmountPaid.ToString("N2")</td>
+                                        <td><span class="badge @PaymentBadge(item.PaymentMode.ToString())">@item.PaymentMode</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <a asp-controller="Customer" asp-action="Create" class="quick-action" style="background:#6366f1;">
+                <i class="bi bi-person-plus"></i> Add Customer
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a asp-controller="Vehicle" asp-action="Create" class="quick-action" style="background:#f59e0b;">
+                <i class="bi bi-car-front"></i> Add Vehicle
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a asp-controller="ServiceBooking" asp-action="Create" class="quick-action" style="background:#8b5cf6;">
+                <i class="bi bi-calendar-plus"></i> New Booking
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a asp-controller="Invoice" asp-action="Create" class="quick-action" style="background:#f43f5e;">
+                <i class="bi bi-receipt"></i> Generate Invoice
+            </a>
+        </div>
+    </div>
+
+</div>

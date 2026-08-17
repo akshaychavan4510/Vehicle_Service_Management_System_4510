@@ -1,0 +1,260 @@
+﻿@model Vehicle_Service_Management_System.Application.ViewModels.Invoice.InvoicePrintViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Invoice - " + Model.InvoiceNumber;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Invoice - @Model.InvoiceNumber</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 14px;
+                margin: 20px;
+            }
+
+            .company-header {
+                text-align: center;
+                border-bottom: 3px solid black;
+                padding-bottom: 15px;
+                margin-bottom: 25px;
+            }
+
+                .company-header h2 {
+                    margin-bottom: 5px;
+                    font-weight: bold;
+                }
+
+                .company-header p {
+                    margin: 0;
+                }
+
+            .invoice-title {
+                text-align: center;
+                font-size: 26px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+
+            table {
+                width: 100%;
+            }
+
+            .table th {
+                background: #f5f5f5;
+            }
+
+            .summary td {
+                padding: 6px;
+            }
+
+            .footer {
+                margin-top: 60px;
+            }
+
+            .signature {
+                text-align: right;
+                margin-top: 70px;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .amount-in-words {
+                font-size: 12px;
+                font-weight: normal;
+            }
+
+            @@media print {
+                .no-print {
+                    display: none;
+                }
+
+                body {
+                    margin: 0;
+                    padding: 10px;
+                }
+
+                .container {
+                    max-width: 100%;
+                }
+
+                .table-bordered {
+                    border: 1px solid #dee2e6;
+                }
+
+                    .table-bordered th,
+                    .table-bordered td {
+                        border: 1px solid #dee2e6;
+                    }
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Print button (hidden in print) -->
+        <div class="text-end no-print mb-3">
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print Invoice
+            </button>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <!-- Company Header -->
+        <div class="company-header">
+            <h2>Sham Motors</h2>
+            <p>Kolhapur, Maharashtra</p>
+            <p>Phone : +91 9766805552</p>
+            <p>Email : dattatraychavan1974@gmail.com</p>
+        </div>
+
+        <div class="invoice-title">TAX INVOICE</div>
+
+        <!-- Invoice Header Table -->
+        <table class="table table-bordered">
+            <tr>
+                <th width="20%">Invoice No</th>
+                <td>@Model.InvoiceNumber</td>
+                <th width="20%">Invoice Date</th>
+                <td>@Model.InvoiceDate.ToString("dd/MM/yyyy")</td>
+            </tr>
+            <tr>
+                <th>Customer</th>
+                <td>@Model.CustomerName</td>
+                <th>Vehicle No</th>
+                <td>@Model.VehicleRegistrationNumber</td>
+            </tr>
+            <tr>
+                <th>Services</th>
+                <td>@Model.ServicesSummary</td>
+                <th>Booking ID</th>
+                <td>#@Model.BookingId</td>
+            </tr>
+        </table>
+
+        <h5 class="mt-4">Spare Parts Details</h5>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Sr</th>
+                    <th>Spare Part</th>
+                    <th width="100">Qty</th>
+                    <th width="150">Rate</th>
+                    <th width="150">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items.Any())
+                {
+                    int sr = 1;
+                    foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@sr</td>
+                            <td>@item.Description</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.UnitPrice.ToString("C")</td>
+                            <td>@item.TotalAmount.ToString("C")</td>
+                        </tr>
+                        sr++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center">No Spare Parts Used</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-md-7">
+                <h5>Remarks</h5>
+                <p>@(string.IsNullOrWhiteSpace(Model.Remarks) ? "-" : Model.Remarks)</p>
+                <br />
+                <p><strong>Amount in Words:</strong> <span class="amount-in-words">@Model.AmountInWords</span></p>
+            </div>
+            <div class="col-md-5">
+                <table class="table table-bordered summary">
+                    <tr>
+                        <th>Labour Charge</th>
+                        <td class="text-end">@Model.LabourCharge.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <th>Spare Parts</th>
+                        <td class="text-end">@Model.SparePartsTotal.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <th>GST (@Model.GSTPercentage.ToString("F2")%)</th>
+                        <td class="text-end">@Model.GSTAmount.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <th>Discount</th>
+                        <td class="text-end text-danger">- @Model.DiscountAmount.ToString("C")</td>
+                    </tr>
+                    <tr class="table-dark">
+                        <th><strong>Grand Total</strong></th>
+                        <th class="text-end">@Model.GrandTotal.ToString("C")</th>
+                    </tr>
+                    <tr>
+                        <th>Paid</th>
+                        <td class="text-end text-success">@Model.AmountPaid.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <th>Balance</th>
+                        <td class="text-end text-danger">@Model.Balance.ToString("C")</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="row">
+                <div class="col-md-8">
+                    <strong>Terms & Conditions</strong>
+                    <ul>
+                        <li>Goods once sold will not be taken back.</li>
+                        <li>Payment is due within 15 days of invoice date.</li>
+                        <li>Thank you for choosing our service.</li>
+                    </ul>
+                </div>
+                <div class="col-md-4 signature">
+                    <br /><br /><br />
+                    ______________________
+                    <br />
+                    <strong>Dattatray Vasant Chavan</strong>
+                    <br />
+                    (Authorized Signatory)
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+            // Automatically trigger print on load (with slight delay to ensure rendering)
+            window.onload = function() {
+                setTimeout(function() {
+                    window.print();
+                }, 500);
+            };
+    </script>
+
+</body>
+</html>

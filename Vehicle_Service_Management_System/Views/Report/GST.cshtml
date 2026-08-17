@@ -1,0 +1,443 @@
+﻿@model Vehicle_Service_Management_System.Application.ViewModels.Report.GstReportViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Report | Vehicle Service Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+            :root {
+                --primary-gradient: linear-gradient(135deg, #0d6efd, #0a58ca);
+                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
+                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.14);
+                --radius: 16px;
+                --radius-sm: 10px;
+                --transition: 0.25s ease;
+            }
+
+            body {
+                background: #f4f6fa;
+                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+                padding: 2rem 1.5rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+            }
+
+            .report-wrapper {
+                max-width: 1400px;
+                width: 100%;
+                background: #ffffff;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-lg);
+                padding: 2rem 2rem 2.5rem;
+                transition: var(--transition);
+            }
+
+            @@media (max-width: 576px) {
+                body {
+                    padding: 1rem 0.75rem;
+                }
+
+                .report-wrapper {
+                    padding: 1.25rem 1rem 1.75rem;
+                    border-radius: var(--radius-sm);
+                }
+            }
+
+            /* ── Header ── */
+            .page-header {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+                margin-bottom: 1.75rem;
+            }
+
+                .page-header h1 {
+                    font-weight: 700;
+                    font-size: 1.85rem;
+                    letter-spacing: -0.02em;
+                    color: #1a2634;
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                    .page-header h1 i {
+                        color: #6b7a8e;
+                        font-size: 2rem;
+                    }
+
+                .page-header .btn-outline-secondary {
+                    border-radius: 50px;
+                    padding: 0.5rem 1.2rem;
+                    font-weight: 500;
+                    border-color: #d1d9e6;
+                    transition: var(--transition);
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                }
+
+                    .page-header .btn-outline-secondary:hover {
+                        background: #eef2f7;
+                        border-color: #b0bcca;
+                    }
+
+            /* ── Filter Form ── */
+            .filter-card {
+                background: #f9fafc;
+                border-radius: var(--radius-sm);
+                padding: 1.25rem 1.5rem;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid #eef2f7;
+                margin-bottom: 1.75rem;
+            }
+
+                .filter-card label {
+                    font-weight: 500;
+                    color: #2d3748;
+                    font-size: 0.85rem;
+                    margin-bottom: 0.2rem;
+                }
+
+                .filter-card .form-control {
+                    border-radius: 10px;
+                    border: 1px solid #dce2ec;
+                    padding: 0.5rem 1rem;
+                    transition: var(--transition);
+                }
+
+                    .filter-card .form-control:focus {
+                        border-color: #0d6efd;
+                        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.12);
+                    }
+
+                .filter-card .btn {
+                    border-radius: 40px;
+                    padding: 0.45rem 1.2rem;
+                    font-weight: 500;
+                    transition: var(--transition);
+                }
+
+                .filter-card .btn-primary {
+                    background: var(--primary-gradient);
+                    border: none;
+                    color: #fff;
+                    box-shadow: 0 2px 10px rgba(13, 110, 253, 0.25);
+                }
+
+                    .filter-card .btn-primary:hover {
+                        transform: scale(1.02);
+                        box-shadow: 0 4px 18px rgba(13, 110, 253, 0.35);
+                    }
+
+                .filter-card .btn-outline-success {
+                    border-color: #86efac;
+                    color: #15803d;
+                }
+
+                    .filter-card .btn-outline-success:hover {
+                        background: #dcfce7;
+                        border-color: #15803d;
+                    }
+
+                .filter-card .btn-outline-secondary {
+                    border-color: #d1d9e6;
+                    color: #4a5568;
+                }
+
+                    .filter-card .btn-outline-secondary:hover {
+                        background: #eef2f7;
+                        border-color: #b0bcca;
+                    }
+
+            @@media (max-width: 576px) {
+                .filter-card {
+                    padding: 1rem;
+                }
+
+                    .filter-card .btn-group {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                        width: 100%;
+                    }
+
+                        .filter-card .btn-group .btn {
+                            width: 100%;
+                            justify-content: center;
+                        }
+            }
+
+            /* ── Metric Cards ── */
+            .metric-card {
+                background: #ffffff;
+                border-radius: var(--radius-sm);
+                padding: 1.25rem 1.5rem;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid #eef2f7;
+                text-align: center;
+                height: 100%;
+                transition: var(--transition);
+            }
+
+                .metric-card:hover {
+                    box-shadow: var(--shadow-md);
+                    transform: translateY(-2px);
+                }
+
+                .metric-card .label {
+                    font-size: 0.85rem;
+                    color: #6b7a8e;
+                    font-weight: 500;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
+                }
+
+                .metric-card .value {
+                    font-size: 1.8rem;
+                    font-weight: 700;
+                    color: #1a2634;
+                    margin: 0.25rem 0;
+                }
+
+                    .metric-card .value.text-success {
+                        color: #22c55e;
+                    }
+
+            @@media (max-width: 576px) {
+                .metric-card {
+                    padding: 1rem;
+                }
+
+                    .metric-card .value {
+                        font-size: 1.4rem;
+                    }
+            }
+
+            /* ── Table Card ── */
+            .table-card {
+                background: #ffffff;
+                border-radius: var(--radius-sm);
+                box-shadow: var(--shadow-sm);
+                overflow: hidden;
+                border: 1px solid #eef2f7;
+            }
+
+                .table-card .card-header {
+                    background: #f8fafc;
+                    padding: 0.75rem 1.25rem;
+                    font-weight: 600;
+                    color: #2d3748;
+                    border-bottom: 1px solid #eef2f7;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                    .table-card .card-header i {
+                        color: #0d6efd;
+                    }
+
+            .table-responsive-custom {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table {
+                margin: 0;
+                font-size: 0.9rem;
+            }
+
+                .table thead th {
+                    background: #f8fafc;
+                    color: #2d3748;
+                    font-weight: 600;
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
+                    padding: 0.6rem 1rem;
+                    border-bottom: 2px solid #e2e8f0;
+                    white-space: nowrap;
+                }
+
+                .table tbody td {
+                    padding: 0.6rem 1rem;
+                    border-bottom: 1px solid #edf2f7;
+                    vertical-align: middle;
+                }
+
+                .table tbody tr:last-child td {
+                    border-bottom: none;
+                }
+
+                .table tbody tr:hover td {
+                    background: #fafcff;
+                }
+
+            .empty-state {
+                padding: 2.5rem 1rem !important;
+                text-align: center;
+                color: #94a3b8;
+            }
+
+                .empty-state i {
+                    font-size: 2rem;
+                    display: block;
+                    margin-bottom: 0.5rem;
+                    color: #cbd5e1;
+                }
+
+            @@media (max-width: 576px) {
+                .table-card .card-header {
+                    padding: 0.6rem 0.75rem;
+                    font-size: 0.9rem;
+                }
+
+                .table tbody td,
+                .table thead th {
+                    padding: 0.4rem 0.6rem;
+                    font-size: 0.8rem;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <div class="report-wrapper">
+
+        <!-- ─── HEADER ─── -->
+        <div class="page-header">
+            <h1>
+                <i class="bi bi-receipt-cutoff"></i>
+                GST Report
+            </h1>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> All Reports
+            </a>
+        </div>
+
+        <!-- ─── FILTER FORM ─── -->
+        <div class="filter-card">
+            <form method="get">
+                <div class="row g-3 align-items-end">
+                    <div class="col-6 col-md-3">
+                        <label class="form-label">From</label>
+                        <input type="date" name="from" class="form-control" value="@Model.DateFrom?.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label">To</label>
+                        <input type="date" name="to" class="form-control" value="@Model.DateTo?.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="btn-group" style="gap:0.5rem; flex-wrap:wrap;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-funnel"></i> Filter
+                            </button>
+                            <a class="btn btn-outline-success" asp-action="ExportCsv" asp-route-type="gst"
+                               asp-route-from="@Model.DateFrom?.ToString("yyyy-MM-dd")"
+                               asp-route-to="@Model.DateTo?.ToString("yyyy-MM-dd")">
+                                <i class="bi bi-file-earmark-spreadsheet"></i> Export CSV
+                            </a>
+                            <a asp-action="Gst" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- ─── METRIC CARDS ─── -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-4">
+                <div class="metric-card">
+                    <div class="label">Total Taxable Amount</div>
+                    <div class="value">₹@Model.TotalTaxable.ToString("N2")</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-4">
+                <div class="metric-card">
+                    <div class="label">Total GST</div>
+                    <div class="value text-success">₹@Model.TotalGST.ToString("N2")</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-4">
+                <div class="metric-card">
+                    <div class="label">Total Grand Total</div>
+                    <div class="value">₹@Model.TotalGrand.ToString("N2")</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── INVOICE-WISE GST TABLE ─── -->
+        <div class="table-card">
+            <div class="card-header">
+                <i class="bi bi-list-ul"></i> Invoice-wise GST
+            </div>
+            <div class="table-responsive-custom">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th class="text-end">Taxable</th>
+                            <th class="text-end">GST %</th>
+                            <th class="text-end">GST Amount</th>
+                            <th class="text-end">Discount</th>
+                            <th class="text-end">Grand Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Invoices.Any())
+                        {
+                            <tr>
+                                <td colspan="9">
+                                    <div class="empty-state">
+                                        <i class="bi bi-receipt"></i>
+                                        No invoices found for this range.
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var row in Model.Invoices)
+                            {
+                                <tr>
+                                    <td><strong>@row.InvoiceNumber</strong></td>
+                                    <td>@row.InvoiceDate.ToString("dd-MMM-yyyy")</td>
+                                    <td>@row.CustomerName</td>
+                                    <td>@row.VehicleReg</td>
+                                    <td class="text-end">₹@row.TaxableAmount.ToString("N2")</td>
+                                    <td class="text-end">@row.GSTPercentage.ToString("N2")%</td>
+                                    <td class="text-end">₹@row.GSTAmount.ToString("N2")</td>
+                                    <td class="text-end">₹@row.Discount.ToString("N2")</td>
+                                    <td class="text-end">₹@row.GrandTotal.ToString("N2")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div> <!-- /.report-wrapper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
