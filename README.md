@@ -517,14 +517,11 @@ MCA Graduate | Junior Software Developer
 * ASP.NET Core MVC
 * Entity Framework Core
 * SQL Server
-* Web API
-* React
-* Angular
 * HTML
 * CSS
 * JavaScript
 * Bootstrap
-* Git & GitHub
+
 
 ---
 
