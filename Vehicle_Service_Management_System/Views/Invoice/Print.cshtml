@@ -6,130 +6,682 @@
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <title>Invoice - @Model.InvoiceNumber</title>
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-            body {
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 14px;
-                margin: 20px;
+            /* ────────────────────────────────────────────────────────── */
+            /* Base Styles                                             */
+            /* ────────────────────────────────────────────────────────── */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
 
+            body {
+                font-family: 'Inter', -apple-system, system-ui, sans-serif;
+                background: #f0f2f5;
+                padding: 2rem;
+                color: #1a2634;
+                line-height: 1.6;
+            }
+
+            .invoice-wrapper {
+                max-width: 1100px;
+                margin: 0 auto;
+                background: #ffffff;
+                border-radius: 16px;
+                box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
+                padding: 2.5rem 3rem;
+                animation: slideUp 0.5s ease-out;
+            }
+
+            @@keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Print Button                                             */
+            /* ────────────────────────────────────────────────────────── */
+            .no-print {
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+                .no-print .btn {
+                    border-radius: 50px;
+                    padding: 0.6rem 1.8rem;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    transition: 0.3s ease;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
+                }
+
+                    .no-print .btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                    }
+
+                .no-print .btn-primary {
+                    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+                    border: none;
+                    color: #fff;
+                    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.3);
+                }
+
+                .no-print .btn-secondary {
+                    background: #f0f2f5;
+                    border: 1px solid #d1d9e6;
+                    color: #4a5568;
+                }
+
+                    .no-print .btn-secondary:hover {
+                        background: #e2e8f0;
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Company Header - Premium Style                          */
+            /* ────────────────────────────────────────────────────────── */
             .company-header {
                 text-align: center;
-                border-bottom: 3px solid black;
-                padding-bottom: 15px;
-                margin-bottom: 25px;
+                padding-bottom: 1.5rem;
+                margin-bottom: 2rem;
+                border-bottom: 4px solid #0d6efd;
+                position: relative;
             }
+
+                .company-header::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -4px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 200px;
+                    height: 4px;
+                    background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+                    border-radius: 2px;
+                }
+
+                .company-header .logo-icon {
+                    font-size: 2.5rem;
+                    color: #0d6efd;
+                    display: block;
+                    margin-bottom: 0.25rem;
+                }
 
                 .company-header h2 {
-                    margin-bottom: 5px;
-                    font-weight: bold;
-                }
-
-                .company-header p {
+                    font-size: 2rem;
+                    font-weight: 800;
+                    color: #1a2634;
                     margin: 0;
+                    letter-spacing: -0.02em;
                 }
 
+                    .company-header h2 span {
+                        color: #0d6efd;
+                    }
+
+                .company-header .company-details {
+                    color: #6b7a8e;
+                    font-size: 0.9rem;
+                    margin-top: 0.25rem;
+                }
+
+                    .company-header .company-details i {
+                        margin-right: 0.3rem;
+                        color: #0d6efd;
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Invoice Title                                            */
+            /* ────────────────────────────────────────────────────────── */
             .invoice-title {
                 text-align: center;
-                font-size: 26px;
-                font-weight: bold;
-                margin-bottom: 20px;
+                font-size: 2rem;
+                font-weight: 800;
+                color: #1a2634;
+                margin-bottom: 1.5rem;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
             }
 
-            table {
-                width: 100%;
-            }
-
-            .table th {
-                background: #f5f5f5;
-            }
-
-            .summary td {
-                padding: 6px;
-            }
-
-            .footer {
-                margin-top: 60px;
-            }
-
-            .signature {
-                text-align: right;
-                margin-top: 70px;
-            }
-
-            .no-print {
-                display: none;
-            }
-
-            .amount-in-words {
-                font-size: 12px;
-                font-weight: normal;
-            }
-
-            @@media print {
-                .no-print {
-                    display: none;
+                .invoice-title .badge-status {
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                    padding: 0.3rem 1rem;
+                    border-radius: 50px;
+                    display: inline-block;
+                    margin-left: 0.5rem;
+                    vertical-align: middle;
                 }
 
-                body {
-                    margin: 0;
-                    padding: 10px;
-                }
-
-                .container {
-                    max-width: 100%;
-                }
-
-                .table-bordered {
-                    border: 1px solid #dee2e6;
-                }
-
-                    .table-bordered th,
-                    .table-bordered td {
-                        border: 1px solid #dee2e6;
+                    .invoice-title .badge-status.paid {
+                        background: #dcfce7;
+                        color: #166534;
                     }
+
+                    .invoice-title .badge-status.unpaid {
+                        background: #fee2e2;
+                        color: #991b1b;
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Invoice Info Table                                       */
+            /* ────────────────────────────────────────────────────────── */
+            .info-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 1.5rem;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            }
+
+                .info-table th,
+                .info-table td {
+                    padding: 0.6rem 1rem;
+                    border: 1px solid #eef2f7;
+                    font-size: 0.9rem;
+                }
+
+                .info-table th {
+                    background: #f8fafc;
+                    font-weight: 600;
+                    color: #2d3748;
+                    width: 18%;
+                    text-transform: uppercase;
+                    font-size: 0.75rem;
+                    letter-spacing: 0.04em;
+                }
+
+                .info-table td {
+                    background: #ffffff;
+                    color: #1a2634;
+                    font-weight: 500;
+                }
+
+                .info-table .highlight {
+                    color: #0d6efd;
+                    font-weight: 700;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Section Title                                            */
+            /* ────────────────────────────────────────────────────────── */
+            .section-title {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #1a2634;
+                margin-top: 1.5rem;
+                margin-bottom: 0.75rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+                .section-title i {
+                    color: #0d6efd;
+                }
+
+                .section-title .badge-count {
+                    background: #e8f0fe;
+                    color: #0d6efd;
+                    padding: 0.1rem 0.7rem;
+                    border-radius: 50px;
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    margin-left: auto;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Items Table                                              */
+            /* ────────────────────────────────────────────────────────── */
+            .items-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 1.5rem;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            }
+
+                .items-table thead th {
+                    background: #f8fafc;
+                    color: #2d3748;
+                    font-weight: 600;
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
+                    padding: 0.7rem 1rem;
+                    border: 1px solid #eef2f7;
+                }
+
+                .items-table tbody td {
+                    padding: 0.6rem 1rem;
+                    border: 1px solid #eef2f7;
+                    color: #1a2634;
+                    background: #ffffff;
+                }
+
+                .items-table tbody tr:hover td {
+                    background: #fafcff;
+                }
+
+                .items-table .total-row td {
+                    background: #f8fafc;
+                    font-weight: 700;
+                    border-top: 2px solid #0d6efd;
+                }
+
+                .items-table .empty-row td {
+                    text-align: center;
+                    color: #94a3b8;
+                    padding: 2rem 1rem;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Summary Box                                              */
+            /* ────────────────────────────────────────────────────────── */
+            .summary-box {
+                background: #f8fafc;
+                border-radius: 12px;
+                padding: 1.25rem 1.5rem;
+                border: 1px solid #eef2f7;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            }
+
+                .summary-box .summary-row {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 0.4rem 0;
+                    border-bottom: 1px solid #eef2f7;
+                }
+
+                    .summary-box .summary-row:last-child {
+                        border-bottom: none;
+                    }
+
+                    .summary-box .summary-row .label {
+                        font-weight: 500;
+                        color: #6b7a8e;
+                    }
+
+                    .summary-box .summary-row .value {
+                        font-weight: 600;
+                        color: #1a2634;
+                    }
+
+                        .summary-box .summary-row .value.primary {
+                            color: #0d6efd;
+                        }
+
+                        .summary-box .summary-row .value.success {
+                            color: #22c55e;
+                        }
+
+                        .summary-box .summary-row .value.danger {
+                            color: #ef4444;
+                        }
+
+                        .summary-box .summary-row .value.warning {
+                            color: #f59e0b;
+                        }
+
+                .summary-box .grand-total {
+                    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+                    border-radius: 8px;
+                    padding: 0.6rem 1rem;
+                    margin-top: 0.5rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                    .summary-box .grand-total .label {
+                        font-weight: 700;
+                        font-size: 1.1rem;
+                        color: #166534;
+                    }
+
+                    .summary-box .grand-total .value {
+                        font-weight: 800;
+                        font-size: 1.3rem;
+                        color: #166534;
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Remarks & Terms                                          */
+            /* ────────────────────────────────────────────────────────── */
+            .remarks-box {
+                background: #f8fafc;
+                border-radius: 8px;
+                padding: 1rem 1.25rem;
+                border: 1px solid #eef2f7;
+                min-height: 50px;
+            }
+
+                .remarks-box.empty {
+                    color: #94a3b8;
+                    font-style: italic;
+                }
+
+            .terms-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+                .terms-list li {
+                    padding: 0.25rem 0;
+                    padding-left: 1.5rem;
+                    position: relative;
+                    font-size: 0.85rem;
+                    color: #4a5568;
+                }
+
+                    .terms-list li::before {
+                        content: '✓';
+                        position: absolute;
+                        left: 0;
+                        color: #22c55e;
+                        font-weight: 700;
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Signature                                                */
+            /* ────────────────────────────────────────────────────────── */
+            .signature-box {
+                text-align: right;
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+                border-top: 2px solid #eef2f7;
+            }
+
+                .signature-box .signature-line {
+                    display: inline-block;
+                    width: 200px;
+                    border-bottom: 2px solid #1a2634;
+                    margin-bottom: 0.25rem;
+                }
+
+                .signature-box .signature-name {
+                    font-weight: 700;
+                    color: #1a2634;
+                    font-size: 1rem;
+                }
+
+                .signature-box .signature-title {
+                    font-size: 0.85rem;
+                    color: #6b7a8e;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Amount in Words                                          */
+            /* ────────────────────────────────────────────────────────── */
+            .amount-words {
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: #1a2634;
+                background: #f0f2f5;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                display: inline-block;
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Footer                                                   */
+            /* ────────────────────────────────────────────────────────── */
+            .footer-text {
+                text-align: center;
+                color: #94a3b8;
+                font-size: 0.8rem;
+                margin-top: 2rem;
+                padding-top: 1rem;
+                border-top: 1px solid #eef2f7;
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Print Styles                                             */
+            /* ────────────────────────────────────────────────────────── */
+            @@media print {
+                body {
+                    background: #ffffff;
+                    padding: 0.3in;
+                    font-size: 12px;
+                }
+
+                .invoice-wrapper {
+                    box-shadow: none;
+                    border-radius: 0;
+                    padding: 0;
+                    animation: none;
+                }
+
+                .no-print {
+                    display: none !important;
+                }
+
+                .company-header {
+                    border-bottom-color: #333 !important;
+                }
+
+                    .company-header::after {
+                        display: none;
+                    }
+
+                .info-table th {
+                    background: #f0f0f0 !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+
+                .items-table thead th {
+                    background: #f0f0f0 !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+
+                .summary-box {
+                    background: #f8fafc !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+
+                    .summary-box .grand-total {
+                        background: #dcfce7 !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+
+                .badge-status.paid {
+                    background: #dcfce7 !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+
+                .badge-status.unpaid {
+                    background: #fee2e2 !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+
+                .amount-words {
+                    background: #f0f2f5 !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+
+                .info-table th,
+                .info-table td,
+                .items-table thead th,
+                .items-table tbody td {
+                    border-color: #ddd !important;
+                }
+
+                .signature-box {
+                    border-top-color: #ddd !important;
+                }
+
+                .footer-text {
+                    border-top-color: #ddd !important;
+                }
+
+                .remarks-box {
+                    border-color: #ddd !important;
+                }
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Responsive                                               */
+            /* ────────────────────────────────────────────────────────── */
+            @@media (max-width: 768px) {
+                body {
+                    padding: 1rem;
+                }
+
+                .invoice-wrapper {
+                    padding: 1.25rem 1rem;
+                    border-radius: 12px;
+                }
+
+                .company-header h2 {
+                    font-size: 1.5rem;
+                }
+
+                .invoice-title {
+                    font-size: 1.5rem;
+                }
+
+                .info-table th,
+                .info-table td {
+                    padding: 0.4rem 0.6rem;
+                    font-size: 0.8rem;
+                }
+
+                .items-table thead th,
+                .items-table tbody td {
+                    padding: 0.4rem 0.6rem;
+                    font-size: 0.8rem;
+                }
+
+                .summary-box {
+                    padding: 1rem;
+                }
+
+                    .summary-box .grand-total .value {
+                        font-size: 1.1rem;
+                    }
+
+                .no-print {
+                    flex-direction: column;
+                }
+
+                    .no-print .btn {
+                        justify-content: center;
+                    }
+
+                .signature-box {
+                    text-align: center;
+                }
+            }
+
+            @@media (max-width: 480px) {
+                body {
+                    padding: 0.5rem;
+                }
+
+                .invoice-wrapper {
+                    padding: 0.75rem 0.5rem;
+                }
+
+                .company-header h2 {
+                    font-size: 1.2rem;
+                }
+
+                .invoice-title {
+                    font-size: 1.2rem;
+                }
+
+                .info-table th,
+                .info-table td {
+                    padding: 0.3rem 0.4rem;
+                    font-size: 0.7rem;
+                }
+
+                .items-table thead th,
+                .items-table tbody td {
+                    padding: 0.3rem 0.4rem;
+                    font-size: 0.7rem;
+                }
+
+                .summary-box .summary-row {
+                    font-size: 0.85rem;
+                }
+
+                .summary-box .grand-total .value {
+                    font-size: 1rem;
+                }
             }
     </style>
 </head>
-
 <body>
 
-    <div class="container">
+    <div class="invoice-wrapper">
 
-        <!-- Print button (hidden in print) -->
-        <div class="text-end no-print mb-3">
+        <!-- ─── Print Button (Hidden in Print) ─── -->
+        <div class="no-print">
             <button class="btn btn-primary" onclick="window.print()">
                 <i class="bi bi-printer"></i> Print Invoice
             </button>
-            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+            <a asp-action="Index" asp-route-id="@Model.Id" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Back
             </a>
         </div>
 
-        <!-- Company Header -->
+        <!-- ─── Company Header ─── -->
         <div class="company-header">
-            <h2>Sham Motors</h2>
-            <p>Kolhapur, Maharashtra</p>
-            <p>Phone : +91 9766805552</p>
-            <p>Email : dattatraychavan1974@gmail.com</p>
+            <span class="logo-icon">🔧</span>
+            <h2>Sham <span>Motors</span></h2>
+            <div class="company-details">
+                <i class="bi bi-geo-alt"></i> Kolhapur, Maharashtra &nbsp;|&nbsp;
+                <i class="bi bi-telephone"></i> +91 9766805552 &nbsp;|&nbsp;
+                <i class="bi bi-envelope"></i> dattatraychavan1974@gmail.com
+            </div>
         </div>
 
-        <div class="invoice-title">TAX INVOICE</div>
+        <!-- ─── Invoice Title ─── -->
+        <div class="invoice-title">
+            Tax Invoice
+            <span class="badge-status @(Model.Balance <= 0 ? "paid" : "unpaid")">
+                @(Model.Balance <= 0 ? "✅ PAID" : "⚠️ UNPAID")
+            </span>
+        </div>
 
-        <!-- Invoice Header Table -->
-        <table class="table table-bordered">
+        <!-- ─── Invoice Info Table ─── -->
+        <table class="info-table">
             <tr>
-                <th width="20%">Invoice No</th>
-                <td>@Model.InvoiceNumber</td>
-                <th width="20%">Invoice Date</th>
+                <th>Invoice No</th>
+                <td class="highlight">@Model.InvoiceNumber</td>
+                <th>Invoice Date</th>
                 <td>@Model.InvoiceDate.ToString("dd/MM/yyyy")</td>
             </tr>
             <tr>
@@ -144,18 +696,38 @@
                 <th>Booking ID</th>
                 <td>#@Model.BookingId</td>
             </tr>
+            @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+            {
+                <tr>
+                    <th>Phone</th>
+                    <td>@Model.PhoneNumber</td>
+                    <th></th>
+                    <td></td>
+                </tr>
+            }
+            @if (!string.IsNullOrEmpty(Model.CustomerAddress))
+            {
+                <tr>
+                    <th>Address</th>
+                    <td colspan="3">@Model.CustomerAddress</td>
+                </tr>
+            }
         </table>
 
-        <h5 class="mt-4">Spare Parts Details</h5>
+        <!-- ─── Spare Parts Section ─── -->
+        <div class="section-title">
+            <i class="bi bi-gear"></i> Spare Parts Details
+            <span class="badge-count">@Model.Items.Count items</span>
+        </div>
 
-        <table class="table table-bordered">
+        <table class="items-table">
             <thead>
                 <tr>
-                    <th>Sr</th>
-                    <th>Spare Part</th>
-                    <th width="100">Qty</th>
-                    <th width="150">Rate</th>
-                    <th width="150">Amount</th>
+                    <th style="width:8%;">#</th>
+                    <th style="width:47%;">Description</th>
+                    <th style="width:15%;text-align:center;">Qty</th>
+                    <th style="width:15%;text-align:right;">Rate</th>
+                    <th style="width:15%;text-align:right;">Amount</th>
                 </tr>
             </thead>
             <tbody>
@@ -167,93 +739,110 @@
                         <tr>
                             <td>@sr</td>
                             <td>@item.Description</td>
-                            <td>@item.Quantity</td>
-                            <td>@item.UnitPrice.ToString("C")</td>
-                            <td>@item.TotalAmount.ToString("C")</td>
+                            <td style="text-align:center;">@item.Quantity</td>
+                            <td style="text-align:right;">@item.UnitPrice.ToString("C")</td>
+                            <td style="text-align:right;font-weight:600;">@item.TotalAmount.ToString("C")</td>
                         </tr>
                         sr++;
                     }
+                    <tr class="total-row">
+                        <td colspan="4" style="text-align:right;">Total Spare Parts</td>
+                        <td style="text-align:right;color:#0d6efd;">@Model.SparePartsTotal.ToString("C")</td>
+                    </tr>
                 }
                 else
                 {
-                    <tr>
-                        <td colspan="5" class="text-center">No Spare Parts Used</td>
+                    <tr class="empty-row">
+                        <td colspan="5">
+                            <i class="bi bi-box" style="font-size:1.5rem;display:block;margin-bottom:0.25rem;"></i>
+                            No Spare Parts Used
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
 
-        <div class="row">
+        <!-- ─── Summary & Remarks ─── -->
+        <div class="row g-4">
             <div class="col-md-7">
-                <h5>Remarks</h5>
-                <p>@(string.IsNullOrWhiteSpace(Model.Remarks) ? "-" : Model.Remarks)</p>
-                <br />
-                <p><strong>Amount in Words:</strong> <span class="amount-in-words">@Model.AmountInWords</span></p>
+                <!-- Remarks -->
+                <div class="section-title" style="margin-top:0;">
+                    <i class="bi bi-chat-square-text"></i> Remarks
+                </div>
+                <div class="remarks-box @(string.IsNullOrWhiteSpace(Model.Remarks) ? "empty" : "")">
+                    @(string.IsNullOrWhiteSpace(Model.Remarks) ? "No remarks." : Model.Remarks)
+                </div>
+
+                <!-- Amount in Words -->
+                <div class="mt-3">
+                    <span class="amount-words">
+                        <i class="bi bi-fonts"></i>
+                        <strong>Amount in Words:</strong> @Model.AmountInWords
+                    </span>
+                </div>
+
+                
             </div>
+
             <div class="col-md-5">
-                <table class="table table-bordered summary">
-                    <tr>
-                        <th>Labour Charge</th>
-                        <td class="text-end">@Model.LabourCharge.ToString("C")</td>
-                    </tr>
-                    <tr>
-                        <th>Spare Parts</th>
-                        <td class="text-end">@Model.SparePartsTotal.ToString("C")</td>
-                    </tr>
-                    <tr>
-                        <th>GST (@Model.GSTPercentage.ToString("F2")%)</th>
-                        <td class="text-end">@Model.GSTAmount.ToString("C")</td>
-                    </tr>
-                    <tr>
-                        <th>Discount</th>
-                        <td class="text-end text-danger">- @Model.DiscountAmount.ToString("C")</td>
-                    </tr>
-                    <tr class="table-dark">
-                        <th><strong>Grand Total</strong></th>
-                        <th class="text-end">@Model.GrandTotal.ToString("C")</th>
-                    </tr>
-                    <tr>
-                        <th>Paid</th>
-                        <td class="text-end text-success">@Model.AmountPaid.ToString("C")</td>
-                    </tr>
-                    <tr>
-                        <th>Balance</th>
-                        <td class="text-end text-danger">@Model.Balance.ToString("C")</td>
-                    </tr>
-                </table>
+                <!-- Summary Box -->
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span class="label">Labour Charge</span>
+                        <span class="value primary">@Model.LabourCharge.ToString("C")</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Spare Parts</span>
+                        <span class="value primary">@Model.SparePartsTotal.ToString("C")</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">GST (@Model.GSTPercentage.ToString("F2")%)</span>
+                        <span class="value warning">@Model.GSTAmount.ToString("C")</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Discount</span>
+                        <span class="value danger">- @Model.DiscountAmount.ToString("C")</span>
+                    </div>
+                    <div class="grand-total">
+                        <span class="label">Grand Total</span>
+                        <span class="value">@Model.GrandTotal.ToString("C")</span>
+                    </div>
+                    <div class="summary-row" style="margin-top:0.5rem;">
+                        <span class="label">Amount Paid</span>
+                        <span class="value success">@Model.AmountPaid.ToString("C")</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label" style="font-weight:700;">Balance</span>
+                        <span class="value @(Model.Balance > 0 ? "danger" : "success")" style="font-weight:700;">
+                            @Model.Balance.ToString("C")
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="footer">
-            <div class="row">
-                <div class="col-md-8">
-                    <strong>Terms & Conditions</strong>
-                    <ul>
-                        <li>Goods once sold will not be taken back.</li>
-                        <li>Payment is due within 15 days of invoice date.</li>
-                        <li>Thank you for choosing our service.</li>
-                    </ul>
-                </div>
-                <div class="col-md-4 signature">
-                    <br /><br /><br />
-                    ______________________
-                    <br />
-                    <strong>Dattatray Vasant Chavan</strong>
-                    <br />
-                    (Authorized Signatory)
-                </div>
-            </div>
+        <!-- ─── Signature ─── -->
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <br />
+            <div class="signature-name">Dattatray Vasant Chavan</div>
+            <div class="signature-title">(Authorized Signatory)</div>
+        </div>
+
+        <!-- ─── Footer ─── -->
+        <div class="footer-text">
+            <i class="bi bi-receipt"></i>
+            Invoice #@Model.InvoiceNumber &nbsp;|&nbsp;
+            <i class="bi bi-clock"></i>
+            Generated on @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
         </div>
 
     </div>
 
     <script>
-            // Automatically trigger print on load (with slight delay to ensure rendering)
-            window.onload = function() {
-                setTimeout(function() {
-                    window.print();
-                }, 500);
-            };
+            // ─── Auto-print on load ───
+            // Uncomment the line below to auto-print
+            // window.onload = function() { setTimeout(function() { window.print(); }, 500); };
     </script>
 
 </body>

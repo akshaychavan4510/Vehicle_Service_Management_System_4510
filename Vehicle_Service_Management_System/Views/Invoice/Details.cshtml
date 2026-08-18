@@ -1,6 +1,7 @@
 ﻿@model Vehicle_Service_Management_System.Application.ViewModels.Invoice.InvoiceDetailsViewModel
 
 @{
+    ViewData["Title"] = $"Invoice #{Model.InvoiceNumber} | Details";
     Layout = null;
 }
 
@@ -9,156 +10,394 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Details | Vehicle Service Management</title>
+    <title>Invoice #@Model.InvoiceNumber | Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-            /* ── All styles – unchanged ── */
+            /* ────────────────────────────────────────────────────────── */
+            /* Root Variables                                          */
+            /* ────────────────────────────────────────────────────────── */
             :root {
-                --primary-gradient: linear-gradient(135deg, #0d6efd, #0a58ca);
-                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
-                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.14);
-                --radius: 16px;
-                --radius-sm: 10px;
-                --transition: 0.25s ease;
+                --primary: #0d6efd;
+                --primary-dark: #0a58ca;
+                --primary-light: #e8f0fe;
+                --success: #22c55e;
+                --danger: #ef4444;
+                --warning: #f59e0b;
+                --info: #0dcaf0;
+                --dark: #1a2634;
+                --gray: #6b7a8e;
+                --gray-light: #eef2f7;
+                --gray-bg: #f0f2f5;
+                --white: #ffffff;
+                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
+                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+                --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.16);
+                --radius: 20px;
+                --radius-sm: 12px;
+                --radius-xs: 8px;
+                --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
+            /* ────────────────────────────────────────────────────────── */
+            /* Base Styles                                             */
+            /* ────────────────────────────────────────────────────────── */
             body {
-                background: #f4f6fa;
-                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+                background: var(--gray-bg);
+                font-family: 'Inter', -apple-system, system-ui, sans-serif;
                 padding: 2rem 1.5rem;
                 min-height: 100vh;
                 display: flex;
                 align-items: flex-start;
                 justify-content: center;
+                color: var(--dark);
+                line-height: 1.6;
             }
 
             .details-wrapper {
                 max-width: 1200px;
                 width: 100%;
-                background: #ffffff;
+                background: var(--white);
                 border-radius: var(--radius);
-                box-shadow: var(--shadow-lg);
-                padding: 2rem 2.5rem 2.5rem;
-                transition: var(--transition);
+                box-shadow: var(--shadow-xl);
+                overflow: hidden;
+                animation: slideUp 0.5s ease-out;
             }
 
-            @@media (max-width: 576px) {
-                body {
-                    padding: 1rem 0.75rem;
+            @@keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
                 }
 
-                .details-wrapper {
-                    padding: 1.25rem 1rem 1.75rem;
-                    border-radius: var(--radius-sm);
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
                 }
             }
 
-            .page-header {
+            /* ────────────────────────────────────────────────────────── */
+            /* Header - Premium Gradient                               */
+            /* ────────────────────────────────────────────────────────── */
+            .header-premium {
+                background: linear-gradient(135deg, #0c0e1a 0%, #1a1a3e 40%, #0d6efd 100%);
+                padding: 2.5rem 3rem 2rem;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .header-premium::before {
+                    content: '';
+                    position: absolute;
+                    top: -60%;
+                    right: -10%;
+                    width: 500px;
+                    height: 500px;
+                    background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+                .header-premium::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -40%;
+                    left: -5%;
+                    width: 300px;
+                    height: 300px;
+                    background: radial-gradient(circle, rgba(13, 202, 240, 0.08) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+            .header-content {
+                position: relative;
+                z-index: 1;
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
                 justify-content: space-between;
                 gap: 1rem;
-                margin-bottom: 1.75rem;
             }
 
-                .page-header h1 {
-                    font-weight: 700;
-                    font-size: 1.85rem;
-                    letter-spacing: -0.02em;
-                    color: #1a2634;
-                    margin: 0;
+            .header-title {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+                .header-title .icon-wrapper {
+                    width: 56px;
+                    height: 56px;
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 50%;
                     display: flex;
                     align-items: center;
-                    gap: 0.5rem;
+                    justify-content: center;
+                    font-size: 1.8rem;
+                    backdrop-filter: blur(4px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    flex-shrink: 0;
                 }
 
-                    .page-header h1 i {
-                        color: #0d6efd;
-                        font-size: 2rem;
-                    }
+                .header-title h1 {
+                    font-weight: 800;
+                    font-size: 1.8rem;
+                    margin: 0;
+                    letter-spacing: -0.02em;
+                    background: linear-gradient(135deg, #fff 60%, #94a3b8);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
 
-                .page-header .btn-outline-secondary {
+                .header-title .invoice-number {
+                    font-size: 0.9rem;
+                    font-weight: 400;
+                    color: rgba(255, 255, 255, 0.7);
+                    background: rgba(255, 255, 255, 0.1);
+                    padding: 0.25rem 1rem;
                     border-radius: 50px;
-                    padding: 0.5rem 1.2rem;
-                    font-weight: 500;
-                    border-color: #d1d9e6;
-                    transition: var(--transition);
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.4rem;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.7);
                 }
 
-                    .page-header .btn-outline-secondary:hover {
-                        background: #eef2f7;
-                        border-color: #b0bcca;
-                    }
+            .header-actions {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+            }
 
-                .page-header .btn-secondary {
-                    border-radius: 50px;
-                    padding: 0.5rem 1.2rem;
-                    font-weight: 500;
-                    border-color: #d1d9e6;
-                    transition: var(--transition);
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.4rem;
+            .btn-header {
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #fff;
+                border-radius: 50px;
+                padding: 0.5rem 1.4rem;
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: var(--transition);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                backdrop-filter: blur(4px);
+            }
+
+                .btn-header:hover {
+                    background: rgba(255, 255, 255, 0.25);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+                    color: #fff;
                 }
 
-                    .page-header .btn-secondary:hover {
-                        background: #eef2f7;
-                        border-color: #b0bcca;
-                    }
+            /* ────────────────────────────────────────────────────────── */
+            /* Toast / Notification                                     */
+            /* ────────────────────────────────────────────────────────── */
+            .toast-container {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+            }
 
-            .alert {
+            .toast-custom {
+                background: var(--white);
                 border-radius: var(--radius-sm);
+                padding: 1rem 1.5rem;
+                box-shadow: var(--shadow-lg);
+                border-left: 4px solid var(--primary);
+                min-width: 300px;
+                animation: slideInRight 0.5s ease-out;
+                margin-bottom: 0.75rem;
+            }
+
+                .toast-custom.success {
+                    border-left-color: var(--success);
+                }
+
+                .toast-custom.error {
+                    border-left-color: var(--danger);
+                }
+
+                .toast-custom .toast-title {
+                    font-weight: 700;
+                    font-size: 0.95rem;
+                }
+
+                .toast-custom .toast-message {
+                    font-size: 0.85rem;
+                    color: var(--gray);
+                }
+
+            @@keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Body                                                     */
+            /* ────────────────────────────────────────────────────────── */
+            .body-content {
+                padding: 2rem 3rem 2.5rem;
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Alert Messages                                           */
+            /* ────────────────────────────────────────────────────────── */
+            .alert-custom {
+                border-radius: var(--radius-sm);
+                padding: 1rem 1.5rem;
                 border: none;
                 box-shadow: var(--shadow-sm);
-            }
-
-            .alert-success {
-                background: #dcfce7;
-                color: #166534;
-            }
-
-            .alert-danger {
-                background: #fee2e2;
-                color: #991b1b;
-            }
-
-            .alert i {
-                margin-right: 0.5rem;
-            }
-
-            .detail-card {
-                background: #f9fafc;
-                border-radius: var(--radius-sm);
-                padding: 1.5rem 1.75rem;
-                box-shadow: var(--shadow-sm);
-                border: 1px solid #eef2f7;
                 margin-bottom: 1.5rem;
             }
 
-                .detail-card .card-title {
-                    font-weight: 600;
-                    font-size: 1.1rem;
-                    color: #2d3748;
-                    margin-bottom: 1rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
+                .alert-custom.alert-danger {
+                    background: #fee2e2;
+                    color: #991b1b;
+                    border-left: 4px solid var(--danger);
                 }
 
-                    .detail-card .card-title i {
-                        color: #0d6efd;
+                .alert-custom.alert-success {
+                    background: #dcfce7;
+                    color: #166534;
+                    border-left: 4px solid var(--success);
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Stats Row - Modern Cards                                */
+            /* ────────────────────────────────────────────────────────── */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                background: var(--gray-bg);
+                border-radius: var(--radius-sm);
+                padding: 1.25rem 1.5rem;
+                text-align: center;
+                border: 1px solid var(--gray-light);
+                transition: var(--transition);
+                position: relative;
+                overflow: hidden;
+            }
+
+                .stat-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, var(--primary), var(--info));
+                    opacity: 0;
+                    transition: var(--transition);
+                }
+
+                .stat-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: var(--shadow-md);
+                    border-color: var(--primary);
+                }
+
+                    .stat-card:hover::before {
+                        opacity: 1;
                     }
 
+                .stat-card .stat-number {
+                    font-size: 1.6rem;
+                    font-weight: 800;
+                    color: var(--dark);
+                    display: block;
+                    letter-spacing: -0.02em;
+                }
+
+                .stat-card .stat-label {
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    color: var(--gray);
+                    font-weight: 600;
+                    display: block;
+                    margin-top: 0.25rem;
+                }
+
+                .stat-card .stat-icon {
+                    font-size: 1.2rem;
+                    color: var(--primary);
+                    opacity: 0.4;
+                    position: absolute;
+                    right: 0.75rem;
+                    bottom: 0.5rem;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Detail Cards                                            */
+            /* ────────────────────────────────────────────────────────── */
+            .detail-card {
+                background: var(--white);
+                border-radius: var(--radius-sm);
+                padding: 1.75rem 2rem;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid var(--gray-light);
+                margin-bottom: 1.5rem;
+                transition: var(--transition);
+            }
+
+                .detail-card:hover {
+                    border-color: var(--primary);
+                    box-shadow: var(--shadow-md);
+                }
+
+                .detail-card .card-header-custom {
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    color: var(--dark);
+                    margin-bottom: 1.5rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding-bottom: 0.75rem;
+                    border-bottom: 2px solid var(--gray-light);
+                }
+
+                    .detail-card .card-header-custom i {
+                        color: var(--primary);
+                        font-size: 1.3rem;
+                    }
+
+                    .detail-card .card-header-custom .badge-count {
+                        background: var(--primary-light);
+                        color: var(--primary);
+                        padding: 0.1rem 0.75rem;
+                        border-radius: 50px;
+                        font-size: 0.75rem;
+                        font-weight: 600;
+                        margin-left: auto;
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Detail Grid                                             */
+            /* ────────────────────────────────────────────────────────── */
             .detail-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 0.8rem 1.8rem;
+                gap: 1.25rem 2rem;
             }
 
             .detail-item {
@@ -167,117 +406,177 @@
             }
 
                 .detail-item .label {
-                    font-size: 0.75rem;
+                    font-size: 0.7rem;
                     text-transform: uppercase;
-                    letter-spacing: 0.05em;
-                    color: #6b7a8e;
+                    letter-spacing: 0.06em;
+                    color: var(--gray);
                     font-weight: 600;
                 }
 
                 .detail-item .value {
-                    font-size: 1.05rem;
+                    font-size: 1rem;
                     font-weight: 500;
-                    color: #1a2634;
+                    color: var(--dark);
                     word-break: break-word;
+                    margin-top: 0.1rem;
                 }
 
-                    .detail-item .value .badge-status {
-                        font-weight: 500;
-                        padding: 0.3rem 0.9rem;
-                        border-radius: 50px;
-                        font-size: 0.8rem;
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 0.4rem;
+                    .detail-item .value .sub {
+                        font-weight: 400;
+                        color: var(--gray);
+                        font-size: 0.85rem;
+                        display: block;
                     }
 
-            .badge-status.bg-success {
-                background: #dcfce7 !important;
-                color: #166534;
+                        .detail-item .value .sub i {
+                            margin-right: 0.25rem;
+                            color: var(--gray);
+                        }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Status Badge                                            */
+            /* ────────────────────────────────────────────────────────── */
+            .badge-status {
+                font-weight: 600;
+                padding: 0.35rem 1.2rem;
+                border-radius: 50px;
+                font-size: 0.8rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
             }
 
-            .badge-status.bg-danger {
-                background: #fee2e2 !important;
-                color: #991b1b;
-            }
-
-            .badge-status i {
-                font-size: 0.7rem;
-            }
-
-            .stat-chip {
-                background: white;
-                border-radius: 60px;
-                padding: 0.2rem 1rem;
-                box-shadow: var(--shadow-sm);
-                border: 1px solid #e9edf4;
-                display: inline-block;
-                font-weight: 500;
-                color: #1a2634;
-                font-size: 0.95rem;
-            }
-
-                .stat-chip i {
-                    color: #0d6efd;
-                    margin-right: 0.3rem;
+                .badge-status.bg-paid {
+                    background: #dcfce7;
+                    color: #166534;
                 }
 
-                .stat-chip.gold {
-                    background: #fef3c7;
-                    border-color: #fde68a;
+                .badge-status.bg-unpaid {
+                    background: #fee2e2;
+                    color: #991b1b;
                 }
 
-                .stat-chip.green {
+                .badge-status i {
+                    font-size: 0.65rem;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Financial Summary                                        */
+            /* ────────────────────────────────────────────────────────── */
+            .financial-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 1rem;
+            }
+
+            .financial-item {
+                background: var(--gray-bg);
+                border-radius: var(--radius-sm);
+                padding: 1rem 1.25rem;
+                border: 1px solid var(--gray-light);
+                text-align: center;
+                transition: var(--transition);
+            }
+
+                .financial-item:hover {
+                    border-color: var(--primary);
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .financial-item .label {
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    color: var(--gray);
+                    font-weight: 600;
+                    display: block;
+                }
+
+                .financial-item .value {
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    color: var(--dark);
+                    display: block;
+                    margin-top: 0.1rem;
+                }
+
+                    .financial-item .value.primary {
+                        color: var(--primary);
+                    }
+
+                    .financial-item .value.success {
+                        color: var(--success);
+                    }
+
+                    .financial-item .value.danger {
+                        color: var(--danger);
+                    }
+
+                    .financial-item .value.warning {
+                        color: var(--warning);
+                    }
+
+                .financial-item.grand-total {
                     background: #dcfce7;
                     border-color: #86efac;
+                    grid-column: span 2;
                 }
 
-            .table-card {
-                background: #ffffff;
-                border-radius: var(--radius-sm);
-                box-shadow: var(--shadow-sm);
-                overflow: hidden;
-                border: 1px solid #eef2f7;
+                    .financial-item.grand-total .value {
+                        color: #166534;
+                        font-size: 1.4rem;
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Table Styling                                            */
+            /* ────────────────────────────────────────────────────────── */
+            .table-wrapper {
+                overflow-x: auto;
                 margin-top: 0.5rem;
             }
 
-            .table-responsive-custom {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                padding: 0 0.25rem;
-            }
-
             .table {
-                margin: 0;
-                font-size: 0.92rem;
-                vertical-align: middle;
+                width: 100%;
                 border-collapse: separate;
                 border-spacing: 0;
-                min-width: 500px;
+                font-size: 0.9rem;
+                border-radius: var(--radius-xs);
+                overflow: hidden;
             }
 
-                .table thead th {
-                    background: #f8fafc;
-                    color: #2d3748;
-                    font-weight: 600;
-                    font-size: 0.8rem;
-                    text-transform: uppercase;
-                    letter-spacing: 0.04em;
-                    padding: 0.8rem 1rem;
-                    border-bottom: 2px solid #e2e8f0;
-                    white-space: nowrap;
+                .table thead {
+                    background: var(--gray-bg);
                 }
 
-                .table tbody td,
-                .table tfoot td {
+                    .table thead th {
+                        padding: 0.75rem 1rem;
+                        text-align: left;
+                        font-weight: 600;
+                        color: var(--dark);
+                        font-size: 0.75rem;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                        border-bottom: 2px solid var(--gray-light);
+                    }
+
+                        .table thead th.text-end {
+                            text-align: right;
+                        }
+
+                        .table thead th.text-center {
+                            text-align: center;
+                        }
+
+                .table tbody td {
                     padding: 0.75rem 1rem;
-                    border-bottom: 1px solid #edf2f7;
-                    background: #fff;
-                    transition: background var(--transition);
+                    border-bottom: 1px solid var(--gray-light);
+                    color: var(--dark);
                 }
 
                 .table tbody tr:hover td {
-                    background: #fafcff;
+                    background: var(--gray-bg);
                 }
 
                 .table tbody tr:last-child td {
@@ -285,90 +584,248 @@
                 }
 
                 .table tfoot td {
-                    border-top: 2px solid #e2e8f0;
+                    padding: 0.75rem 1rem;
+                    border-top: 2px solid var(--gray-light);
                     font-weight: 600;
-                }
-
-                .table tfoot tr:last-child td {
-                    border-bottom: none;
                 }
 
                 .table tfoot .total-row td {
                     background: #dcfce7;
-                    font-weight: 700;
                     font-size: 1.05rem;
+                    border-top: 2px solid #86efac;
                 }
 
+            /* ────────────────────────────────────────────────────────── */
+            /* Text Block                                               */
+            /* ────────────────────────────────────────────────────────── */
+            .text-block {
+                background: var(--gray-bg);
+                border-radius: var(--radius-xs);
+                padding: 1.25rem 1.5rem;
+                border: 1px solid var(--gray-light);
+                min-height: 60px;
+                color: var(--dark);
+                font-weight: 400;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                transition: var(--transition);
+            }
+
+                .text-block:hover {
+                    border-color: var(--primary);
+                    box-shadow: var(--shadow-sm);
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Empty State                                              */
+            /* ────────────────────────────────────────────────────────── */
             .empty-state {
-                padding: 2.5rem 1rem !important;
                 text-align: center;
-                color: #94a3b8;
+                padding: 2rem 1rem;
+                color: var(--gray);
             }
 
                 .empty-state i {
-                    font-size: 2rem;
+                    font-size: 3rem;
+                    opacity: 0.3;
                     display: block;
                     margin-bottom: 0.5rem;
-                    color: #cbd5e1;
                 }
 
+                .empty-state p {
+                    font-size: 0.9rem;
+                    margin: 0;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Action Footer                                           */
+            /* ────────────────────────────────────────────────────────── */
             .action-footer {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 0.75rem;
-                margin-top: 1.75rem;
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+                border-top: 2px solid var(--gray-light);
                 align-items: center;
                 justify-content: flex-end;
             }
 
                 .action-footer .btn {
                     border-radius: 50px;
-                    padding: 0.5rem 1.5rem;
-                    font-weight: 500;
+                    padding: 0.6rem 1.8rem;
+                    font-weight: 600;
+                    font-size: 0.9rem;
                     transition: var(--transition);
                     display: inline-flex;
                     align-items: center;
-                    gap: 0.5rem;
+                    gap: 0.6rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
                 }
 
+                    .action-footer .btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: var(--shadow-md);
+                    }
+
                 .action-footer .btn-success {
-                    background: #22c55e;
+                    background: linear-gradient(135deg, #22c55e, #16a34a);
                     border: none;
-                    box-shadow: 0 4px 14px rgba(34, 197, 94, 0.30);
+                    color: #fff;
+                    box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
                 }
 
                     .action-footer .btn-success:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 8px 24px rgba(34, 197, 94, 0.40);
+                        box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
                     }
 
                 .action-footer .btn-warning {
-                    background: #fbbf24;
+                    background: linear-gradient(135deg, #f59e0b, #d97706);
                     border: none;
-                    color: #1a2634;
-                    box-shadow: 0 4px 14px rgba(251, 191, 36, 0.30);
+                    color: #fff;
+                    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
                 }
 
                     .action-footer .btn-warning:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 8px 24px rgba(251, 191, 36, 0.40);
+                        box-shadow: 0 6px 24px rgba(245, 158, 11, 0.4);
                     }
 
                 .action-footer .btn-danger {
-                    background: #ef4444;
+                    background: linear-gradient(135deg, #ef4444, #dc2626);
                     border: none;
-                    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.30);
+                    color: #fff;
+                    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
                 }
 
                     .action-footer .btn-danger:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 8px 24px rgba(239, 68, 68, 0.40);
+                        box-shadow: 0 6px 24px rgba(239, 68, 68, 0.4);
                     }
 
-            @@media (max-width: 576px) {
+                .action-footer .btn-outline-secondary {
+                    background: var(--gray-bg);
+                    border: 1px solid var(--gray-light);
+                    color: var(--gray);
+                }
+
+                    .action-footer .btn-outline-secondary:hover {
+                        background: var(--gray-light);
+                        border-color: var(--gray);
+                        color: var(--dark);
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Responsive                                               */
+            /* ────────────────────────────────────────────────────────── */
+            @@media (max-width: 992px) {
+                .header-premium {
+                    padding: 2rem 1.5rem 1.5rem;
+                }
+
+                .body-content {
+                    padding: 1.5rem 1.5rem 2rem;
+                }
+
+                .financial-item.grand-total {
+                    grid-column: span 1;
+                }
+            }
+
+            @@media (max-width: 768px) {
+                body {
+                    padding: 1rem 0.75rem;
+                }
+
+                .details-wrapper {
+                    border-radius: var(--radius-sm);
+                }
+
+                .header-premium {
+                    padding: 1.5rem 1.25rem 1.25rem;
+                }
+
+                .header-title h1 {
+                    font-size: 1.3rem;
+                }
+
+                .header-title .icon-wrapper {
+                    width: 44px;
+                    height: 44px;
+                    font-size: 1.3rem;
+                }
+
+                .header-title .invoice-number {
+                    font-size: 0.75rem;
+                    padding: 0.15rem 0.75rem;
+                }
+
+                .header-content {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .header-actions {
+                    width: 100%;
+                    justify-content: flex-start;
+                }
+
+                .body-content {
+                    padding: 1rem 1rem 1.5rem;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.75rem;
+                }
+
+                .stat-card {
+                    padding: 1rem 0.75rem;
+                }
+
+                    .stat-card .stat-number {
+                        font-size: 1.3rem;
+                    }
+
+                .detail-card {
+                    padding: 1.25rem 1rem;
+                    border-radius: var(--radius-xs);
+                }
+
                 .detail-grid {
                     grid-template-columns: 1fr;
-                    gap: 0.6rem;
+                    gap: 0.75rem;
+                }
+
+                .detail-card .card-header-custom {
+                    font-size: 0.95rem;
+                }
+
+                .financial-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.75rem;
+                }
+
+                .financial-item {
+                    padding: 0.75rem 1rem;
+                }
+
+                    .financial-item .value {
+                        font-size: 1rem;
+                    }
+
+                    .financial-item.grand-total {
+                        grid-column: span 2;
+                    }
+
+                        .financial-item.grand-total .value {
+                            font-size: 1.2rem;
+                        }
+
+                .table thead th,
+                .table tbody td,
+                .table tfoot td {
+                    padding: 0.5rem 0.75rem;
+                    font-size: 0.8rem;
                 }
 
                 .action-footer {
@@ -378,137 +835,269 @@
 
                     .action-footer .btn {
                         justify-content: center;
+                        padding: 0.6rem 1.2rem;
                     }
 
-                .page-header h1 {
-                    font-size: 1.4rem;
+                .toast-custom {
+                    min-width: 250px;
+                    margin: 0 0.5rem 0.75rem;
+                }
+            }
+
+            @@media (max-width: 480px) {
+                body {
+                    padding: 0.5rem 0.5rem;
                 }
 
-                    .page-header h1 i {
-                        font-size: 1.5rem;
+                .header-premium {
+                    padding: 1rem 1rem 1rem;
+                    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+                }
+
+                .header-title h1 {
+                    font-size: 1.1rem;
+                }
+
+                .header-title .icon-wrapper {
+                    width: 36px;
+                    height: 36px;
+                    font-size: 1rem;
+                }
+
+                .body-content {
+                    padding: 0.75rem 0.75rem 1rem;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.5rem;
+                }
+
+                .stat-card {
+                    padding: 0.75rem 0.5rem;
+                }
+
+                    .stat-card .stat-number {
+                        font-size: 1.1rem;
                     }
+
+                    .stat-card .stat-label {
+                        font-size: 0.6rem;
+                    }
+
+                .detail-card {
+                    padding: 1rem 0.75rem;
+                }
+
+                .detail-item .value {
+                    font-size: 0.9rem;
+                }
+
+                .financial-grid {
+                    grid-template-columns: 1fr;
+                    gap: 0.5rem;
+                }
+
+                .financial-item.grand-total {
+                    grid-column: span 1;
+                }
+
+                .financial-item .value {
+                    font-size: 0.9rem;
+                }
+
+                .financial-item.grand-total .value {
+                    font-size: 1.1rem;
+                }
+
+                .table thead th,
+                .table tbody td,
+                .table tfoot td {
+                    padding: 0.4rem 0.5rem;
+                    font-size: 0.75rem;
+                }
+
+                .action-footer .btn {
+                    font-size: 0.8rem;
+                    padding: 0.5rem 1rem;
+                }
+
+                .toast-custom {
+                    min-width: 200px;
+                    padding: 0.75rem 1rem;
+                }
             }
     </style>
 </head>
 <body>
 
+    <!-- ─── Toast Container ─── -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <div class="details-wrapper">
 
         <!-- ─── HEADER ─── -->
-        <div class="page-header">
-            <h1>
-                <i class="bi bi-receipt"></i>
-                Invoice Details
-            </h1>
-            <div>
-                <a asp-action="Print" asp-route-id="@Model.Id" class="btn btn-outline-secondary" target="_blank">
-                    <i class="bi bi-printer"></i> Print
-                </a>
-                <a asp-action="Index" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back
-                </a>
-            </div>
-        </div>
-
-        <!-- ─── ALERTS ─── -->
-        @if (TempData["Success"] != null)
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        }
-        @if (TempData["Error"] != null)
-        {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-circle-fill"></i> @TempData["Error"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        }
-
-        <!-- ─── INVOICE INFORMATION ─── -->
-        <div class="detail-card">
-            <div class="card-title">
-                <i class="bi bi-info-circle"></i> Invoice Information
-            </div>
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <span class="label">Invoice No</span>
-                    <span class="value">@Model.InvoiceNumber</span>
+        <div class="header-premium">
+            <div class="header-content">
+                <div class="header-title">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                    <div>
+                        <h1>Invoice Details</h1>
+                        <span class="invoice-number">#@Model.InvoiceNumber</span>
+                    </div>
                 </div>
-                <div class="detail-item">
-                    <span class="label">Booking ID</span>
-                    <span class="value">#@Model.BookingId</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Customer</span>
-                    <span class="value">@Model.CustomerName</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Vehicle</span>
-                    <span class="value">@Model.VehicleRegistrationNumber</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Services</span>
-                    <span class="value">@Model.ServicesSummary</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Status</span>
-                    <span class="value">
-                        <span class="badge-status @(Model.IsPaid ? "bg-success" : "bg-danger")">
-                            <i class="bi @(Model.IsPaid ? "bi-check-circle-fill" : "bi-x-circle-fill")"></i>
-                            @(Model.IsPaid ? "Paid" : "Unpaid")
-                        </span>
-                    </span>
+                <div class="header-actions">
+                    <a asp-action="Print" asp-route-id="@Model.Id" class="btn-header" target="_blank">
+                        <i class="bi bi-printer"></i> Print
+                    </a>
+                    <a asp-action="Index" class="btn-header">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- ─── FINANCIAL SUMMARY ─── -->
-        <div class="detail-card">
-            <div class="card-title">
-                <i class="bi bi-calculator"></i> Financial Summary
-            </div>
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <span class="label">Labour Charge</span>
-                    <span class="value">@Model.LabourCharge.ToString("C")</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Spare Parts</span>
-                    <span class="value">@Model.SparePartsTotal.ToString("C")</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">GST (@Model.GSTPercentage.ToString("F2")%)</span>
-                    <span class="value">@Model.GSTAmount.ToString("C")</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Discount</span>
-                    <span class="value text-danger">- @Model.DiscountAmount.ToString("C")</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Grand Total</span>
-                    <span class="value">
-                        <span class="stat-chip gold">
-                            <i class="bi bi-currency-rupee"></i> @Model.GrandTotal.ToString("C")
-                        </span>
-                    </span>
-                </div>
-            </div>
-        </div>
+        <!-- ─── BODY ─── -->
+        <div class="body-content">
 
-        <!-- ─── SPARE PARTS USED ─── -->
-        <div class="detail-card">
-            <div class="card-title">
-                <i class="bi bi-gear"></i> Spare Parts Used
-            </div>
-            @if (Model.Items.Any())
+            <!-- Alerts -->
+            @if (TempData["Error"] != null)
             {
-                <div class="table-card">
-                    <div class="table-responsive-custom">
+                <div class="alert-custom alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                    @TempData["Error"]
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert-custom alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    @TempData["Success"]
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- ─── Stats ─── -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">@Model.InvoiceNumber</span>
+                    <span class="stat-label">Invoice #</span>
+                    <i class="bi bi-hash stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" style="color:@(Model.IsPaid ? "var(--success)" : "var(--danger)");">
+                        @(Model.IsPaid ? "✅ Paid" : "❌ Unpaid")
+                    </span>
+                    <span class="stat-label">Payment Status</span>
+                    <i class="bi bi-credit-card stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" style="color:var(--primary);">@Model.GrandTotal.ToString("C")</span>
+                    <span class="stat-label">Grand Total</span>
+                    <i class="bi bi-currency-rupee stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" style="color:var(--gray);">@Model.CreatedOn.ToString("dd/MM/yyyy")</span>
+                    <span class="stat-label">Created Date</span>
+                    <i class="bi bi-calendar3 stat-icon"></i>
+                </div>
+            </div>
+
+            <!-- ─── Invoice Information ─── -->
+            <div class="detail-card">
+                <div class="card-header-custom">
+                    <i class="bi bi-info-circle"></i>
+                    Invoice Information
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="label">Invoice Number</span>
+                        <span class="value" style="font-weight:700;color:var(--primary);">@Model.InvoiceNumber</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Booking ID</span>
+                        <span class="value">#@Model.BookingId</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Customer</span>
+                        <span class="value">@Model.CustomerName</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Vehicle</span>
+                        <span class="value">@Model.VehicleRegistrationNumber</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Services</span>
+                        <span class="value">@Model.ServicesSummary</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Status</span>
+                        <span class="value">
+                            <span class="badge-status @(Model.IsPaid ? "bg-paid" : "bg-unpaid")">
+                                <i class="bi @(Model.IsPaid ? "bi-check-circle-fill" : "bi-x-circle-fill")"></i>
+                                @(Model.IsPaid ? "Paid" : "Unpaid")
+                            </span>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Created On</span>
+                        <span class="value">@Model.CreatedOn.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Last Modified</span>
+                        <span class="value">@(Model.ModifiedOn?.ToString("dd/MM/yyyy HH:mm") ?? "—")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── Financial Summary ─── -->
+            <div class="detail-card">
+                <div class="card-header-custom">
+                    <i class="bi bi-calculator"></i>
+                    Financial Summary
+                </div>
+                <div class="financial-grid">
+                    <div class="financial-item">
+                        <span class="label">Labour Charge</span>
+                        <span class="value primary">@Model.LabourCharge.ToString("C")</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="label">Spare Parts</span>
+                        <span class="value primary">@Model.SparePartsTotal.ToString("C")</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="label">GST (@Model.GSTPercentage.ToString("F2")%)</span>
+                        <span class="value warning">@Model.GSTAmount.ToString("C")</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="label">Discount</span>
+                        <span class="value danger">- @Model.DiscountAmount.ToString("C")</span>
+                    </div>
+                    <div class="financial-item grand-total">
+                        <span class="label" style="color:#166534;font-weight:700;">Grand Total</span>
+                        <span class="value">@Model.GrandTotal.ToString("C")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── Spare Parts Used ─── -->
+            <div class="detail-card">
+                <div class="card-header-custom">
+                    <i class="bi bi-gear"></i>
+                    Spare Parts Used
+                    <span class="badge-count">@Model.Items.Count items</span>
+                </div>
+                @if (Model.Items.Any())
+                {
+                    <div class="table-wrapper">
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Part Name</th>
                                     <th class="text-center">Qty</th>
                                     <th class="text-end">Unit Price</th>
@@ -516,141 +1105,201 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @{
+                                    int srNo = 1;
+                                }
                                 @foreach (var item in Model.Items)
                                 {
                                     <tr>
+                                        <td>@srNo</td>
                                         <td>@item.SparePartName</td>
                                         <td class="text-center">@item.Quantity</td>
                                         <td class="text-end">@item.UnitPrice.ToString("C")</td>
-                                        <td class="text-end">@item.TotalAmount.ToString("C")</td>
+                                        <td class="text-end" style="font-weight:600;">@item.TotalAmount.ToString("C")</td>
                                     </tr>
+                                    srNo++;
                                 }
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end" style="font-weight:600;">Total Spare Parts</td>
+                                    <td class="text-end" style="font-weight:700;color:var(--primary);">
+                                        @Model.SparePartsTotal.ToString("C")
+                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
-                </div>
-            }
-            else
-            {
-                <div class="empty-state">
-                    <i class="bi bi-gear"></i>
-                    No Spare Parts Used.
-                </div>
-            }
-        </div>
-
-        <!-- ─── PAYMENTS ─── -->
-        <div class="detail-card">
-            <div class="card-title">
-                <i class="bi bi-credit-card"></i> Payments
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-gear"></i>
+                        <p>No spare parts used in this invoice.</p>
+                    </div>
+                }
             </div>
-            @if (Model.Payments.Any())
-            {
-                <div class="table-card">
-                    <div class="table-responsive-custom">
+
+            <!-- ─── Payments ─── -->
+            <div class="detail-card">
+                <div class="card-header-custom">
+                    <i class="bi bi-credit-card"></i>
+                    Payment History
+                    <span class="badge-count">@Model.Payments.Count payments</span>
+                </div>
+                @if (Model.Payments.Any())
+                {
+                    <div class="table-wrapper">
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Date</th>
                                     <th>Payment Mode</th>
                                     <th class="text-end">Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @{
+                                    int paySrNo = 1;
+                                }
                                 @foreach (var payment in Model.Payments)
                                 {
                                     <tr>
-                                        <td>@payment.PaymentDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@paySrNo</td>
+                                        <td>@payment.PaymentDate.ToString("dd/MM/yyyy HH:mm")</td>
                                         <td>@payment.PaymentMode</td>
-                                        <td class="text-end">@payment.AmountPaid.ToString("C")</td>
+                                        <td class="text-end" style="font-weight:600;color:var(--success);">
+                                            @payment.AmountPaid.ToString("C")
+                                        </td>
                                     </tr>
+                                    paySrNo++;
                                 }
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="2" class="text-end">Total Paid</td>
-                                    <td class="text-end">
-                                        <span class="stat-chip green">
-                                            <i class="bi bi-check-circle-fill"></i> @Model.AmountPaid.ToString("C")
-                                        </span>
+                                    <td colspan="3" class="text-end" style="font-weight:600;">Total Paid</td>
+                                    <td class="text-end" style="font-weight:700;color:var(--success);">
+                                        @Model.AmountPaid.ToString("C")
                                     </td>
                                 </tr>
                                 <tr class="total-row">
-                                    <td colspan="2" class="text-end">Balance</td>
-                                    <td class="text-end">
-                                        <span class="stat-chip" style="background: #fee2e2; border-color: #fca5a5;">
-                                            <i class="bi bi-currency-rupee"></i> @Model.Balance.ToString("C")
-                                        </span>
+                                    <td colspan="3" class="text-end" style="font-weight:600;font-size:1rem;">
+                                        <i class="bi bi-arrow-left-right"></i> Balance
+                                    </td>
+                                    <td class="text-end" style="font-weight:700;font-size:1rem;color:@(Model.Balance > 0 ? "var(--danger)" : "var(--success)");">
+                                        @Model.Balance.ToString("C")
                                     </td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
-                </div>
-            }
-            else
-            {
-                <div class="empty-state">
-                    <i class="bi bi-credit-card"></i>
-                    No Payments Found.
-                </div>
-            }
-        </div>
-
-        <!-- ─── REMARKS ─── -->
-        @if (!string.IsNullOrWhiteSpace(Model.Remarks))
-        {
-            <div class="detail-card">
-                <div class="card-title">
-                    <i class="bi bi-chat-square-text"></i> Remarks
-                </div>
-                <div class="text-block" style="background:#ffffff; border-radius:10px; padding:1rem 1.25rem; border:1px solid #eef2f7; color:#1a2634;">
-                    @Model.Remarks
-                </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-credit-card"></i>
+                        <p>No payments recorded for this invoice.</p>
+                    </div>
+                }
             </div>
-        }
 
-        <!-- ─── ACTION BUTTONS ─── -->
-        <div class="action-footer">
-            @if (!Model.IsPaid)
+            <!-- ─── Remarks ─── -->
+            @if (!string.IsNullOrWhiteSpace(Model.Remarks))
             {
-                <form asp-action="MarkAsPaid" asp-route-id="@Model.Id" method="post" class="d-inline">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-success" onclick="return confirm('Mark this invoice as paid?');">
-                        <i class="bi bi-check2"></i> Mark As Paid
-                    </button>
-                </form>
-            }
-            else
-            {
-                <form asp-action="MarkAsUnpaid" asp-route-id="@Model.Id" method="post" class="d-inline">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-warning" onclick="return confirm('Mark this invoice as unpaid?');">
-                        <i class="bi bi-arrow-counterclockwise"></i> Mark As Unpaid
-                    </button>
-                </form>
+                <div class="detail-card">
+                    <div class="card-header-custom">
+                        <i class="bi bi-chat-square-text"></i>
+                        Remarks
+                    </div>
+                    <div class="text-block">
+                        @Model.Remarks
+                    </div>
+                </div>
             }
 
-            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this invoice?');">
-                    <i class="bi bi-trash"></i> Delete
-                </button>
-            </form>
-        </div>
+            <!-- ─── Actions ─── -->
+            <div class="action-footer">
+                @if (!Model.IsPaid)
+                {
+                    <form asp-action="MarkAsPaid" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Mark this invoice as paid?');">
+                            <i class="bi bi-check2-circle"></i> Mark as Paid
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="MarkAsUnpaid" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-warning" onclick="return confirm('Mark this invoice as unpaid?');">
+                            <i class="bi bi-arrow-counterclockwise"></i> Mark as Unpaid
+                        </button>
+                    </form>
+                }
 
-    </div> <!-- /.details-wrapper -->
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this invoice?');">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </form>
+
+                <a asp-action="Print" asp-route-id="@Model.Id" class="btn btn-outline-secondary" target="_blank">
+                    <i class="bi bi-printer"></i> Print
+                </a>
+            </div>
+
+        </div> <!-- /body-content -->
+    </div> <!-- /details-wrapper -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-            // Auto‑dismiss alerts after 4 seconds
-            setTimeout(function() {
-                let alerts = document.querySelectorAll(".alert");
-                alerts.forEach(function(alert) {
-                    let bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-                    bsAlert.close();
-                });
-            }, 4000);
+            // ─── Toast Notification ───
+            function showToast(message, type) {
+                var container = document.getElementById('toastContainer');
+                var toast = document.createElement('div');
+                toast.className = 'toast-custom ' + (type || 'success');
+                toast.innerHTML = `
+                            <div class="toast-title">
+                                <i class="bi ${type === 'error' ? 'bi-exclamation-circle-fill text-danger' : 'bi-check-circle-fill text-success'}"></i>
+                                ${type === 'error' ? 'Error' : 'Success'}
+                            </div>
+                            <div class="toast-message">${message}</div>
+                        `;
+                container.appendChild(toast);
+
+                setTimeout(function() {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100px)';
+                    toast.style.transition = '0.5s ease-out';
+                    setTimeout(function() { toast.remove(); }, 500);
+                }, 5000);
+            }
+
+            // ─── Show TempData Messages ───
+            @if (TempData["Error"] != null)
+                {
+                    <text>showToast('@TempData["Error"]', 'error');</text>
+            }
+
+                @if (TempData["Success"] != null)
+                {
+                    <text>showToast('@TempData["Success"]', 'success');</text>
+            }
+
+                // ─── Auto-dismiss alerts ───
+                setTimeout(function() {
+                    document.querySelectorAll('.alert-custom').forEach(function(alert) {
+                        var closeBtn = alert.querySelector('.btn-close');
+                        if (closeBtn) {
+                            closeBtn.click();
+                        }
+                    });
+                }, 5000);
     </script>
+
 </body>
 </html>

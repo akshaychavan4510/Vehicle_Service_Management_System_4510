@@ -2,1307 +2,1563 @@
 
 @{
     Layout = null;
+    ViewData["Title"] = "Create Invoice";
 
     var pageSize = 7;
     var totalItems = Model.SparePartsUsed?.Count ?? 0;
-    var totalPages = Math.Max(
-        1,
-        (int)Math.Ceiling((double)totalItems / pageSize));
+    var totalPages = Math.Max(1, (int)Math.Ceiling((double)totalItems / pageSize));
 }
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Invoice | Vehicle Service Management</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet" />
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
     <style>
+            /* ────────────────────────────────────────────────────────── */
+            /* Root Variables                                          */
+            /* ────────────────────────────────────────────────────────── */
             :root {
                 --primary: #0d6efd;
                 --primary-dark: #0a58ca;
-                --background: #f4f6fa;
-                --border: #e5e7eb;
-                --text: #1f2937;
-                --muted: #6b7280;
+                --primary-light: #e8f0fe;
+                --success: #22c55e;
+                --danger: #ef4444;
+                --warning: #f59e0b;
+                --info: #0dcaf0;
+                --dark: #1a2634;
+                --gray: #6b7a8e;
+                --gray-light: #eef2f7;
+                --gray-bg: #f0f2f5;
+                --white: #ffffff;
+                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
+                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+                --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.16);
+                --radius: 20px;
+                --radius-sm: 12px;
+                --radius-xs: 8px;
+                --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
+            /* ────────────────────────────────────────────────────────── */
+            /* Base Styles                                             */
+            /* ────────────────────────────────────────────────────────── */
             body {
-                background: var(--background);
-                font-family: "Segoe UI", system-ui, sans-serif;
-                padding: 30px 15px;
+                background: var(--gray-bg);
+                font-family: 'Inter', -apple-system, system-ui, sans-serif;
+                padding: 2rem 1.5rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+                color: var(--dark);
+                line-height: 1.6;
             }
 
             .create-wrapper {
-                max-width: 1100px;
-                margin: auto;
-                background: #fff;
-                border-radius: 16px;
-                padding: 30px;
-                box-shadow: 0 15px 45px rgba(0,0,0,.10);
+                max-width: 1280px;
+                width: 100%;
+                background: var(--white);
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-xl);
+                overflow: hidden;
+                animation: slideUp 0.5s ease-out;
             }
 
-            .page-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 15px;
-                margin-bottom: 25px;
-            }
-
-                .page-header h1 {
-                    margin: 0;
-                    color: var(--text);
-                    font-size: 1.8rem;
-                    font-weight: 700;
+            @@keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
                 }
 
-                .page-header i {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Header - Premium Gradient                               */
+            /* ────────────────────────────────────────────────────────── */
+            .header-premium {
+                background: linear-gradient(135deg, #0c0e1a 0%, #1a1a3e 40%, #0d6efd 100%);
+                padding: 2.5rem 3rem 2rem;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .header-premium::before {
+                    content: '';
+                    position: absolute;
+                    top: -60%;
+                    right: -10%;
+                    width: 500px;
+                    height: 500px;
+                    background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+                .header-premium::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -40%;
+                    left: -5%;
+                    width: 300px;
+                    height: 300px;
+                    background: radial-gradient(circle, rgba(13, 202, 240, 0.08) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+            .header-content {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+
+            .header-title {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+                .header-title .icon-wrapper {
+                    width: 56px;
+                    height: 56px;
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.8rem;
+                    backdrop-filter: blur(4px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    flex-shrink: 0;
+                }
+
+                .header-title h1 {
+                    font-weight: 800;
+                    font-size: 1.8rem;
+                    margin: 0;
+                    letter-spacing: -0.02em;
+                    background: linear-gradient(135deg, #fff 60%, #94a3b8);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+
+                .header-title .booking-ref {
+                    font-size: 0.9rem;
+                    font-weight: 400;
+                    color: rgba(255, 255, 255, 0.7);
+                    background: rgba(255, 255, 255, 0.1);
+                    padding: 0.25rem 1rem;
+                    border-radius: 50px;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.7);
+                }
+
+            .header-actions {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+            }
+
+            .btn-header {
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #fff;
+                border-radius: 50px;
+                padding: 0.5rem 1.4rem;
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: var(--transition);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                backdrop-filter: blur(4px);
+            }
+
+                .btn-header:hover {
+                    background: rgba(255, 255, 255, 0.25);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+                    color: #fff;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Toast / Notification                                     */
+            /* ────────────────────────────────────────────────────────── */
+            .toast-container {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+            }
+
+            .toast-custom {
+                background: var(--white);
+                border-radius: var(--radius-sm);
+                padding: 1rem 1.5rem;
+                box-shadow: var(--shadow-lg);
+                border-left: 4px solid var(--primary);
+                min-width: 300px;
+                animation: slideInRight 0.5s ease-out;
+                margin-bottom: 0.75rem;
+            }
+
+                .toast-custom.success {
+                    border-left-color: var(--success);
+                }
+
+                .toast-custom.error {
+                    border-left-color: var(--danger);
+                }
+
+                .toast-custom .toast-title {
+                    font-weight: 700;
+                    font-size: 0.95rem;
+                }
+
+                .toast-custom .toast-message {
+                    font-size: 0.85rem;
+                    color: var(--gray);
+                }
+
+            @@keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Body                                                     */
+            /* ────────────────────────────────────────────────────────── */
+            .body-content {
+                padding: 2rem 3rem 2.5rem;
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Alert Messages                                           */
+            /* ────────────────────────────────────────────────────────── */
+            .alert-custom {
+                border-radius: var(--radius-sm);
+                padding: 1rem 1.5rem;
+                border: none;
+                box-shadow: var(--shadow-sm);
+                margin-bottom: 1.5rem;
+            }
+
+                .alert-custom.alert-danger {
+                    background: #fee2e2;
+                    color: #991b1b;
+                    border-left: 4px solid var(--danger);
+                }
+
+                .alert-custom.alert-success {
+                    background: #dcfce7;
+                    color: #166534;
+                    border-left: 4px solid var(--success);
+                }
+
+                .alert-custom.alert-info {
+                    background: #e0f2fe;
+                    color: #0369a1;
+                    border-left: 4px solid var(--info);
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Form Sections                                            */
+            /* ────────────────────────────────────────────────────────── */
+            .form-section {
+                background: var(--white);
+                border-radius: var(--radius-sm);
+                padding: 1.75rem 2rem;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid var(--gray-light);
+                margin-bottom: 1.5rem;
+                transition: var(--transition);
+            }
+
+                .form-section:hover {
+                    border-color: var(--primary);
+                    box-shadow: var(--shadow-md);
+                }
+
+            .section-title {
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: var(--dark);
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.75rem;
+                border-bottom: 2px solid var(--gray-light);
+            }
+
+                .section-title i {
+                    color: var(--primary);
+                    font-size: 1.3rem;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Form Groups                                              */
+            /* ────────────────────────────────────────────────────────── */
+            .form-group {
+                margin-bottom: 1.25rem;
+            }
+
+                .form-group label {
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                    color: var(--dark);
+                    margin-bottom: 0.4rem;
+                }
+
+                    .form-group label .required {
+                        color: var(--danger);
+                        margin-left: 2px;
+                    }
+
+                .form-group .form-control,
+                .form-group .form-select {
+                    border-radius: var(--radius-xs);
+                    border: 1.5px solid var(--gray-light);
+                    padding: 0.6rem 1rem;
+                    font-size: 0.95rem;
+                    transition: var(--transition);
+                    background: var(--white);
+                }
+
+                    .form-group .form-control:focus,
+                    .form-group .form-select:focus {
+                        border-color: var(--primary);
+                        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+                    }
+
+                    .form-group .form-control.is-invalid {
+                        border-color: var(--danger);
+                    }
+
+                    .form-group .form-control[readonly] {
+                        background-color: var(--gray-bg);
+                        cursor: not-allowed;
+                        opacity: 0.8;
+                    }
+
+                .form-group .text-danger {
+                    font-size: 0.8rem;
+                    margin-top: 0.25rem;
+                }
+
+                .form-group .form-text {
+                    font-size: 0.75rem;
+                    color: var(--gray);
+                    margin-top: 0.25rem;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Table Styling                                            */
+            /* ────────────────────────────────────────────────────────── */
+            .table-wrapper {
+                overflow-x: auto;
+                margin-top: 0.5rem;
+                border-radius: var(--radius-xs);
+                box-shadow: var(--shadow-sm);
+            }
+
+            .table-invoice {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                font-size: 0.9rem;
+                overflow: hidden;
+            }
+
+                .table-invoice thead {
+                    background: var(--gray-bg);
+                }
+
+                    .table-invoice thead th {
+                        padding: 0.75rem 1rem;
+                        text-align: left;
+                        font-weight: 600;
+                        color: var(--dark);
+                        font-size: 0.75rem;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                        border-bottom: 2px solid var(--gray-light);
+                    }
+
+                        .table-invoice thead th.text-end {
+                            text-align: right;
+                        }
+
+                        .table-invoice thead th.text-center {
+                            text-align: center;
+                        }
+
+                .table-invoice tbody td {
+                    padding: 0.75rem 1rem;
+                    border-bottom: 1px solid var(--gray-light);
+                    color: var(--dark);
+                    vertical-align: middle;
+                }
+
+                .table-invoice tbody tr:hover td {
+                    background: var(--gray-bg);
+                }
+
+                .table-invoice tbody tr:last-child td {
+                    border-bottom: none;
+                }
+
+                .table-invoice tbody tr.selected-row {
+                    background: var(--primary-light) !important;
+                }
+
+                    .table-invoice tbody tr.selected-row:hover td {
+                        background: #dbeafe !important;
+                    }
+
+                .table-invoice .quantity-input {
+                    width: 80px;
+                    text-align: center;
+                    padding: 0.35rem 0.5rem;
+                    border-radius: var(--radius-xs);
+                    border: 1.5px solid var(--gray-light);
+                    transition: var(--transition);
+                    font-size: 0.9rem;
+                    background: var(--white);
+                }
+
+                    .table-invoice .quantity-input:focus {
+                        border-color: var(--primary);
+                        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+                        outline: none;
+                    }
+
+                    .table-invoice .quantity-input.is-invalid {
+                        border-color: var(--danger);
+                    }
+
+                .table-invoice .stock-badge {
+                    font-weight: 600;
+                    padding: 0.2rem 0.6rem;
+                    border-radius: 50px;
+                    font-size: 0.75rem;
+                }
+
+                    .table-invoice .stock-badge.low {
+                        background: #fee2e2;
+                        color: #991b1b;
+                    }
+
+                    .table-invoice .stock-badge.medium {
+                        background: #fef3c7;
+                        color: #b45309;
+                    }
+
+                    .table-invoice .stock-badge.high {
+                        background: #dcfce7;
+                        color: #166534;
+                    }
+
+                .table-invoice .line-total {
+                    font-weight: 600;
                     color: var(--primary);
                 }
 
-            .form-section {
-                background: #f8fafc;
-                border: 1px solid var(--border);
-                border-radius: 12px;
-                padding: 22px;
-                margin-bottom: 20px;
-            }
-
-            .section-title {
-                font-size: 1.1rem;
-                font-weight: 700;
-                margin-bottom: 18px;
-                color: var(--text);
-            }
-
-            .form-label {
-                font-weight: 600;
-                color: #374151;
-            }
-
-            .form-control,
-            .form-select {
-                border-radius: 9px;
-                border: 1px solid #d1d5db;
-            }
-
-                .form-control:focus,
-                .form-select:focus {
-                    border-color: var(--primary);
-                    box-shadow: 0 0 0 3px rgba(13,110,253,.12);
-                }
-
-            .readonly-field {
-                background: #eef2f7 !important;
-            }
-
-            .table-wrapper {
-                overflow-x: auto;
-            }
-
-            .table {
-                margin-bottom: 0;
-            }
-
-                .table thead th {
-                    background: #1e3a5f;
-                    color: white;
-                    white-space: nowrap;
-                }
-
-            .quantity-input {
-                width: 90px;
-                margin: auto;
-                text-align: center;
-            }
-
-            .selected-row {
-                background: #eff6ff !important;
-            }
-
+            /* ────────────────────────────────────────────────────────── */
+            /* Pagination - Enhanced with Previous/Next & Page Numbers */
+            /* ────────────────────────────────────────────────────────── */
             .pagination-wrapper {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                gap: 5px;
-                margin-top: 20px;
+                gap: 0.4rem;
+                margin-top: 1.25rem;
                 flex-wrap: wrap;
             }
 
-            .page-button {
-                border: 1px solid #d1d5db;
-                background: white;
-                border-radius: 7px;
-                padding: 6px 12px;
-                cursor: pointer;
-            }
-
-                .page-button.active {
-                    background: var(--primary);
-                    color: white;
-                    border-color: var(--primary);
+                .pagination-wrapper .page-btn {
+                    border: 1.5px solid var(--gray-light);
+                    background: var(--white);
+                    border-radius: var(--radius-xs);
+                    padding: 0.4rem 0.9rem;
+                    cursor: pointer;
+                    font-weight: 500;
+                    font-size: 0.85rem;
+                    color: var(--dark);
+                    transition: var(--transition);
+                    min-width: 38px;
+                    height: 38px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-decoration: none;
                 }
 
-                .page-button:disabled {
-                    opacity: .5;
-                    cursor: not-allowed;
-                }
+                    .pagination-wrapper .page-btn:hover {
+                        background: var(--gray-bg);
+                        border-color: var(--primary);
+                        transform: translateY(-2px);
+                        box-shadow: var(--shadow-sm);
+                    }
 
-            .summary-card {
-                background: #f8fafc;
-                border: 1px solid var(--border);
-                border-radius: 12px;
-                padding: 20px;
+                    .pagination-wrapper .page-btn.active {
+                        background: linear-gradient(135deg, #0d6efd, #0a58ca);
+                        color: #fff;
+                        border-color: var(--primary);
+                        box-shadow: 0 2px 10px rgba(13, 110, 253, 0.25);
+                    }
+
+                    .pagination-wrapper .page-btn:disabled {
+                        opacity: 0.4;
+                        cursor: not-allowed;
+                        transform: none;
+                        box-shadow: none;
+                    }
+
+                    .pagination-wrapper .page-btn.arrow {
+                        font-size: 1.1rem;
+                        padding: 0.4rem 0.8rem;
+                    }
+
+                    .pagination-wrapper .page-btn.ellipsis {
+                        border: none;
+                        background: transparent;
+                        cursor: default;
+                        padding: 0.4rem 0.2rem;
+                        min-width: auto;
+                    }
+
+                        .pagination-wrapper .page-btn.ellipsis:hover {
+                            background: transparent;
+                            transform: none;
+                            box-shadow: none;
+                        }
+
+            .pagination-info {
+                font-size: 0.85rem;
+                color: var(--gray);
+                text-align: center;
+                margin-top: 0.5rem;
             }
 
-            .summary-item {
+                .pagination-info strong {
+                    color: var(--dark);
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Summary Box                                              */
+            /* ────────────────────────────────────────────────────────── */
+            .summary-box {
+                background: var(--gray-bg);
+                border-radius: var(--radius-sm);
+                padding: 1.25rem 1.5rem;
+                border: 1px solid var(--gray-light);
+            }
+
+            .summary-row {
                 display: flex;
                 justify-content: space-between;
-                padding: 7px 0;
-                border-bottom: 1px solid #e5e7eb;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid var(--gray-light);
             }
 
-                .summary-item:last-child {
-                    border-bottom: 0;
+                .summary-row:last-child {
+                    border-bottom: none;
                 }
 
-            .grand-total {
-                font-size: 1.4rem;
-                font-weight: 700;
-                color: #166534;
-            }
-
-            .btn-primary {
-                border-radius: 50px;
-                padding: 10px 25px;
-                font-weight: 600;
-            }
-
-            .btn-secondary {
-                border-radius: 50px;
-                padding: 10px 25px;
-            }
-
-            .validation-summary-errors {
-                background: #fee2e2;
-                color: #991b1b;
-                border: 1px solid #fca5a5;
-                border-radius: 10px;
-                padding: 12px 18px;
-                margin-bottom: 20px;
-            }
-
-                .validation-summary-errors ul {
-                    margin-bottom: 0;
+                .summary-row .label {
+                    font-weight: 500;
+                    color: var(--gray);
                 }
 
-            .stock-warning {
-                color: #dc2626;
-                font-size: .8rem;
-                margin-top: 4px;
+                .summary-row .value {
+                    font-weight: 600;
+                    color: var(--dark);
+                }
+
+                    .summary-row .value.primary {
+                        color: var(--primary);
+                    }
+
+                    .summary-row .value.success {
+                        color: var(--success);
+                    }
+
+                    .summary-row .value.danger {
+                        color: var(--danger);
+                    }
+
+                    .summary-row .value.warning {
+                        color: var(--warning);
+                    }
+
+            .grand-total-row {
+                background: #dcfce7;
+                border-radius: var(--radius-xs);
+                padding: 0.75rem 1rem;
+                margin-top: 0.5rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border: 2px solid #86efac;
             }
 
-            @@media(max-width: 768px) {
+                .grand-total-row .label {
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    color: #166534;
+                }
+
+                .grand-total-row .value {
+                    font-weight: 800;
+                    font-size: 1.3rem;
+                    color: #166534;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Action Buttons                                           */
+            /* ────────────────────────────────────────────────────────── */
+            .action-footer {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+                border-top: 2px solid var(--gray-light);
+                align-items: center;
+                justify-content: flex-end;
+            }
+
+                .action-footer .btn {
+                    border-radius: 50px;
+                    padding: 0.6rem 1.8rem;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    transition: var(--transition);
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.6rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
+                }
+
+                    .action-footer .btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: var(--shadow-md);
+                    }
+
+                .action-footer .btn-primary {
+                    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+                    border: none;
+                    color: #fff;
+                    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.3);
+                }
+
+                    .action-footer .btn-primary:hover {
+                        box-shadow: 0 6px 24px rgba(13, 110, 253, 0.4);
+                    }
+
+                    .action-footer .btn-primary:disabled {
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                        transform: none;
+                    }
+
+                .action-footer .btn-secondary {
+                    background: var(--gray-bg);
+                    border: 1px solid var(--gray-light);
+                    color: var(--gray);
+                }
+
+                    .action-footer .btn-secondary:hover {
+                        background: var(--gray-light);
+                        border-color: var(--gray);
+                        color: var(--dark);
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Responsive                                               */
+            /* ────────────────────────────────────────────────────────── */
+            @@media (max-width: 992px) {
+                .header-premium {
+                    padding: 2rem 1.5rem 1.5rem;
+                }
+
+                .body-content {
+                    padding: 1.5rem 1.5rem 2rem;
+                }
+
+                .form-section {
+                    padding: 1.25rem 1.25rem;
+                }
+            }
+
+            @@media (max-width: 768px) {
+                body {
+                    padding: 1rem 0.75rem;
+                }
+
                 .create-wrapper {
-                    padding: 18px;
+                    border-radius: var(--radius-sm);
                 }
 
-                .page-header {
+                .header-premium {
+                    padding: 1.5rem 1.25rem 1.25rem;
+                }
+
+                .header-title h1 {
+                    font-size: 1.3rem;
+                }
+
+                .header-title .icon-wrapper {
+                    width: 44px;
+                    height: 44px;
+                    font-size: 1.3rem;
+                }
+
+                .header-title .booking-ref {
+                    font-size: 0.75rem;
+                    padding: 0.15rem 0.75rem;
+                }
+
+                .header-content {
                     flex-direction: column;
                     align-items: flex-start;
+                }
+
+                .header-actions {
+                    width: 100%;
+                    justify-content: flex-start;
+                }
+
+                .body-content {
+                    padding: 1rem 1rem 1.5rem;
+                }
+
+                .form-section {
+                    padding: 1rem 1rem;
+                }
+
+                .section-title {
+                    font-size: 0.95rem;
+                }
+
+                .form-group .form-control,
+                .form-group .form-select {
+                    font-size: 0.85rem;
+                    padding: 0.5rem 0.75rem;
+                }
+
+                .table-invoice thead th,
+                .table-invoice tbody td {
+                    padding: 0.5rem 0.6rem;
+                    font-size: 0.8rem;
+                }
+
+                .table-invoice .quantity-input {
+                    width: 60px;
+                    font-size: 0.8rem;
+                }
+
+                .summary-box {
+                    padding: 1rem 1.25rem;
+                }
+
+                .grand-total-row .value {
+                    font-size: 1.1rem;
+                }
+
+                .action-footer {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                    .action-footer .btn {
+                        justify-content: center;
+                        padding: 0.6rem 1.2rem;
+                    }
+
+                .toast-custom {
+                    min-width: 250px;
+                    margin: 0 0.5rem 0.75rem;
+                }
+
+                .pagination-wrapper {
+                    gap: 0.3rem;
+                }
+
+                    .pagination-wrapper .page-btn {
+                        min-width: 32px;
+                        height: 32px;
+                        font-size: 0.75rem;
+                        padding: 0.2rem 0.5rem;
+                    }
+
+                        .pagination-wrapper .page-btn.arrow {
+                            font-size: 0.9rem;
+                            padding: 0.2rem 0.6rem;
+                        }
+            }
+
+            @@media (max-width: 480px) {
+                body {
+                    padding: 0.5rem 0.5rem;
+                }
+
+                .header-premium {
+                    padding: 1rem 1rem 1rem;
+                    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+                }
+
+                .header-title h1 {
+                    font-size: 1.1rem;
+                }
+
+                .header-title .icon-wrapper {
+                    width: 36px;
+                    height: 36px;
+                    font-size: 1rem;
+                }
+
+                .body-content {
+                    padding: 0.75rem 0.75rem 1rem;
+                }
+
+                .form-section {
+                    padding: 0.75rem 0.75rem;
+                }
+
+                .form-group label {
+                    font-size: 0.8rem;
+                }
+
+                .form-group .form-control,
+                .form-group .form-select {
+                    font-size: 0.8rem;
+                    padding: 0.4rem 0.6rem;
+                }
+
+                .table-invoice thead th,
+                .table-invoice tbody td {
+                    padding: 0.4rem 0.4rem;
+                    font-size: 0.7rem;
+                }
+
+                .table-invoice .quantity-input {
+                    width: 50px;
+                    font-size: 0.7rem;
+                    padding: 0.2rem 0.3rem;
+                }
+
+                .summary-box {
+                    padding: 0.75rem 1rem;
+                }
+
+                .summary-row {
+                    font-size: 0.85rem;
+                    padding: 0.3rem 0;
+                }
+
+                .grand-total-row {
+                    padding: 0.5rem 0.75rem;
+                }
+
+                    .grand-total-row .label {
+                        font-size: 0.95rem;
+                    }
+
+                    .grand-total-row .value {
+                        font-size: 1rem;
+                    }
+
+                .action-footer .btn {
+                    font-size: 0.8rem;
+                    padding: 0.5rem 1rem;
+                }
+
+                .toast-custom {
+                    min-width: 200px;
+                    padding: 0.75rem 1rem;
+                }
+
+                .pagination-wrapper .page-btn {
+                    min-width: 28px;
+                    height: 28px;
+                    font-size: 0.65rem;
+                    padding: 0.1rem 0.4rem;
+                }
+
+                    .pagination-wrapper .page-btn.arrow {
+                        font-size: 0.8rem;
+                        padding: 0.1rem 0.4rem;
+                    }
+
+                .pagination-info {
+                    font-size: 0.75rem;
                 }
             }
     </style>
 </head>
-
 <body>
+
+    <!-- ─── Toast Container ─── -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <div class="create-wrapper">
 
-        <!-- ========================================================= -->
-        <!-- HEADER -->
-        <!-- ========================================================= -->
-
-        <div class="page-header">
-
-            <h1>
-                <i class="bi bi-receipt"></i>
-                Create Invoice
-            </h1>
-
-            <a asp-action="Index"
-               class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i>
-                Back to List
-            </a>
-
+        <!-- ─── HEADER ─── -->
+        <div class="header-premium">
+            <div class="header-content">
+                <div class="header-title">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                    <div>
+                        <h1>Create Invoice</h1>
+                        <span class="booking-ref">Booking #@Model.BookingNumber</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a asp-action="Index" class="btn-header">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- ALERTS -->
-        <!-- ========================================================= -->
-        @if (TempData["Success"] != null)
-        {
-            <div class="alert alert-success alert-dismissible fade show">
-                <i class="bi bi-check-circle-fill"></i>
-                @TempData["Success"]
+        <!-- ─── BODY ─── -->
+        <div class="body-content">
 
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert">
-                </button>
-            </div>
-        }
-
-        @if (TempData["Error"] != null)
-        {
-            <div class="alert alert-danger alert-dismissible fade show">
-                <i class="bi bi-exclamation-circle-fill"></i>
-                @TempData["Error"]
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert">
-                </button>
-            </div>
-        }
-
-        <!-- ========================================================= -->
-        <!-- FORM -->
-        <!-- ========================================================= -->
-
-        <form asp-action="Create"
-              method="post"
-              id="invoiceForm">
-
-            @Html.AntiForgeryToken()
-
-            <input asp-for="BookingId"
-                   type="hidden" />
-
-            <input asp-for="BookingNumber"
-                   type="hidden" />
-
-            <!-- Selected spare parts will be inserted here
-             ONLY when QuantityUsed > 0 -->
-            <div id="selectedPartsContainer"></div>
-
-            <div asp-validation-summary="ModelOnly"
-                 class="validation-summary-errors">
-            </div>
-
-            <!-- ===================================================== -->
-            <!-- INVOICE INFORMATION -->
-            <!-- ===================================================== -->
-
-            <div class="form-section">
-
-                <div class="section-title">
-                    <i class="bi bi-file-earmark-text"></i>
-                    Invoice Information
+            <!-- Alerts -->
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert-custom alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                    @TempData["Error"]
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+            }
 
-                <div class="row g-3">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert-custom alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    @TempData["Success"]
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
-                    <div class="col-md-4">
+            <!-- ========================================================= -->
+            <!-- FORM -->
+            <!-- ========================================================= -->
 
-                        <label class="form-label">
-                            Booking Number
-                        </label>
+            <form asp-action="Create" method="post" id="invoiceForm" novalidate>
+                @Html.AntiForgeryToken()
 
-                        <input type="text"
-                               class="form-control readonly-field"
-                               value="@Model.BookingNumber"
-                               readonly />
+                <input asp-for="BookingId" type="hidden" />
+                <input asp-for="BookingNumber" type="hidden" />
 
+                <div id="selectedPartsContainer"></div>
+
+                <div asp-validation-summary="ModelOnly" class="text-danger" style="margin-bottom:1.5rem;"></div>
+
+                <!-- ─── Invoice Information ─── -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Invoice Information
                     </div>
 
-                    <div class="col-md-4">
-
-                        <label asp-for="LabourCharge"
-                               class="form-label">
-                            Labour Charge
-                        </label>
-
-                        <input asp-for="LabourCharge"
-                               id="LabourCharge"
-                               class="form-control readonly-field"
-                               readonly />
-
-                        <span asp-validation-for="LabourCharge"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <label asp-for="GSTPercentage"
-                               class="form-label">
-                            GST %
-                        </label>
-
-                        <input asp-for="GSTPercentage"
-                               id="GSTPercentage"
-                               class="form-control"
-                               type="number"
-                               step="0.01"
-                               min="0"
-                               max="100" />
-
-                        <span asp-validation-for="GSTPercentage"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <label asp-for="DiscountPercentage"
-                               class="form-label">
-                            Discount %
-                        </label>
-
-                        <input asp-for="DiscountPercentage"
-                               id="DiscountPercentage"
-                               class="form-control"
-                               type="number"
-                               step="0.01"
-                               min="0"
-                               max="100" />
-
-                        <span asp-validation-for="DiscountPercentage"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-8">
-
-                        <label asp-for="Remarks"
-                               class="form-label">
-                            Remarks
-                        </label>
-
-                        <textarea asp-for="Remarks"
-                                  class="form-control"
-                                  rows="2"
-                                  placeholder="Additional remarks">
-                    </textarea>
-
-                        <span asp-validation-for="Remarks"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-12">
-
-                        <div class="form-check">
-
-                            <input asp-for="IsPaid"
-                                   class="form-check-input"
-                                   id="IsPaid" />
-
-                            <label asp-for="IsPaid"
-                                   class="form-check-label">
-                                Invoice is Paid
-                            </label>
-
+                    <div class="row g-3">
+                        <div class="col-md-4 form-group">
+                            <label class="control-label">Booking Number</label>
+                            <input type="text" class="form-control" value="@Model.BookingNumber" readonly />
                         </div>
 
+                        <div class="col-md-4 form-group">
+                            <label asp-for="LabourCharge" class="control-label">
+                                <i class="bi bi-clock-history me-1"></i> Labour Charge
+                                <span class="required">*</span>
+                            </label>
+                            <input asp-for="LabourCharge" id="LabourCharge" class="form-control" readonly />
+                            <span asp-validation-for="LabourCharge" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 form-group">
+                            <label asp-for="GSTPercentage" class="control-label">
+                                <i class="bi bi-percent me-1"></i> GST %
+                                <span class="required">*</span>
+                            </label>
+                            <input asp-for="GSTPercentage" id="GSTPercentage" class="form-control" type="number" step="0.01" min="0" max="100" />
+                            <span asp-validation-for="GSTPercentage" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 form-group">
+                            <label asp-for="DiscountPercentage" class="control-label">
+                                <i class="bi bi-tags me-1"></i> Discount %
+                            </label>
+                            <input asp-for="DiscountPercentage" id="DiscountPercentage" class="form-control" type="number" step="0.01" min="0" max="100" />
+                            <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-8 form-group">
+                            <label asp-for="Remarks" class="control-label">
+                                <i class="bi bi-chat me-1"></i> Remarks
+                            </label>
+                            <textarea asp-for="Remarks" class="form-control" rows="2" placeholder="Enter any additional notes..."></textarea>
+                            <span asp-validation-for="Remarks" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 form-group">
+                            <div class="form-check">
+                                <input asp-for="IsPaid" class="form-check-input" id="IsPaid" />
+                                <label asp-for="IsPaid" class="form-check-label">
+                                    <i class="bi bi-credit-card me-1"></i> Invoice is Paid
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── Spare Parts ─── -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="bi bi-box-seam"></i>
+                        Spare Parts
+                        <span class="badge bg-primary text-white ms-auto" style="font-size:0.75rem;">@totalItems items</span>
                     </div>
 
-                </div>
+                    <div class="alert-custom alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Enter a quantity only for the spare parts you want to add to this invoice.
+                        <strong>Only selected parts will be submitted.</strong>
+                    </div>
 
-            </div>
-
-            <!-- ===================================================== -->
-            <!-- SPARE PARTS -->
-            <!-- ===================================================== -->
-
-            <div class="form-section">
-
-                <div class="section-title">
-                    <i class="bi bi-box-seam"></i>
-                    Spare Parts
-                </div>
-
-                <div class="alert alert-info">
-
-                    <i class="bi bi-info-circle"></i>
-
-                    Enter a quantity only for the spare parts you want
-                    to add to this invoice.
-
-                    <strong>
-                        Only selected parts will be submitted.
-                    </strong>
-
-                </div>
-
-                <div class="table-wrapper">
-
-                    <table class="table table-bordered table-hover align-middle">
-
-                        <thead>
-
-                            <tr>
-                                <th>#</th>
-                                <th>Spare Part</th>
-                                <th>Available Stock</th>
-                                <th>Unit Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                            </tr>
-
-                        </thead>
-
-                        <tbody id="sparePartsTableBody">
-
-                            @if (Model.SparePartsUsed != null &&
-                                 Model.SparePartsUsed.Any())
-                            {
-                                for (int i = 0;
-                                     i < Model.SparePartsUsed.Count;
-                                     i++)
+                    <div class="table-wrapper">
+                        <table class="table-invoice" id="sparePartsTable">
+                            <thead>
+                                <tr>
+                                    <th style="width:5%;">#</th>
+                                    <th style="width:35%;">Spare Part</th>
+                                    <th style="width:15%;text-align:center;">Available</th>
+                                    <th style="width:15%;text-align:right;">Unit Price</th>
+                                    <th style="width:15%;text-align:center;">Quantity</th>
+                                    <th style="width:15%;text-align:right;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sparePartsTableBody">
+                                @if (Model.SparePartsUsed != null && Model.SparePartsUsed.Any())
                                 {
-                                    var part =
-                                        Model.SparePartsUsed[i];
-
-                                    <tr class="spare-part-row"
-                                        data-index="@i"
-                                        data-id="@part.SparePartId"
-                                        data-name="@part.SparePartName"
-                                        data-price="@part.UnitPrice"
-                                        data-stock="@part.AvailableStock">
-
-                                        <td>
-                                            @(i + 1)
+                                    for (int i = 0; i < Model.SparePartsUsed.Count; i++)
+                                    {
+                                        var part = Model.SparePartsUsed[i];
+                                        string stockClass = part.AvailableStock <= 5 ? "low" : (part.AvailableStock <= 15 ? "medium" : "high");
+                                        <tr class="spare-part-row @(part.QuantityUsed > 0 ? "selected-row" : "")"
+                                            data-index="@i"
+                                            data-id="@part.SparePartId"
+                                            data-name="@part.SparePartName"
+                                            data-price="@part.UnitPrice"
+                                            data-stock="@part.AvailableStock">
+                                            <td>@(i + 1)</td>
+                                            <td><strong>@part.SparePartName</strong></td>
+                                            <td style="text-align:center;">
+                                                <span class="stock-badge @stockClass">@part.AvailableStock</span>
+                                            </td>
+                                            <td style="text-align:right;">₹ @part.UnitPrice.ToString("N2")</td>
+                                            <td style="text-align:center;">
+                                                <input type="number"
+                                                       class="form-control quantity-input part-quantity"
+                                                       min="0"
+                                                       max="@part.AvailableStock"
+                                                       value="@part.QuantityUsed"
+                                                       data-index="@i"
+                                                       data-id="@part.SparePartId"
+                                                       data-price="@part.UnitPrice"
+                                                       data-stock="@part.AvailableStock" />
+                                                <div class="stock-warning text-danger d-none" style="font-size:0.75rem;margin-top:0.25rem;">
+                                                    <i class="bi bi-exclamation-triangle-fill"></i> Exceeds stock
+                                                </div>
+                                            </td>
+                                            <td style="text-align:right;" class="line-total">
+                                                ₹ @((part.UnitPrice * part.QuantityUsed).ToString("N2"))
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            <i class="bi bi-box" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>
+                                            No spare parts currently available.
                                         </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
 
-                                        <td>
-                                            <strong>
-                                                @part.SparePartName
-                                            </strong>
-                                        </td>
+                    <!-- ─── Enhanced Pagination ─── -->
+                    @if (totalItems > pageSize)
+                    {
+                        <div class="pagination-wrapper" id="paginationWrapper">
+                            <!-- Previous Button -->
+                            <button type="button" id="prevPageBtn" class="page-btn arrow" disabled>
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
 
-                                        <td>
-                                            <span class="badge bg-secondary">
-                                                @part.AvailableStock
-                                            </span>
-                                        </td>
+                            <!-- Page Numbers (generated by JavaScript) -->
+                            <span id="pageNumbersContainer"></span>
 
-                                        <td>
-                                            ₹ @part.UnitPrice.ToString("N2")
-                                        </td>
-
-                                        <td>
-
-                                            <input type="number"
-                                                   class="form-control quantity-input part-quantity"
-                                                   min="0"
-                                                   max="@part.AvailableStock"
-                                                   value="@part.QuantityUsed"
-                                                   data-index="@i"
-                                                   data-id="@part.SparePartId"
-                                                   data-price="@part.UnitPrice"
-                                                   data-stock="@part.AvailableStock" />
-
-                                            <div class="stock-warning d-none">
-                                                Quantity exceeds stock.
-                                            </div>
-
-                                        </td>
-
-                                        <td class="line-total">
-                                            ₹ @((part.UnitPrice *
-                                                                                       part.QuantityUsed)
-                                                                                       .ToString("N2"))
-                            </td>
-
-                        </tr>
+                            <!-- Next Button -->
+                            <button type="button" id="nextPageBtn" class="page-btn arrow">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="pagination-info">
+                            Showing <strong id="showingStart">1</strong> – <strong id="showingEnd">@Math.Min(pageSize, totalItems)</strong>
+                            of <strong>@totalItems</strong> items
+                        </div>
                     }
-                }
-                    else
-                {
-                    <tr>
-                        <td colspan="6"
-                            class="text-center text-muted py-4">
-                            No spare parts currently available.
-                        </td>
-                    </tr>
-                }
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    <!-- ================================================= -->
-    <!-- PAGINATION -->
-    <!-- ================================================= -->
-    @if (totalItems > pageSize)
-    {
-        <div class="pagination-wrapper">
-
-            <button type="button"
-                    id="previousPage"
-                    class="page-button">
-                <i class="bi bi-chevron-left"></i>
-            </button>
-
-            <span id="pageButtons"></span>
-
-            <button type="button"
-                    id="nextPage"
-                    class="page-button">
-                <i class="bi bi-chevron-right"></i>
-            </button>
-
-        </div>
-
-        <div class="text-center text-muted mt-2">
-            Showing
-            <span id="showingStart">1</span>
-            -
-            <span id="showingEnd">
-                @Math.Min(pageSize, totalItems)
-            </span>
-            of
-            @totalItems
-        </div>
-    }
-
-</div>
-
-<!-- ===================================================== -->
-<!-- SUMMARY -->
-<!-- ===================================================== -->
-
-<div class="form-section">
-
-    <div class="section-title">
-        <i class="bi bi-calculator"></i>
-        Invoice Summary
-    </div>
-
-    <div class="summary-card">
-
-        <div class="summary-item">
-            <span>Labour Charge</span>
-            <strong id="summaryLabour">
-                ₹ @Model.LabourCharge.ToString("N2")
-            </strong>
-        </div>
-
-        <div class="summary-item">
-            <span>Spare Parts</span>
-            <strong id="summaryParts">
-                ₹ 0.00
-            </strong>
-        </div>
-
-        <div class="summary-item">
-            <span>Subtotal</span>
-            <strong id="summarySubtotal">
-                ₹ @Model.LabourCharge.ToString("N2")
-            </strong>
-        </div>
-
-        <div class="summary-item">
-            <span>
-                Discount
-                (<span id="discountLabel">
-                @Model.DiscountPercentage
-            </span>%)
-        </span>
-
-        <strong id="summaryDiscount">
-            ₹ 0.00
-        </strong>
-    </div>
-
-    <div class="summary-item">
-        <span>
-            GST
-            (<span id="gstLabel">
-            @Model.GSTPercentage
-        </span>%)
-    </span>
-
-    <strong id="summaryGST">
-        ₹ 0.00
-    </strong>
-</div>
-
-<div class="summary-item">
-
-    <span class="fw-bold">
-        Grand Total
-    </span>
-
-    <span class="grand-total"
-          id="summaryGrandTotal">
-        ₹ @Model.LabourCharge.ToString("N2")
-    </span>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- ===================================================== -->
-<!-- BUTTONS -->
-<!-- ===================================================== -->
-
-<div class="d-flex justify-content-end gap-2">
-
-    <a asp-action="Index"
-       class="btn btn-secondary">
-        Cancel
-    </a>
-
-    <button type="submit"
-            class="btn btn-primary"
-            id="createInvoiceButton">
-
-        <i class="bi bi-check-circle"></i>
-
-        Create Invoice
-
-    </button>
-
-</div>
-
-</form>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
-</script>
-
-<script>
-        document.addEventListener("DOMContentLoaded", function() {
-
-            // =========================================================
-            // VARIABLES
-            // =========================================================
-
-            const pageSize = @pageSize;
-            let currentPage = 1;
-
-            const rows =
-                Array.from(
-                    document.querySelectorAll(".spare-part-row")
-                );
-
-            const totalItems = rows.length;
-
-            const totalPages =
-                Math.max(
-                    1,
-                    Math.ceil(totalItems / pageSize)
-                );
-
-            // =========================================================
-            // ELEMENTS
-            // =========================================================
-
-            const previousButton =
-                document.getElementById("previousPage");
-
-            const nextButton =
-                document.getElementById("nextPage");
-
-            const pageButtons =
-                document.getElementById("pageButtons");
-
-            const showingStart =
-                document.getElementById("showingStart");
-
-            const showingEnd =
-                document.getElementById("showingEnd");
-
-            const invoiceForm =
-                document.getElementById("invoiceForm");
-
-            const selectedPartsContainer =
-                document.getElementById(
-                    "selectedPartsContainer"
-                );
-
-            // =========================================================
-            // FORMAT CURRENCY
-            // =========================================================
-
-            function currency(value) {
-
-                return "₹ " +
-                    Number(value || 0)
-                        .toLocaleString(
-                            "en-IN",
-                            {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            }
-                        );
-            }
-
-            // =========================================================
-            // UPDATE ROW TOTAL
-            // =========================================================
-
-            function updateRow(row) {
-
-                const input =
-                    row.querySelector(".part-quantity");
-
-                const price =
-                    parseFloat(
-                        input.dataset.price
-                    ) || 0;
-
-                const stock =
-                    parseInt(
-                        input.dataset.stock
-                    ) || 0;
-
-                let quantity =
-                    parseInt(input.value) || 0;
-
-                const warning =
-                    row.querySelector(".stock-warning");
-
-                if (quantity < 0) {
-
-                    quantity = 0;
-
-                    input.value = 0;
+                </div>
+
+                <!-- ─── Summary ─── -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="bi bi-calculator"></i>
+                        Invoice Summary
+                    </div>
+
+                    <div class="summary-box">
+                        <div class="summary-row">
+                            <span class="label">Labour Charge</span>
+                            <span class="value primary" id="summaryLabour">₹ @Model.LabourCharge.ToString("N2")</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Spare Parts</span>
+                            <span class="value primary" id="summaryParts">₹ 0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Subtotal</span>
+                            <span class="value" id="summarySubtotal">₹ @Model.LabourCharge.ToString("N2")</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Discount (<span id="discountLabel">@Model.DiscountPercentage</span>%)</span>
+                            <span class="value danger" id="summaryDiscount">₹ 0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">GST (<span id="gstLabel">@Model.GSTPercentage</span>%)</span>
+                            <span class="value warning" id="summaryGST">₹ 0.00</span>
+                        </div>
+                        <div class="grand-total-row">
+                            <span class="label"><i class="bi bi-cash-stack me-1"></i> Grand Total</span>
+                            <span class="value" id="summaryGrandTotal">₹ @Model.LabourCharge.ToString("N2")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── Action Buttons ─── -->
+                <div class="action-footer">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary" id="createInvoiceButton">
+                        <i class="bi bi-check2-circle"></i> Create Invoice
+                    </button>
+                </div>
+            </form>
+
+        </div> <!-- /body-content -->
+    </div> <!-- /create-wrapper -->
+    <!-- ─── Scripts ─── -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+
+                // =========================================================
+                // VARIABLES
+                // =========================================================
+
+                const pageSize = @pageSize;
+                let currentPage = 1;
+
+                const rows = Array.from(document.querySelectorAll(".spare-part-row"));
+                const totalItems = rows.length;
+                const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+                // =========================================================
+                // ELEMENTS
+                // =========================================================
+
+                const prevPageBtn = document.getElementById("prevPageBtn");
+                const nextPageBtn = document.getElementById("nextPageBtn");
+                const pageNumbersContainer = document.getElementById("pageNumbersContainer");
+                const showingStart = document.getElementById("showingStart");
+                const showingEnd = document.getElementById("showingEnd");
+                const invoiceForm = document.getElementById("invoiceForm");
+                const selectedPartsContainer = document.getElementById("selectedPartsContainer");
+                const createButton = document.getElementById("createInvoiceButton");
+
+                // =========================================================
+                // TOAST NOTIFICATION
+                // =========================================================
+
+                function showToast(message, type) {
+                    var container = document.getElementById('toastContainer');
+                    var toast = document.createElement('div');
+                    toast.className = 'toast-custom ' + (type || 'success');
+                    toast.innerHTML = `
+                                <div class="toast-title">
+                                    <i class="bi ${type === 'error' ? 'bi-exclamation-circle-fill text-danger' : 'bi-check-circle-fill text-success'}"></i>
+                                    ${type === 'error' ? 'Error' : 'Success'}
+                                </div>
+                                <div class="toast-message">${message}</div>
+                            `;
+                    container.appendChild(toast);
+
+                    setTimeout(function() {
+                        toast.style.opacity = '0';
+                        toast.style.transform = 'translateX(100px)';
+                        toast.style.transition = '0.5s ease-out';
+                        setTimeout(function() { toast.remove(); }, 500);
+                    }, 5000);
                 }
 
-                if (quantity > stock) {
-
-                    warning.classList.remove(
-                        "d-none"
-                    );
-
-                    input.classList.add(
-                        "is-invalid"
-                    );
-
-                } else {
-
-                    warning.classList.add(
-                        "d-none"
-                    );
-
-                    input.classList.remove(
-                        "is-invalid"
-                    );
+                // ─── Show TempData Messages ───
+                @if (TempData["Error"] != null)
+                    {
+                        <text>showToast('@TempData["Error"]', 'error');</text>
                 }
 
-                const total =
-                    price * quantity;
-
-                row.querySelector(".line-total")
-                    .textContent =
-                    currency(total);
-
-                if (quantity > 0 &&
-                    quantity <= stock) {
-
-                    row.classList.add(
-                        "selected-row"
-                    );
-
-                } else {
-
-                    row.classList.remove(
-                        "selected-row"
-                    );
+                    @if (TempData["Success"] != null)
+                    {
+                        <text>showToast('@TempData["Success"]', 'success');</text>
                 }
 
-                calculateSummary();
-            }
+                    // =========================================================
+                    // FORMAT CURRENCY
+                    // =========================================================
 
-            // =========================================================
-            // CALCULATE SUMMARY
-            // =========================================================
-
-            function calculateSummary() {
-
-                const labour =
-                    parseFloat(
-                        document.getElementById(
-                            "LabourCharge"
-                        ).value
-                    ) || 0;
-
-                const gstPercentage =
-                    parseFloat(
-                        document.getElementById(
-                            "GSTPercentage"
-                        ).value
-                    ) || 0;
-
-                const discountPercentage =
-                    parseFloat(
-                        document.getElementById(
-                            "DiscountPercentage"
-                        ).value
-                    ) || 0;
-
-                let sparePartsTotal = 0;
-
-                rows.forEach(function(row) {
-
-                    const input =
-                        row.querySelector(
-                            ".part-quantity"
-                        );
-
-                    const quantity =
-                        parseInt(input.value) || 0;
-
-                    const price =
-                        parseFloat(
-                            input.dataset.price
-                        ) || 0;
-
-                    const stock =
-                        parseInt(
-                            input.dataset.stock
-                        ) || 0;
-
-                    if (quantity > 0 &&
-                        quantity <= stock) {
-
-                        sparePartsTotal +=
-                            price * quantity;
-                    }
-                });
-
-                const subtotal =
-                    labour +
-                    sparePartsTotal;
-
-                const discountAmount =
-                    subtotal *
-                    (discountPercentage / 100);
-
-                const discountedSubtotal =
-                    subtotal -
-                    discountAmount;
-
-                const gstAmount =
-                    Math.round(
-                        (
-                            discountedSubtotal *
-                            (gstPercentage / 100)
-                        ) * 100
-                    ) / 100;
-
-                const grandTotal =
-                    discountedSubtotal +
-                    gstAmount;
-
-                document.getElementById(
-                    "summaryLabour"
-                ).textContent =
-                    currency(labour);
-
-                document.getElementById(
-                    "summaryParts"
-                ).textContent =
-                    currency(sparePartsTotal);
-
-                document.getElementById(
-                    "summarySubtotal"
-                ).textContent =
-                    currency(subtotal);
-
-                document.getElementById(
-                    "summaryDiscount"
-                ).textContent =
-                    currency(discountAmount);
-
-                document.getElementById(
-                    "summaryGST"
-                ).textContent =
-                    currency(gstAmount);
-
-                document.getElementById(
-                    "summaryGrandTotal"
-                ).textContent =
-                    currency(grandTotal);
-
-                document.getElementById(
-                    "discountLabel"
-                ).textContent =
-                    discountPercentage.toFixed(2);
-
-                document.getElementById(
-                    "gstLabel"
-                ).textContent =
-                    gstPercentage.toFixed(2);
-            }
-
-            // =========================================================
-            // PAGINATION
-            // =========================================================
-
-            function renderPage() {
-
-                if (!rows.length)
-                    return;
-
-                const start =
-                    (currentPage - 1) *
-                    pageSize;
-
-                const end =
-                    Math.min(
-                        start + pageSize,
-                        totalItems
-                    );
-
-                rows.forEach(function(row, index) {
-
-                    row.style.display =
-                        index >= start &&
-                            index < end
-                            ? ""
-                            : "none";
-                });
-
-                if (showingStart) {
-
-                    showingStart.textContent =
-                        start + 1;
-                }
-
-                if (showingEnd) {
-
-                    showingEnd.textContent =
-                        end;
-                }
-
-                renderPageButtons();
-
-                if (previousButton) {
-
-                    previousButton.disabled =
-                        currentPage === 1;
-                }
-
-                if (nextButton) {
-
-                    nextButton.disabled =
-                        currentPage === totalPages;
-                }
-            }
-
-            function renderPageButtons() {
-
-                if (!pageButtons)
-                    return;
-
-                pageButtons.innerHTML = "";
-
-                for (
-                    let page = 1;
-                    page <= totalPages;
-                    page++
-                ) {
-
-                    const button =
-                        document.createElement(
-                            "button"
-                        );
-
-                    button.type = "button";
-
-                    button.className =
-                        "page-button";
-
-                    button.textContent =
-                        page;
-
-                    if (page === currentPage) {
-
-                        button.classList.add(
-                            "active"
-                        );
+                    function currency(value) {
+                        return "₹ " + Number(value || 0).toLocaleString("en-IN", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
                     }
 
-                    button.addEventListener(
-                        "click",
-                        function() {
+                // =========================================================
+                // UPDATE ROW TOTAL
+                // =========================================================
 
-                            currentPage =
-                                page;
+                function updateRow(row) {
+                    const input = row.querySelector(".part-quantity");
+                    const price = parseFloat(input.dataset.price) || 0;
+                    const stock = parseInt(input.dataset.stock) || 0;
+                    let quantity = parseInt(input.value) || 0;
+                    const warning = row.querySelector(".stock-warning");
 
-                            renderPage();
+                    if (quantity < 0) {
+                        quantity = 0;
+                        input.value = 0;
+                    }
+
+                    if (quantity > stock) {
+                        warning.classList.remove("d-none");
+                        input.classList.add("is-invalid");
+                    } else {
+                        warning.classList.add("d-none");
+                        input.classList.remove("is-invalid");
+                    }
+
+                    const total = price * quantity;
+                    row.querySelector(".line-total").textContent = currency(total);
+
+                    if (quantity > 0 && quantity <= stock) {
+                        row.classList.add("selected-row");
+                    } else {
+                        row.classList.remove("selected-row");
+                    }
+
+                    calculateSummary();
+                }
+
+                // =========================================================
+                // CALCULATE SUMMARY
+                // =========================================================
+
+                function calculateSummary() {
+                    const labour = parseFloat(document.getElementById("LabourCharge").value) || 0;
+                    const gstPercentage = parseFloat(document.getElementById("GSTPercentage").value) || 0;
+                    const discountPercentage = parseFloat(document.getElementById("DiscountPercentage").value) || 0;
+
+                    let sparePartsTotal = 0;
+
+                    rows.forEach(function(row) {
+                        const input = row.querySelector(".part-quantity");
+                        const quantity = parseInt(input.value) || 0;
+                        const price = parseFloat(input.dataset.price) || 0;
+                        const stock = parseInt(input.dataset.stock) || 0;
+
+                        if (quantity > 0 && quantity <= stock) {
+                            sparePartsTotal += price * quantity;
                         }
-                    );
+                    });
 
-                    pageButtons.appendChild(
-                        button
-                    );
+                    const subtotal = labour + sparePartsTotal;
+                    const discountAmount = subtotal * (discountPercentage / 100);
+                    const discountedSubtotal = subtotal - discountAmount;
+                    const gstAmount = Math.round((discountedSubtotal * (gstPercentage / 100)) * 100) / 100;
+                    const grandTotal = discountedSubtotal + gstAmount;
+
+                    document.getElementById("summaryLabour").textContent = currency(labour);
+                    document.getElementById("summaryParts").textContent = currency(sparePartsTotal);
+                    document.getElementById("summarySubtotal").textContent = currency(subtotal);
+                    document.getElementById("summaryDiscount").textContent = currency(discountAmount);
+                    document.getElementById("summaryGST").textContent = currency(gstAmount);
+                    document.getElementById("summaryGrandTotal").textContent = currency(grandTotal);
+                    document.getElementById("discountLabel").textContent = discountPercentage.toFixed(2);
+                    document.getElementById("gstLabel").textContent = gstPercentage.toFixed(2);
                 }
-            }
 
-            if (previousButton) {
+                // =========================================================
+                // PAGINATION - Enhanced with Page Numbers
+                // =========================================================
 
-                previousButton.addEventListener(
-                    "click",
-                    function() {
+                function renderPage() {
+                    if (!rows.length) return;
 
+                    const start = (currentPage - 1) * pageSize;
+                    const end = Math.min(start + pageSize, totalItems);
+
+                    rows.forEach(function(row, index) {
+                        row.style.display = (index >= start && index < end) ? "" : "none";
+                    });
+
+                    if (showingStart) showingStart.textContent = start + 1;
+                    if (showingEnd) showingEnd.textContent = end;
+
+                    renderPageButtons();
+
+                    if (prevPageBtn) prevPageBtn.disabled = currentPage === 1;
+                    if (nextPageBtn) nextPageBtn.disabled = currentPage === totalPages;
+                }
+
+                function renderPageButtons() {
+                    if (!pageNumbersContainer) return;
+                    pageNumbersContainer.innerHTML = "";
+
+                    // Helper to create a page button
+                    function createPageBtn(page, isActive) {
+                        const btn = document.createElement("button");
+                        btn.type = "button";
+                        btn.className = "page-btn" + (isActive ? " active" : "");
+                        btn.textContent = page;
+                        btn.dataset.page = page;
+                        btn.addEventListener("click", function() {
+                            currentPage = parseInt(this.dataset.page);
+                            renderPage();
+                        });
+                        return btn;
+                    }
+
+                    // Helper to create ellipsis
+                    function createEllipsis() {
+                        const span = document.createElement("span");
+                        span.className = "page-btn ellipsis";
+                        span.textContent = "…";
+                        return span;
+                    }
+
+                    // Show page numbers with ellipsis for many pages
+                    if (totalPages <= 7) {
+                        // Show all pages
+                        for (let page = 1; page <= totalPages; page++) {
+                            pageNumbersContainer.appendChild(createPageBtn(page, page === currentPage));
+                        }
+                    } else {
+                        // Show first page
+                        pageNumbersContainer.appendChild(createPageBtn(1, 1 === currentPage));
+
+                        // Show ellipsis if current page > 3
+                        if (currentPage > 3) {
+                            pageNumbersContainer.appendChild(createEllipsis());
+                        }
+
+                        // Show pages around current page
+                        let startPage = Math.max(2, currentPage - 1);
+                        let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+                        // Adjust if at beginning
+                        if (currentPage <= 3) {
+                            endPage = Math.min(totalPages - 1, 4);
+                        }
+
+                        // Adjust if at end
+                        if (currentPage >= totalPages - 2) {
+                            startPage = Math.max(2, totalPages - 3);
+                        }
+
+                        for (let page = startPage; page <= endPage; page++) {
+                            pageNumbersContainer.appendChild(createPageBtn(page, page === currentPage));
+                        }
+
+                        // Show ellipsis if current page < totalPages - 2
+                        if (currentPage < totalPages - 2) {
+                            pageNumbersContainer.appendChild(createEllipsis());
+                        }
+
+                        // Show last page
+                        pageNumbersContainer.appendChild(createPageBtn(totalPages, totalPages === currentPage));
+                    }
+                }
+
+                // ─── Previous Button ───
+                if (prevPageBtn) {
+                    prevPageBtn.addEventListener("click", function() {
                         if (currentPage > 1) {
-
                             currentPage--;
-
                             renderPage();
                         }
-                    }
-                );
-            }
+                    });
+                }
 
-            if (nextButton) {
-
-                nextButton.addEventListener(
-                    "click",
-                    function() {
-
-                        if (
-                            currentPage <
-                            totalPages
-                        ) {
-
+                // ─── Next Button ───
+                if (nextPageBtn) {
+                    nextPageBtn.addEventListener("click", function() {
+                        if (currentPage < totalPages) {
                             currentPage++;
-
                             renderPage();
                         }
-                    }
-                );
-            }
+                    });
+                }
 
-            // =========================================================
-            // QUANTITY EVENTS
-            // =========================================================
+                // =========================================================
+                // QUANTITY EVENTS
+                // =========================================================
 
-            document.querySelectorAll(
-                ".part-quantity"
-            ).forEach(function(input) {
+                document.querySelectorAll(".part-quantity").forEach(function(input) {
+                    input.addEventListener("input", function() {
+                        updateRow(input.closest(".spare-part-row"));
+                    });
+                });
 
-                input.addEventListener(
-                    "input",
-                    function() {
+                document.getElementById("GSTPercentage").addEventListener("input", calculateSummary);
+                document.getElementById("DiscountPercentage").addEventListener("input", calculateSummary);
 
-                        updateRow(
-                            input.closest(
-                                ".spare-part-row"
-                            )
-                        );
-                    }
-                );
-            });
+                // =========================================================
+                // FORM SUBMISSION - ONLY SELECTED PARTS
+                // =========================================================
 
-            document.getElementById(
-                "GSTPercentage"
-            ).addEventListener(
-                "input",
-                calculateSummary
-            );
-
-            document.getElementById(
-                "DiscountPercentage"
-            ).addEventListener(
-                "input",
-                calculateSummary
-            );
-
-            // =========================================================
-            // IMPORTANT:
-            // CREATE ONLY SELECTED FORM VALUES
-            // =========================================================
-
-            invoiceForm.addEventListener(
-                "submit",
-                function(event) {
-
-                    // Remove previously generated inputs.
+                invoiceForm.addEventListener("submit", function(event) {
                     selectedPartsContainer.innerHTML = "";
 
                     let selectedCount = 0;
                     let invalidStock = false;
 
                     rows.forEach(function(row) {
+                        const input = row.querySelector(".part-quantity");
+                        const quantity = parseInt(input.value) || 0;
+                        const stock = parseInt(input.dataset.stock) || 0;
+                        const id = parseInt(input.dataset.id) || 0;
+                        const price = parseFloat(input.dataset.price) || 0;
+                        const name = row.dataset.name || "";
 
-                        const input =
-                            row.querySelector(
-                                ".part-quantity"
-                            );
-
-                        const quantity =
-                            parseInt(input.value) || 0;
-
-                        const stock =
-                            parseInt(
-                                input.dataset.stock
-                            ) || 0;
-
-                        const id =
-                            parseInt(
-                                input.dataset.id
-                            ) || 0;
-
-                        const price =
-                            parseFloat(
-                                input.dataset.price
-                            ) || 0;
-
-                        const name =
-                            row.dataset.name || "";
-
-                        // -------------------------------------------------
-                        // Ignore zero quantities.
-                        // -------------------------------------------------
-
-                        if (quantity <= 0)
-                            return;
-
-                        // -------------------------------------------------
-                        // Client-side stock validation.
-                        // Server validates again.
-                        // -------------------------------------------------
+                        if (quantity <= 0) return;
 
                         if (quantity > stock) {
-
                             invalidStock = true;
-
-                            input.classList.add(
-                                "is-invalid"
-                            );
-
+                            input.classList.add("is-invalid");
                             return;
                         }
 
-                        // -------------------------------------------------
-                        // IMPORTANT:
-                        // ONLY NOW create model-bound inputs.
-                        // -------------------------------------------------
+                        const index = selectedCount;
 
-                        const index =
-                            selectedCount;
-
-                        createHiddenInput(
-                            `SparePartsUsed[${index}].SparePartId`,
-                            id
-                        );
-
-                        createHiddenInput(
-                            `SparePartsUsed[${index}].SparePartName`,
-                            name
-                        );
-
-                        createHiddenInput(
-                            `SparePartsUsed[${index}].UnitPrice`,
-                            price
-                        );
-
-                        createHiddenInput(
-                            `SparePartsUsed[${index}].AvailableStock`,
-                            stock
-                        );
-
-                        createHiddenInput(
-                            `SparePartsUsed[${index}].QuantityUsed`,
-                            quantity
-                        );
+                        createHiddenInput(`SparePartsUsed[${index}].SparePartId`, id);
+                        createHiddenInput(`SparePartsUsed[${index}].SparePartName`, name);
+                        createHiddenInput(`SparePartsUsed[${index}].UnitPrice`, price);
+                        createHiddenInput(`SparePartsUsed[${index}].AvailableStock`, stock);
+                        createHiddenInput(`SparePartsUsed[${index}].QuantityUsed`, quantity);
 
                         selectedCount++;
                     });
 
-                    // -----------------------------------------------------
-                    // STOP INVALID STOCK
-                    // -----------------------------------------------------
-
                     if (invalidStock) {
-
                         event.preventDefault();
-
-                        alert(
-                            "One or more spare-part quantities exceed available stock."
-                        );
-
+                        showToast("One or more spare-part quantities exceed available stock.", "error");
                         return;
                     }
 
-                    // -----------------------------------------------------
-                    // Prevent double-click / duplicate submission.
-                    // -----------------------------------------------------
+                    if (selectedCount === 0) {
+                        event.preventDefault();
+                        showToast("Please select at least one spare part with quantity greater than 0.", "error");
+                        return;
+                    }
 
-                    const button =
-                        document.getElementById(
-                            "createInvoiceButton"
-                        );
+                    createButton.disabled = true;
+                    createButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Creating...';
+                });
 
-                    button.disabled = true;
-
-                    button.innerHTML =
-                        '<span class="spinner-border spinner-border-sm me-2"></span>' +
-                        'Creating Invoice...';
+                function createHiddenInput(name, value) {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = name;
+                    input.value = value;
+                    selectedPartsContainer.appendChild(input);
                 }
-            );
 
-            function createHiddenInput(
-                name,
-                value
-            ) {
+                // =========================================================
+                // AUTO-DISMISS ALERTS
+                // =========================================================
 
-                const input =
-                    document.createElement(
-                        "input"
-                    );
+                setTimeout(function() {
+                    document.querySelectorAll('.alert-custom').forEach(function(alert) {
+                        var closeBtn = alert.querySelector('.btn-close');
+                        if (closeBtn) {
+                            closeBtn.click();
+                        }
+                    });
+                }, 5000);
 
-                input.type = "hidden";
+                // =========================================================
+                // INITIALIZE
+                // =========================================================
 
-                input.name = name;
+                rows.forEach(function(row) {
+                    updateRow(row);
+                });
 
-                input.value = value;
-
-                selectedPartsContainer.appendChild(
-                    input
-                );
-            }
-
-            // =========================================================
-            // INITIALIZE
-            // =========================================================
-
-            rows.forEach(function(row) {
-
-                updateRow(row);
+                renderPage();
+                calculateSummary();
             });
-
-            renderPage();
-
-            calculateSummary();
-        });
-</script>
+    </script>
 
 </body>
 </html>

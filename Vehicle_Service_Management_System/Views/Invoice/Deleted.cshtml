@@ -1,0 +1,974 @@
+﻿@model IEnumerable<Vehicle_Service_Management_System.Application.ViewModels.Invoice.InvoiceListViewModel>
+
+@{
+    ViewData["Title"] = "Deleted Invoices";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deleted Invoices | Vehicle Service Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+            /* ────────────────────────────────────────────────────────── */
+            /* Root Variables                                          */
+            /* ────────────────────────────────────────────────────────── */
+            :root {
+                --primary: #0d6efd;
+                --primary-dark: #0a58ca;
+                --primary-light: #e8f0fe;
+                --success: #22c55e;
+                --danger: #ef4444;
+                --warning: #f59e0b;
+                --info: #0dcaf0;
+                --dark: #1a2634;
+                --gray: #6b7a8e;
+                --gray-light: #eef2f7;
+                --gray-bg: #f0f2f5;
+                --white: #ffffff;
+                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
+                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+                --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.16);
+                --radius: 20px;
+                --radius-sm: 12px;
+                --radius-xs: 8px;
+                --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Base Styles                                             */
+            /* ────────────────────────────────────────────────────────── */
+            body {
+                background: var(--gray-bg);
+                font-family: 'Inter', -apple-system, system-ui, sans-serif;
+                padding: 2rem 1.5rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+                color: var(--dark);
+                line-height: 1.6;
+            }
+
+            .deleted-wrapper {
+                max-width: 1280px;
+                width: 100%;
+                background: var(--white);
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-xl);
+                overflow: hidden;
+                animation: slideUp 0.5s ease-out;
+            }
+
+            @@keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Header - Premium Gradient                               */
+            /* ────────────────────────────────────────────────────────── */
+            .header-premium {
+                background: linear-gradient(135deg, #0c0e1a 0%, #1a1a3e 40%, #ef4444 100%);
+                padding: 2.5rem 3rem 2rem;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .header-premium::before {
+                    content: '';
+                    position: absolute;
+                    top: -60%;
+                    right: -10%;
+                    width: 500px;
+                    height: 500px;
+                    background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+                .header-premium::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -40%;
+                    left: -5%;
+                    width: 300px;
+                    height: 300px;
+                    background: radial-gradient(circle, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+            .header-content {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+
+            .header-title {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+                .header-title .icon-wrapper {
+                    width: 56px;
+                    height: 56px;
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.8rem;
+                    backdrop-filter: blur(4px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    flex-shrink: 0;
+                }
+
+                .header-title h1 {
+                    font-weight: 800;
+                    font-size: 1.8rem;
+                    margin: 0;
+                    letter-spacing: -0.02em;
+                    background: linear-gradient(135deg, #fff 60%, #94a3b8);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+
+                .header-title .badge-count {
+                    font-size: 0.8rem;
+                    font-weight: 500;
+                    color: rgba(255, 255, 255, 0.9);
+                    background: rgba(255, 255, 255, 0.15);
+                    padding: 0.15rem 0.8rem;
+                    border-radius: 50px;
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.9);
+                }
+
+            .header-actions {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+            }
+
+            .btn-header {
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #fff;
+                border-radius: 50px;
+                padding: 0.5rem 1.4rem;
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: var(--transition);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                backdrop-filter: blur(4px);
+            }
+
+                .btn-header:hover {
+                    background: rgba(255, 255, 255, 0.25);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+                    color: #fff;
+                }
+
+            .btn-header-primary {
+                background: rgba(255, 255, 255, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                color: #fff;
+            }
+
+                .btn-header-primary:hover {
+                    background: rgba(255, 255, 255, 0.35);
+                    color: #fff;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Toast / Notification                                     */
+            /* ────────────────────────────────────────────────────────── */
+            .toast-container {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+            }
+
+            .toast-custom {
+                background: var(--white);
+                border-radius: var(--radius-sm);
+                padding: 1rem 1.5rem;
+                box-shadow: var(--shadow-lg);
+                border-left: 4px solid var(--primary);
+                min-width: 300px;
+                animation: slideInRight 0.5s ease-out;
+                margin-bottom: 0.75rem;
+            }
+
+                .toast-custom.success {
+                    border-left-color: var(--success);
+                }
+
+                .toast-custom.error {
+                    border-left-color: var(--danger);
+                }
+
+                .toast-custom .toast-title {
+                    font-weight: 700;
+                    font-size: 0.95rem;
+                }
+
+                .toast-custom .toast-message {
+                    font-size: 0.85rem;
+                    color: var(--gray);
+                }
+
+            @@keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Body                                                     */
+            /* ────────────────────────────────────────────────────────── */
+            .body-content {
+                padding: 2rem 3rem 2.5rem;
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Alert Messages                                           */
+            /* ────────────────────────────────────────────────────────── */
+            .alert-custom {
+                border-radius: var(--radius-sm);
+                padding: 1rem 1.5rem;
+                border: none;
+                box-shadow: var(--shadow-sm);
+                margin-bottom: 1.5rem;
+            }
+
+                .alert-custom.alert-danger {
+                    background: #fee2e2;
+                    color: #991b1b;
+                    border-left: 4px solid var(--danger);
+                }
+
+                .alert-custom.alert-success {
+                    background: #dcfce7;
+                    color: #166534;
+                    border-left: 4px solid var(--success);
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Stats Row - Modern Cards                                */
+            /* ────────────────────────────────────────────────────────── */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                background: var(--gray-bg);
+                border-radius: var(--radius-sm);
+                padding: 1.25rem 1.5rem;
+                text-align: center;
+                border: 1px solid var(--gray-light);
+                transition: var(--transition);
+                position: relative;
+                overflow: hidden;
+            }
+
+                .stat-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, var(--danger), var(--warning));
+                    opacity: 0;
+                    transition: var(--transition);
+                }
+
+                .stat-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: var(--shadow-md);
+                    border-color: var(--danger);
+                }
+
+                    .stat-card:hover::before {
+                        opacity: 1;
+                    }
+
+                .stat-card .stat-number {
+                    font-size: 1.6rem;
+                    font-weight: 800;
+                    color: var(--dark);
+                    display: block;
+                    letter-spacing: -0.02em;
+                }
+
+                .stat-card .stat-label {
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    color: var(--gray);
+                    font-weight: 600;
+                    display: block;
+                    margin-top: 0.25rem;
+                }
+
+                .stat-card .stat-icon {
+                    font-size: 1.2rem;
+                    color: var(--danger);
+                    opacity: 0.4;
+                    position: absolute;
+                    right: 0.75rem;
+                    bottom: 0.5rem;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Table Card                                               */
+            /* ────────────────────────────────────────────────────────── */
+            .table-card {
+                background: var(--white);
+                border-radius: var(--radius-sm);
+                border: 1px solid var(--gray-light);
+                overflow: hidden;
+                box-shadow: var(--shadow-sm);
+            }
+
+                .table-card .table-header {
+                    background: var(--gray-bg);
+                    padding: 0.75rem 1.5rem;
+                    border-bottom: 1px solid var(--gray-light);
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 0.75rem;
+                }
+
+                    .table-card .table-header .title {
+                        font-weight: 600;
+                        font-size: 0.95rem;
+                        color: var(--dark);
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+
+                        .table-card .table-header .title i {
+                            color: var(--danger);
+                        }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Table Styling                                            */
+            /* ────────────────────────────────────────────────────────── */
+            .table-responsive-custom {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table {
+                margin: 0;
+                font-size: 0.9rem;
+                vertical-align: middle;
+                border-collapse: separate;
+                border-spacing: 0;
+                min-width: 800px;
+            }
+
+                .table thead th {
+                    background: var(--gray-bg);
+                    color: var(--dark);
+                    font-weight: 600;
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    padding: 0.75rem 1rem;
+                    border-bottom: 2px solid var(--gray-light);
+                    white-space: nowrap;
+                }
+
+                    .table thead th i {
+                        margin-right: 0.25rem;
+                        color: var(--primary);
+                    }
+
+                .table tbody td {
+                    padding: 0.75rem 1rem;
+                    border-bottom: 1px solid var(--gray-light);
+                    background: var(--white);
+                    transition: background var(--transition);
+                }
+
+                .table tbody tr:hover td {
+                    background: var(--gray-bg);
+                }
+
+                .table tbody tr:last-child td {
+                    border-bottom: none;
+                }
+
+                .table tbody tr.deleted-row td {
+                    background: #fef2f2;
+                }
+
+                .table tbody tr.deleted-row:hover td {
+                    background: #fee2e2;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Status Badge                                            */
+            /* ────────────────────────────────────────────────────────── */
+            .badge-status {
+                font-weight: 600;
+                padding: 0.3rem 1rem;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
+
+                .badge-status.bg-paid {
+                    background: #dcfce7;
+                    color: #166534;
+                }
+
+                .badge-status.bg-unpaid {
+                    background: #fee2e2;
+                    color: #991b1b;
+                }
+
+                .badge-status i {
+                    font-size: 0.65rem;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Action Buttons                                           */
+            /* ────────────────────────────────────────────────────────── */
+            .action-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                align-items: center;
+                justify-content: flex-end;
+            }
+
+                .action-group .btn {
+                    border-radius: 50px;
+                    padding: 0.3rem 1rem;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    transition: var(--transition);
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.03em;
+                }
+
+                    .action-group .btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: var(--shadow-md);
+                    }
+
+                .action-group .btn-success {
+                    background: linear-gradient(135deg, #22c55e, #16a34a);
+                    border: none;
+                    color: #fff;
+                    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25);
+                }
+
+                    .action-group .btn-success:hover {
+                        box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+                    }
+
+                .action-group .btn-danger {
+                    background: linear-gradient(135deg, #ef4444, #dc2626);
+                    border: none;
+                    color: #fff;
+                    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+                }
+
+                    .action-group .btn-danger:hover {
+                        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Empty State                                              */
+            /* ────────────────────────────────────────────────────────── */
+            .empty-state {
+                padding: 3.5rem 1rem !important;
+                text-align: center;
+                color: var(--gray);
+                font-size: 1rem;
+            }
+
+                .empty-state i {
+                    font-size: 3rem;
+                    display: block;
+                    margin-bottom: 0.75rem;
+                    color: var(--gray-light);
+                }
+
+                .empty-state h5 {
+                    color: var(--dark);
+                    font-weight: 600;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Table Footer                                             */
+            /* ────────────────────────────────────────────────────────── */
+            .table-footer {
+                padding: 0.75rem 1.5rem;
+                background: var(--gray-bg);
+                border-top: 1px solid var(--gray-light);
+                font-size: 0.85rem;
+                color: var(--gray);
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+                .table-footer strong {
+                    color: var(--dark);
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Responsive                                               */
+            /* ────────────────────────────────────────────────────────── */
+            @@media (max-width: 992px) {
+                .header-premium {
+                    padding: 2rem 1.5rem 1.5rem;
+                }
+
+                .body-content {
+                    padding: 1.5rem 1.5rem 2rem;
+                }
+            }
+
+            @@media (max-width: 768px) {
+                body {
+                    padding: 1rem 0.75rem;
+                }
+
+                .deleted-wrapper {
+                    border-radius: var(--radius-sm);
+                }
+
+                .header-premium {
+                    padding: 1.5rem 1.25rem 1.25rem;
+                }
+
+                .header-title h1 {
+                    font-size: 1.3rem;
+                }
+
+                .header-title .icon-wrapper {
+                    width: 44px;
+                    height: 44px;
+                    font-size: 1.3rem;
+                }
+
+                .header-title .badge-count {
+                    font-size: 0.7rem;
+                    padding: 0.1rem 0.6rem;
+                }
+
+                .header-content {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .header-actions {
+                    width: 100%;
+                    justify-content: flex-start;
+                }
+
+                .body-content {
+                    padding: 1rem 1rem 1.5rem;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.75rem;
+                }
+
+                .stat-card {
+                    padding: 1rem 0.75rem;
+                }
+
+                    .stat-card .stat-number {
+                        font-size: 1.3rem;
+                    }
+
+                .table-card .table-header {
+                    padding: 0.75rem 1rem;
+                }
+
+                .table tbody td {
+                    padding: 0.6rem 0.75rem;
+                    font-size: 0.82rem;
+                }
+
+                .table thead th {
+                    padding: 0.6rem 0.75rem;
+                    font-size: 0.7rem;
+                }
+
+                .action-group .btn {
+                    font-size: 0.65rem;
+                    padding: 0.2rem 0.6rem;
+                }
+
+                .table-footer {
+                    flex-direction: column;
+                    text-align: center;
+                    padding: 0.6rem 1rem;
+                }
+
+                .toast-custom {
+                    min-width: 250px;
+                    margin: 0 0.5rem 0.75rem;
+                }
+            }
+
+            @@media (max-width: 480px) {
+                body {
+                    padding: 0.5rem 0.5rem;
+                }
+
+                .header-premium {
+                    padding: 1rem 1rem 1rem;
+                    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+                }
+
+                .header-title h1 {
+                    font-size: 1.1rem;
+                }
+
+                .header-title .icon-wrapper {
+                    width: 36px;
+                    height: 36px;
+                    font-size: 1rem;
+                }
+
+                .body-content {
+                    padding: 0.75rem 0.75rem 1rem;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.5rem;
+                }
+
+                .stat-card {
+                    padding: 0.75rem 0.5rem;
+                }
+
+                    .stat-card .stat-number {
+                        font-size: 1.1rem;
+                    }
+
+                    .stat-card .stat-label {
+                        font-size: 0.6rem;
+                    }
+
+                .table thead th {
+                    padding: 0.4rem 0.5rem;
+                    font-size: 0.65rem;
+                }
+
+                .table tbody td {
+                    padding: 0.4rem 0.5rem;
+                    font-size: 0.75rem;
+                }
+
+                .action-group .btn {
+                    font-size: 0.6rem;
+                    padding: 0.15rem 0.4rem;
+                }
+
+                .table-footer {
+                    font-size: 0.75rem;
+                }
+
+                .toast-custom {
+                    min-width: 200px;
+                    padding: 0.75rem 1rem;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <!-- ─── Toast Container ─── -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="deleted-wrapper">
+
+        <!-- ─── HEADER ─── -->
+        <div class="header-premium">
+            <div class="header-content">
+                <div class="header-title">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-archive"></i>
+                    </div>
+                    <div>
+                        <h1>Deleted Invoices</h1>
+                        <span class="badge-count">@Model.Count() records</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a asp-action="Index" class="btn-header btn-header-primary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── BODY ─── -->
+        <div class="body-content">
+
+            <!-- Alerts -->
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert-custom alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                    @TempData["Error"]
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert-custom alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    @TempData["Success"]
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- ─── Stats ─── -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">@Model.Count()</span>
+                    <span class="stat-label">Total Deleted</span>
+                    <i class="bi bi-archive stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">
+                        @{
+                            int paidCount = Model.Count(m => m.IsPaid);
+                        }
+                        @paidCount
+                    </span>
+                    <span class="stat-label">Paid</span>
+                    <i class="bi bi-check-circle stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">
+                        @{
+                            int unpaidCount = Model.Count(m => !m.IsPaid);
+                        }
+                        @unpaidCount
+                    </span>
+                    <span class="stat-label">Unpaid</span>
+                    <i class="bi bi-x-circle stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">
+                        @{
+                            decimal totalRevenue = Model.Sum(m => m.GrandTotal);
+                        }
+                        @totalRevenue.ToString("N0")
+                    </span>
+                    <span class="stat-label">Total Revenue</span>
+                    <i class="bi bi-currency-rupee stat-icon"></i>
+                </div>
+            </div>
+
+            <!-- ─── Table ─── -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="title">
+                        <i class="bi bi-table"></i>
+                        Deleted Invoices List
+                    </span>
+                    <span class="text-muted" style="font-size:0.85rem;">
+                        <i class="bi bi-info-circle"></i>
+                        Click Restore to recover deleted invoices
+                    </span>
+                </div>
+
+                <div class="table-responsive-custom">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th><i class="bi bi-hash"></i> Invoice No.</th>
+                                <th><i class="bi bi-person"></i> Customer</th>
+                                <th><i class="bi bi-truck"></i> Vehicle</th>
+                                <th class="text-end"><i class="bi bi-currency-rupee"></i> Grand Total</th>
+                                <th class="text-end"><i class="bi bi-check-circle"></i> Paid</th>
+                                <th class="text-end"><i class="bi bi-arrow-left-right"></i> Balance</th>
+                                <th><i class="bi bi-info-circle"></i> Status</th>
+                                <th><i class="bi bi-calendar3"></i> Date</th>
+                                <th class="text-end"><i class="bi bi-gear"></i> Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Any())
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    <tr class="deleted-row">
+                                        <td><span style="font-weight:600;">@item.InvoiceNumber</span></td>
+                                        <td>@item.CustomerName</td>
+                                        <td>@item.VehicleRegistrationNumber</td>
+                                        <td class="text-end" style="font-weight:600;">@item.GrandTotal.ToString("N2")</td>
+                                        <td class="text-end" style="color:var(--success);font-weight:600;">@item.AmountPaid.ToString("N2")</td>
+                                        <td class="text-end" style="font-weight:600;color:@(item.Balance > 0 ? "var(--danger)" : "var(--success)");">
+                                            @item.Balance.ToString("N2")
+                                        </td>
+                                        <td>
+                                            <span class="badge-status @(item.IsPaid ? "bg-paid" : "bg-unpaid")">
+                                                <i class="bi @(item.IsPaid ? "bi-check-circle-fill" : "bi-x-circle-fill")"></i>
+                                                @(item.IsPaid ? "Paid" : "Unpaid")
+                                            </span>
+                                        </td>
+                                        <td>@item.CreatedOn.ToString("dd-MM-yyyy")</td>
+                                        <td class="text-end">
+                                            <div class="action-group">
+                                                <form asp-action="Restore" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-success" title="Restore"
+                                                            onclick="return confirm('Are you sure you want to restore this invoice?');">
+                                                        <i class="bi bi-arrow-counterclockwise"></i> Restore
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="9">
+                                        <div class="empty-state">
+                                            <i class="bi bi-archive"></i>
+                                            <h5>No Deleted Records</h5>
+                                            <p class="text-muted">There are no deleted invoices in the system.</p>
+                                            <a asp-action="Index" class="btn btn-primary mt-2" style="border-radius:50px;padding:0.5rem 1.5rem;">
+                                                <i class="bi bi-arrow-left"></i> Back to List
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ─── Table Footer ─── -->
+                <div class="table-footer">
+                    <span>
+                        <i class="bi bi-database"></i>
+                        Total Records: <strong>@Model.Count()</strong>
+                    </span>
+                    <span>
+                        <i class="bi bi-clock-history"></i>
+                        Last updated: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                </div>
+            </div>
+
+        </div> <!-- /body-content -->
+    </div> <!-- /deleted-wrapper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+            // ─── Toast Notification ───
+            function showToast(message, type) {
+                var container = document.getElementById('toastContainer');
+                var toast = document.createElement('div');
+                toast.className = 'toast-custom ' + (type || 'success');
+                toast.innerHTML = `
+                            <div class="toast-title">
+                                <i class="bi ${type === 'error' ? 'bi-exclamation-circle-fill text-danger' : 'bi-check-circle-fill text-success'}"></i>
+                                ${type === 'error' ? 'Error' : 'Success'}
+                            </div>
+                            <div class="toast-message">${message}</div>
+                        `;
+                container.appendChild(toast);
+
+                setTimeout(function() {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100px)';
+                    toast.style.transition = '0.5s ease-out';
+                    setTimeout(function() { toast.remove(); }, 500);
+                }, 5000);
+            }
+
+            // ─── Show TempData Messages ───
+            @if (TempData["Error"] != null)
+                {
+                    <text>showToast('@TempData["Error"]', 'error');</text>
+            }
+
+                @if (TempData["Success"] != null)
+                {
+                    <text>showToast('@TempData["Success"]', 'success');</text>
+            }
+
+                // ─── Auto-dismiss alerts ───
+                setTimeout(function() {
+                    document.querySelectorAll('.alert-custom').forEach(function(alert) {
+                        var closeBtn = alert.querySelector('.btn-close');
+                        if (closeBtn) {
+                            closeBtn.click();
+                        }
+                    });
+                }, 5000);
+    </script>
+
+</body>
+</html>
