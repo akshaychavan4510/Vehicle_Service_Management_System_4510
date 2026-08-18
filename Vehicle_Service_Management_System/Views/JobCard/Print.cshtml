@@ -1,5 +1,7 @@
 ﻿@model Vehicle_Service_Management_System.Application.ViewModels.JobCard.JobCardPrintViewModel
+
 @{
+    ViewData["Title"] = $"Job Card #{Model.JobCardNumber} | Print";
     Layout = null;
 }
 
@@ -11,49 +13,139 @@
     <title>Job Card #@Model.JobCardNumber | Print</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-            /* ── Base Styles ── */
+            /* ────────────────────────────────────────────────────────── */
+            /* Root Variables                                          */
+            /* ────────────────────────────────────────────────────────── */
+            :root {
+                --primary: #0d6efd;
+                --primary-dark: #0a58ca;
+                --success: #22c55e;
+                --danger: #ef4444;
+                --warning: #f59e0b;
+                --info: #0dcaf0;
+                --dark: #1a2634;
+                --gray: #6b7a8e;
+                --gray-light: #eef2f7;
+                --gray-bg: #f8fafc;
+                --white: #ffffff;
+                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
+                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+                --radius: 16px;
+                --radius-sm: 10px;
+                --transition: 0.3s ease;
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Base Styles                                             */
+            /* ────────────────────────────────────────────────────────── */
             body {
-                background: #ffffff;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                padding: 2rem;
-                color: #1a2634;
+                background: #f4f6fa;
+                font-family: 'Inter', -apple-system, system-ui, sans-serif;
+                padding: 2rem 1.5rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+                color: var(--dark);
+                line-height: 1.6;
             }
 
             .print-wrapper {
-                max-width: 1000px;
-                margin: 0 auto;
+                max-width: 1100px;
+                width: 100%;
+                background: var(--white);
+                border-radius: var(--radius);
+                box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
+                overflow: hidden;
+                animation: slideUp 0.5s ease-out;
             }
 
-            /* ── Header ── */
-            .header {
-                border-bottom: 3px solid #0d6efd;
-                padding-bottom: 0.8rem;
-                margin-bottom: 1.5rem;
+            @@keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Header - Clean White Theme                               */
+            /* ────────────────────────────────────────────────────────── */
+            .header-clean {
+                background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+                padding: 2.5rem 3rem 2rem;
+                color: var(--dark);
+                border-bottom: 4px solid var(--primary);
+                position: relative;
+            }
+
+                .header-clean::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -4px;
+                    left: 0;
+                    right: 0;
+                    height: 4px;
+                    background: linear-gradient(90deg, var(--primary), var(--info), var(--success));
+                }
+
+            .header-content {
+                position: relative;
+                z-index: 1;
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: space-between;
                 align-items: center;
-                gap: 0.75rem;
+                justify-content: space-between;
+                gap: 1rem;
             }
 
             .header-left {
                 display: flex;
                 align-items: center;
-                gap: 0.75rem;
-                flex-wrap: wrap;
+                gap: 1rem;
             }
 
-                .header-left h1 {
+                .header-left .icon-wrapper {
+                    width: 56px;
+                    height: 56px;
+                    background: var(--primary);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                     font-size: 1.8rem;
-                    font-weight: 700;
-                    margin: 0;
-                    color: #0d6efd;
+                    color: #fff;
+                    flex-shrink: 0;
+                    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.3);
                 }
 
-                .header-left .job-card-number {
-                    font-size: 1.2rem;
-                    font-weight: 600;
+                .header-left h1 {
+                    font-weight: 800;
+                    font-size: 1.8rem;
+                    margin: 0;
+                    letter-spacing: -0.02em;
+                    color: var(--dark);
+                }
+
+                    .header-left h1 span {
+                        color: var(--primary);
+                    }
+
+                .header-left .job-number {
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    color: var(--gray);
+                    background: var(--gray-bg);
+                    padding: 0.25rem 1rem;
+                    border-radius: 50px;
+                    border: 1px solid var(--gray-light);
                 }
 
             .header-right {
@@ -63,63 +155,163 @@
                 flex-wrap: wrap;
             }
 
+            /* ────────────────────────────────────────────────────────── */
+            /* Status Badge                                            */
+            /* ────────────────────────────────────────────────────────── */
             .badge-status {
-                font-weight: 500;
-                padding: 0.3rem 0.9rem;
+                font-weight: 600;
+                padding: 0.35rem 1.2rem;
                 border-radius: 50px;
                 font-size: 0.8rem;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
             }
 
-                .badge-status.bg-success {
-                    background: #dcfce7 !important;
-                    color: #166534;
-                }
-
-                .badge-status.bg-danger {
-                    background: #fee2e2 !important;
-                    color: #991b1b;
-                }
-
-                .badge-status.bg-warning {
-                    background: #fef3c7 !important;
+                .badge-status.bg-pending {
+                    background: #fef3c7;
                     color: #b45309;
                 }
 
-                .badge-status.bg-info {
-                    background: #e0f2fe !important;
+                .badge-status.bg-inprogress {
+                    background: #e0f2fe;
                     color: #0369a1;
                 }
 
-                .badge-status.bg-secondary {
-                    background: #e2e8f0 !important;
-                    color: #4a5568;
+                .badge-status.bg-completed {
+                    background: #dcfce7;
+                    color: #166534;
+                }
+
+                .badge-status.bg-cancelled {
+                    background: #fee2e2;
+                    color: #991b1b;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Buttons                                                  */
+            /* ────────────────────────────────────────────────────────── */
+            .btn-header {
+                background: var(--gray-bg);
+                border: 1px solid var(--gray-light);
+                color: var(--gray);
+                border-radius: 50px;
+                padding: 0.5rem 1.4rem;
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: var(--transition);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+                .btn-header:hover {
+                    background: var(--gray-light);
+                    border-color: var(--primary);
+                    color: var(--dark);
+                    transform: translateY(-2px);
+                    box-shadow: var(--shadow-sm);
                 }
 
             .btn-print {
                 border-radius: 50px;
-                padding: 0.3rem 1rem;
-                font-weight: 500;
-                font-size: 0.85rem;
+                padding: 0.5rem 1.4rem;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: var(--transition);
                 display: inline-flex;
                 align-items: center;
-                gap: 0.3rem;
+                gap: 0.5rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
             }
 
-                .btn-print i {
-                    font-size: 0.9rem;
+                .btn-print:hover {
+                    transform: translateY(-2px);
+                    box-shadow: var(--shadow-md);
                 }
 
-            /* ── Detail Grid ── */
+            .btn-print-primary {
+                background: linear-gradient(135deg, #0d6efd, #0a58ca);
+                border: none;
+                color: #fff;
+                box-shadow: 0 4px 14px rgba(13, 110, 253, 0.3);
+            }
+
+                .btn-print-primary:hover {
+                    box-shadow: 0 6px 24px rgba(13, 110, 253, 0.4);
+                }
+
+            .btn-print-secondary {
+                background: var(--gray-bg);
+                border: 1px solid var(--gray-light);
+                color: var(--gray);
+            }
+
+                .btn-print-secondary:hover {
+                    background: var(--gray-light);
+                    border-color: var(--primary);
+                    color: var(--dark);
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Body                                                     */
+            /* ────────────────────────────────────────────────────────── */
+            .body-content {
+                padding: 2rem 3rem 2.5rem;
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Company Header                                           */
+            /* ────────────────────────────────────────────────────────── */
+            .company-header {
+                text-align: center;
+                padding-bottom: 1.5rem;
+                margin-bottom: 1.5rem;
+                border-bottom: 2px solid var(--gray-light);
+            }
+
+                .company-header .company-name {
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                    color: var(--dark);
+                    margin: 0;
+                }
+
+                    .company-header .company-name span {
+                        color: var(--primary);
+                    }
+
+                .company-header .company-details {
+                    color: var(--gray);
+                    font-size: 0.9rem;
+                    margin: 0.25rem 0 0;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Detail Grid                                             */
+            /* ────────────────────────────────────────────────────────── */
+            .detail-card {
+                background: var(--gray-bg);
+                border-radius: var(--radius-sm);
+                padding: 1.75rem 2rem;
+                border: 1px solid var(--gray-light);
+                margin-bottom: 1.5rem;
+                transition: var(--transition);
+            }
+
+                .detail-card:hover {
+                    border-color: var(--primary);
+                    box-shadow: var(--shadow-sm);
+                }
+
             .detail-grid {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.5rem 2rem;
-                background: #f8fafc;
-                padding: 1.5rem;
-                border-radius: 10px;
-                border: 1px solid #eef2f7;
-                margin-bottom: 2rem;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 1.25rem 2rem;
             }
 
             .detail-item {
@@ -128,121 +320,382 @@
             }
 
                 .detail-item .label {
-                    font-size: 0.8rem;
+                    font-size: 0.7rem;
                     text-transform: uppercase;
-                    letter-spacing: 0.05em;
-                    color: #6b7a8e;
+                    letter-spacing: 0.06em;
+                    color: var(--gray);
                     font-weight: 600;
                 }
 
                 .detail-item .value {
-                    font-size: 1.05rem;
+                    font-size: 1rem;
                     font-weight: 500;
-                    color: #1a2634;
+                    color: var(--dark);
+                    word-break: break-word;
+                    margin-top: 0.1rem;
                 }
 
-            /* ── Text Blocks ── */
-            .section-title {
-                font-weight: 600;
+                    .detail-item .value .sub {
+                        font-weight: 400;
+                        color: var(--gray);
+                        font-size: 0.85rem;
+                        display: block;
+                    }
+
+                        .detail-item .value .sub i {
+                            margin-right: 0.25rem;
+                            color: var(--gray);
+                        }
+
+                    .detail-item .value .cost-highlight {
+                        font-weight: 700;
+                        color: var(--primary);
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Section Headers                                         */
+            /* ────────────────────────────────────────────────────────── */
+            .section-header {
+                font-weight: 700;
                 font-size: 1.1rem;
-                color: #2d3748;
+                color: var(--dark);
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-bottom: 0.75rem;
                 margin-top: 1.5rem;
-                margin-bottom: 0.5rem;
-                border-bottom: 2px solid #eef2f7;
-                padding-bottom: 0.3rem;
+                padding-bottom: 0.75rem;
+                border-bottom: 2px solid var(--gray-light);
             }
 
+                .section-header i {
+                    color: var(--primary);
+                    font-size: 1.3rem;
+                }
+
+                .section-header .badge-count {
+                    background: var(--gray-bg);
+                    color: var(--gray);
+                    padding: 0.1rem 0.75rem;
+                    border-radius: 50px;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    margin-left: auto;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Text Blocks                                              */
+            /* ────────────────────────────────────────────────────────── */
             .text-block {
-                background: #ffffff;
-                border-radius: 8px;
-                padding: 1rem 1.25rem;
-                border: 1px solid #eef2f7;
-                min-height: 50px;
-                margin-bottom: 1rem;
-                color: #1a2634;
+                background: var(--white);
+                border-radius: var(--radius-xs);
+                padding: 1.25rem 1.5rem;
+                border: 1px solid var(--gray-light);
+                min-height: 60px;
+                color: var(--dark);
+                font-weight: 400;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                transition: var(--transition);
             }
+
+                .text-block:hover {
+                    border-color: var(--primary);
+                    box-shadow: var(--shadow-sm);
+                }
 
                 .text-block.empty {
-                    color: #94a3b8;
+                    color: var(--gray);
                     font-style: italic;
                 }
 
-            /* ── Footer ── */
+            /* ────────────────────────────────────────────────────────── */
+            /* Footer                                                   */
+            /* ────────────────────────────────────────────────────────── */
             .footer {
-                margin-top: 2.5rem;
-                border-top: 1px solid #e9edf4;
+                margin-top: 2rem;
                 padding-top: 1.5rem;
+                border-top: 2px solid var(--gray-light);
                 text-align: center;
-                color: #6b7a8e;
-                font-size: 0.9rem;
+                color: var(--gray);
+                font-size: 0.85rem;
             }
 
-            /* ── Print-specific overrides ── */
+                .footer i {
+                    margin-right: 0.25rem;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Bottom Actions                                           */
+            /* ────────────────────────────────────────────────────────── */
+            .bottom-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                margin-top: 1.5rem;
+                justify-content: flex-end;
+                align-items: center;
+            }
+
+                .bottom-actions .btn {
+                    border-radius: 50px;
+                    padding: 0.6rem 1.8rem;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    transition: var(--transition);
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.6rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
+                }
+
+                    .bottom-actions .btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: var(--shadow-md);
+                    }
+
+                .bottom-actions .btn-primary {
+                    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+                    border: none;
+                    color: #fff;
+                    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.3);
+                }
+
+                    .bottom-actions .btn-primary:hover {
+                        box-shadow: 0 6px 24px rgba(13, 110, 253, 0.4);
+                    }
+
+                .bottom-actions .btn-secondary {
+                    background: var(--gray-bg);
+                    border: 1px solid var(--gray-light);
+                    color: var(--gray);
+                }
+
+                    .bottom-actions .btn-secondary:hover {
+                        background: var(--gray-light);
+                        border-color: var(--gray);
+                        color: var(--dark);
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Print Styles                                             */
+            /* ────────────────────────────────────────────────────────── */
             @@media print {
-                .btn-print, .btn-outline-secondary {
+                body {
+                    background: var(--white);
+                    padding: 0.3in;
+                    font-size: 12px;
+                }
+
+                .print-wrapper {
+                    box-shadow: none;
+                    border-radius: 0;
+                    animation: none;
+                }
+
+                .header-clean {
+                    background: #ffffff !important;
+                    border-bottom: 3px solid #0d6efd !important;
+                    padding: 1.5rem 2rem 1.2rem;
+                }
+
+                    .header-clean::after {
+                        display: none;
+                    }
+
+                .header-left .icon-wrapper {
+                    background: #0d6efd !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+
+                .btn-header,
+                .btn-print,
+                .bottom-actions .btn {
                     display: none !important;
                 }
 
-                body {
-                    padding: 0.5in;
+                .detail-card {
+                    background: transparent !important;
+                    border: 1px solid #ddd !important;
+                    box-shadow: none !important;
+                    padding: 1rem 1.25rem;
                 }
 
-                .detail-grid {
-                    border: none;
-                    background: transparent;
-                    padding: 0;
-                }
+                    .detail-card:hover {
+                        border-color: #ddd !important;
+                    }
 
                 .text-block {
-                    border: none;
-                    background: transparent;
-                    padding: 0.25rem 0;
+                    background: transparent !important;
+                    border: 1px solid #ddd !important;
+                    box-shadow: none !important;
+                    padding: 0.75rem 1rem;
                 }
 
-                .header {
-                    border-bottom-color: #333;
-                }
-
-                .header-left h1 {
-                    color: #000;
-                }
+                    .text-block:hover {
+                        border-color: #ddd !important;
+                    }
 
                 .badge-status {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
                     border: 1px solid #ddd;
+                }
+
+                .section-header {
+                    border-bottom-color: #ddd !important;
+                }
+
+                .footer {
+                    border-top-color: #ddd !important;
+                }
+
+                .body-content {
+                    padding: 1rem 0.5rem 0.5rem;
+                }
+
+                .bottom-actions {
+                    display: none !important;
+                }
+
+                .company-header {
+                    border-bottom-color: #ddd !important;
                 }
             }
 
-            /* ── Responsive (≤576px) ── */
-            @@media (max-width: 576px) {
+            /* ────────────────────────────────────────────────────────── */
+            /* Responsive                                               */
+            /* ────────────────────────────────────────────────────────── */
+            @@media (max-width: 992px) {
+                .header-clean {
+                    padding: 2rem 1.5rem 1.5rem;
+                }
+
+                .body-content {
+                    padding: 1.5rem 1.5rem 2rem;
+                }
+            }
+
+            @@media (max-width: 768px) {
                 body {
-                    padding: 1rem;
+                    padding: 1rem 0.75rem;
                 }
 
-                .header {
+                .print-wrapper {
+                    border-radius: var(--radius-sm);
+                }
+
+                .header-clean {
+                    padding: 1.5rem 1.25rem 1.25rem;
+                }
+
+                .header-left h1 {
+                    font-size: 1.3rem;
+                }
+
+                .header-left .icon-wrapper {
+                    width: 44px;
+                    height: 44px;
+                    font-size: 1.3rem;
+                }
+
+                .header-left .job-number {
+                    font-size: 0.75rem;
+                    padding: 0.15rem 0.75rem;
+                }
+
+                .header-content {
                     flex-direction: column;
-                    align-items: stretch;
-                }
-
-                .header-left {
-                    justify-content: center;
+                    align-items: flex-start;
                 }
 
                 .header-right {
-                    justify-content: center;
+                    width: 100%;
+                    justify-content: flex-start;
+                }
+
+                .body-content {
+                    padding: 1rem 1rem 1.5rem;
                 }
 
                 .detail-grid {
                     grid-template-columns: 1fr;
-                    gap: 1rem;
-                    padding: 1rem;
+                    gap: 0.75rem;
                 }
 
-                .section-title {
-                    font-size: 1rem;
+                .detail-card {
+                    padding: 1.25rem 1rem;
+                    border-radius: var(--radius-xs);
+                }
+
+                .text-block {
+                    min-height: 50px;
+                    padding: 1rem 1.25rem;
+                    font-size: 0.9rem;
+                }
+
+                .section-header {
+                    font-size: 0.95rem;
+                }
+
+                .bottom-actions {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                    .bottom-actions .btn {
+                        justify-content: center;
+                        padding: 0.6rem 1.2rem;
+                    }
+
+                .company-header .company-name {
+                    font-size: 1.2rem;
+                }
+            }
+
+            @@media (max-width: 480px) {
+                body {
+                    padding: 0.5rem 0.5rem;
+                }
+
+                .header-clean {
+                    padding: 1rem 1rem 1rem;
+                    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
                 }
 
                 .header-left h1 {
-                    font-size: 1.5rem;
+                    font-size: 1.1rem;
+                }
+
+                .header-left .icon-wrapper {
+                    width: 36px;
+                    height: 36px;
+                    font-size: 1rem;
+                }
+
+                .body-content {
+                    padding: 0.75rem 0.75rem 1rem;
+                }
+
+                .detail-card {
+                    padding: 1rem 0.75rem;
+                }
+
+                .detail-item .value {
+                    font-size: 0.9rem;
+                }
+
+                .text-block {
+                    min-height: 40px;
+                    padding: 0.75rem 1rem;
+                    font-size: 0.85rem;
+                }
+
+                .bottom-actions .btn {
+                    font-size: 0.8rem;
+                    padding: 0.5rem 1rem;
                 }
             }
     </style>
@@ -251,111 +704,160 @@
 
     <div class="print-wrapper">
 
-        <!-- ─── HEADER ─── -->
-        <div class="header">
-            <div class="header-left">
-                <h1><i class="bi bi-card-checklist"></i> Job Card</h1>
-                <span class="job-card-number">#@Model.JobCardNumber</span>
+        <!-- ─── HEADER - Clean White Theme ─── -->
+        <div class="header-clean">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-card-checklist"></i>
+                    </div>
+                    <div>
+                        <h1>Job <span>Card</span></h1>
+                        <span class="job-number">#@Model.JobCardNumber</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    @{
+                        string statusClass = Model.Status switch
+                        {
+                            "Pending" => "bg-pending",
+                            "InProgress" => "bg-inprogress",
+                            "Completed" => "bg-completed",
+                            "Cancelled" => "bg-cancelled",
+                            _ => "bg-secondary"
+                        };
+                        string statusIcon = Model.Status switch
+                        {
+                            "Pending" => "bi-clock",
+                            "InProgress" => "bi-arrow-repeat",
+                            "Completed" => "bi-check-circle",
+                            "Cancelled" => "bi-x-circle",
+                            _ => "bi-dot"
+                        };
+                    }
+                    <span class="badge-status @statusClass">
+                        <i class="bi @statusIcon"></i> @Model.Status
+                    </span>
+                    <button class="btn btn-print btn-print-primary" onclick="window.print();">
+                        <i class="bi bi-printer"></i> Print
+                    </button>
+                    <a asp-action="Index" class="btn btn-print btn-print-secondary">
+                        <i class="bi bi-arrow-left"></i> Back
+                    </a>
+                </div>
             </div>
-            <div class="header-right">
-                @{
-                    string statusBadge = Model.Status switch
-                    {
-                        "Pending" => "bg-warning",
-                        "InProgress" => "bg-info",
-                        "Completed" => "bg-success",
-                        "Cancelled" => "bg-danger",
-                        _ => "bg-secondary"
-                    };
-                }
-                <span class="badge-status @statusBadge">@Model.Status</span>
-                <button class="btn btn-primary btn-print" onclick="window.print();">
-                    <i class="bi bi-printer"></i> Print
+        </div>
+
+        <!-- ─── BODY ─── -->
+        <div class="body-content">
+
+            <!-- ─── Company Header ─── -->
+            <div class="company-header">
+                <h2 class="company-name">🚗 Vehicle <span>Service</span> Management</h2>
+                <p class="company-details">
+                    <i class="bi bi-geo-alt"></i> City - Kolhapur;
+                    <i class="bi bi-telephone"></i> +91 9766805552 &nbsp;|&nbsp;
+                    
+                </p>
+            </div>
+
+            <!-- ─── Detail Grid ─── -->
+            <div class="detail-card">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="label">Customer</span>
+                        <span class="value">@Model.CustomerName</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Phone</span>
+                        <span class="value">@Model.PhoneNumber</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Vehicle</span>
+                        <span class="value">@Model.VehicleRegistrationNumber</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Mechanic</span>
+                        <span class="value">@(string.IsNullOrEmpty(Model.MechanicName) ? "Not assigned" : Model.MechanicName)</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Service Type</span>
+                        <span class="value">@Model.ServicesSummary</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Inspection Date</span>
+                        <span class="value">@(Model.InspectionDate?.ToString("dd/MM/yyyy HH:mm") ?? "—")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Estimated Cost</span>
+                        <span class="value" style="color:var(--primary);font-weight:700;">@Model.EstimatedCost.ToString("C")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Actual Cost</span>
+                        <span class="value" style="color:var(--success);font-weight:700;">@Model.ActualCost.ToString("C")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── Inspection Checklist ─── -->
+            <div class="section-header">
+                <i class="bi bi-list-check"></i>
+                Inspection Checklist
+            </div>
+            <div class="text-block @(string.IsNullOrWhiteSpace(Model.Checklist) ? "empty" : "")">
+                @(string.IsNullOrWhiteSpace(Model.Checklist) ? "No checklist available." : Model.Checklist)
+            </div>
+
+            <!-- ─── Mechanic Notes ─── -->
+            <div class="section-header">
+                <i class="bi bi-sticky-fill"></i>
+                Mechanic Notes
+            </div>
+            <div class="text-block @(string.IsNullOrWhiteSpace(Model.MechanicNotes) ? "empty" : "")">
+                @(string.IsNullOrWhiteSpace(Model.MechanicNotes) ? "No mechanic notes." : Model.MechanicNotes)
+            </div>
+
+            <!-- ─── Work Performed ─── -->
+            <div class="section-header">
+                <i class="bi bi-tools"></i>
+                Work Performed
+            </div>
+            <div class="text-block @(string.IsNullOrWhiteSpace(Model.WorkPerformed) ? "empty" : "")">
+                @(string.IsNullOrWhiteSpace(Model.WorkPerformed) ? "Work not updated yet." : Model.WorkPerformed)
+            </div>
+
+            <!-- ─── Footer ─── -->
+            <div class="footer">
+                <i class="bi bi-clock"></i>
+                Generated on @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                <span class="mx-2">|</span>
+                <i class="bi bi-building"></i>
+                Vehicle Service Management System
+                <span class="mx-2">|</span>
+                <i class="bi bi-file-text"></i>
+                Job Card #@Model.JobCardNumber
+            </div>
+
+            <!-- ─── Bottom Actions ─── -->
+            <div class="bottom-actions">
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                    <i class="bi bi-eye"></i> View Details
+                </a>
+                <button class="btn btn-primary" onclick="window.print();">
+                    <i class="bi bi-printer"></i> Print Job Card
                 </button>
             </div>
-            <a asp-action="Index" class="btn btn-outline-secondary btn-print">
-                <i class="bi bi-arrow-left"></i> Back
-            </a>
-        </div>
 
-        <!-- ─── DETAIL GRID ─── -->
-        <div class="detail-grid">
-            <div class="detail-item">
-                <span class="label">Customer</span>
-                <span class="value">@Model.CustomerName</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Phone</span>
-                <span class="value">@Model.PhoneNumber</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Vehicle</span>
-                <span class="value">@Model.VehicleRegistrationNumber</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Mechanic</span>
-                <span class="value">@Model.MechanicName</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Service Type</span>
-                <span class="value">@Model.ServicesSummary</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Inspection Date</span>
-                <span class="value">@(Model.InspectionDate?.ToString("dd/MM/yyyy HH:mm") ?? "—")</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Estimated Cost</span>
-                <span class="value">@Model.EstimatedCost.ToString("C")</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Actual Cost</span>
-                <span class="value">@Model.ActualCost.ToString("C")</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Total</span>
-                <span class="value"><strong>@Model.ActualCost.ToString("C")</strong></span>
-            </div>
-        </div>
-
-        <!-- ─── CHECKLIST ─── -->
-        <div class="section-title">
-            <i class="bi bi-list-check"></i> Inspection Checklist
-        </div>
-        <div class="text-block @(string.IsNullOrWhiteSpace(Model.Checklist) ? "empty" : "")">
-            @(string.IsNullOrWhiteSpace(Model.Checklist) ? "No checklist available." : Model.Checklist)
-        </div>
-
-        <!-- ─── MECHANIC NOTES ─── -->
-        <div class="section-title">
-            <i class="bi bi-sticky-fill"></i> Mechanic Notes
-        </div>
-        <div class="text-block @(string.IsNullOrWhiteSpace(Model.MechanicNotes) ? "empty" : "")">
-            @(string.IsNullOrWhiteSpace(Model.MechanicNotes) ? "No mechanic notes." : Model.MechanicNotes)
-        </div>
-
-        <!-- ─── WORK PERFORMED ─── -->
-        <div class="section-title">
-            <i class="bi bi-tools"></i> Work Performed
-        </div>
-        <div class="text-block @(string.IsNullOrWhiteSpace(Model.WorkPerformed) ? "empty" : "")">
-            @(string.IsNullOrWhiteSpace(Model.WorkPerformed) ? "Work not updated yet." : Model.WorkPerformed)
-        </div>
-
-        <!-- ─── FOOTER ─── -->
-        <div class="footer">
-            <small>Generated on @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
-        </div>
-
-        <!-- ─── BOTTOM PRINT BUTTON ─── -->
-        <div class="text-end mt-3">
-            <button class="btn btn-primary btn-print" onclick="window.print();">
-                <i class="bi bi-printer"></i> Print Job Card
-            </button>
-        </div>
-
-    </div>
+        </div> <!-- /body-content -->
+    </div> <!-- /print-wrapper -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+            // ─── Auto-print dialog when page loads ───
+            // Uncomment the line below if you want the print dialog to open automatically
+            // window.onload = function() { window.print(); };
+    </script>
+
 </body>
 </html>
