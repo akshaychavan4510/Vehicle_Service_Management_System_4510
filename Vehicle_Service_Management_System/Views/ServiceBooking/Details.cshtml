@@ -1,5 +1,7 @@
 ﻿@model Vehicle_Service_Management_System.Application.ViewModels.ServiceBooking.ServiceBookingDetailsViewModel
 @using Vehicle_Service_Management_System.Domain.Enums
+@using System.Linq
+
 @{
     ViewData["Title"] = "Booking Details";
     Layout = null;
@@ -13,117 +15,391 @@
     <title>Booking Details | Vehicle Service Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-            /* ── (your existing styles – unchanged) ── */
+            /* ────────────────────────────────────────────────────────── */
+            /* Root Variables                                          */
+            /* ────────────────────────────────────────────────────────── */
             :root {
-                --primary-gradient: linear-gradient(135deg, #0d6efd, #0a58ca);
-                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
-                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.14);
-                --radius: 16px;
-                --radius-sm: 10px;
-                --transition: 0.25s ease;
+                --primary: #0d6efd;
+                --primary-dark: #0a58ca;
+                --primary-light: #e8f0fe;
+                --success: #22c55e;
+                --danger: #ef4444;
+                --warning: #f59e0b;
+                --info: #0dcaf0;
+                --dark: #1a2634;
+                --gray: #6b7a8e;
+                --gray-light: #eef2f7;
+                --gray-bg: #f0f2f5;
+                --white: #ffffff;
+                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
+                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+                --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.16);
+                --radius: 20px;
+                --radius-sm: 12px;
+                --radius-xs: 8px;
+                --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
+            /* ────────────────────────────────────────────────────────── */
+            /* Base Styles                                             */
+            /* ────────────────────────────────────────────────────────── */
             body {
-                background: #f4f6fa;
-                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+                background: var(--gray-bg);
+                font-family: 'Inter', -apple-system, system-ui, sans-serif;
                 padding: 2rem 1.5rem;
                 min-height: 100vh;
                 display: flex;
                 align-items: flex-start;
                 justify-content: center;
+                color: var(--dark);
+                line-height: 1.6;
             }
 
             .details-wrapper {
-                max-width: 1200px;
+                max-width: 1280px;
                 width: 100%;
-                background: #ffffff;
+                background: var(--white);
                 border-radius: var(--radius);
-                box-shadow: var(--shadow-lg);
-                padding: 2rem 2.5rem 2.5rem;
-                transition: var(--transition);
+                box-shadow: var(--shadow-xl);
+                overflow: hidden;
+                animation: slideUp 0.5s ease-out;
             }
 
-            @@media (max-width: 576px) {
-                body {
-                    padding: 1rem 0.75rem;
+            @@keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
                 }
 
-                .details-wrapper {
-                    padding: 1.25rem 1rem 1.75rem;
-                    border-radius: var(--radius-sm);
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
                 }
             }
 
-            .page-header {
+            /* ────────────────────────────────────────────────────────── */
+            /* Header - Premium Gradient                               */
+            /* ────────────────────────────────────────────────────────── */
+            .header-premium {
+                background: linear-gradient(135deg, #0c0e1a 0%, #1a1a3e 40%, #0d6efd 100%);
+                padding: 2.5rem 3rem 2rem;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .header-premium::before {
+                    content: '';
+                    position: absolute;
+                    top: -60%;
+                    right: -10%;
+                    width: 500px;
+                    height: 500px;
+                    background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+                .header-premium::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -40%;
+                    left: -5%;
+                    width: 300px;
+                    height: 300px;
+                    background: radial-gradient(circle, rgba(13, 202, 240, 0.08) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+            .header-content {
+                position: relative;
+                z-index: 1;
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
                 justify-content: space-between;
                 gap: 1rem;
-                margin-bottom: 1.75rem;
             }
 
-                .page-header h1 {
-                    font-weight: 700;
-                    font-size: 1.85rem;
-                    letter-spacing: -0.02em;
-                    color: #1a2634;
+            .header-title {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+                .header-title .icon-wrapper {
+                    width: 56px;
+                    height: 56px;
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.8rem;
+                    backdrop-filter: blur(4px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    flex-shrink: 0;
+                }
+
+                .header-title h1 {
+                    font-weight: 800;
+                    font-size: 1.8rem;
                     margin: 0;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
+                    letter-spacing: -0.02em;
+                    background: linear-gradient(135deg, #fff 60%, #94a3b8);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
                 }
 
-                    .page-header h1 i {
-                        color: #0d6efd;
-                        font-size: 2rem;
-                    }
-
-                .page-header .btn-outline-secondary {
+                .header-title .booking-number {
+                    font-size: 0.9rem;
+                    font-weight: 400;
+                    color: rgba(255, 255, 255, 0.7);
+                    background: rgba(255, 255, 255, 0.1);
+                    padding: 0.25rem 1rem;
                     border-radius: 50px;
-                    padding: 0.5rem 1.2rem;
-                    font-weight: 500;
-                    border-color: #d1d9e6;
-                    transition: var(--transition);
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.4rem;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.7);
                 }
 
-                    .page-header .btn-outline-secondary:hover {
-                        background: #eef2f7;
-                        border-color: #b0bcca;
-                    }
-
-            .detail-card {
-                background: #f9fafc;
-                border-radius: var(--radius-sm);
-                padding: 1.5rem 1.75rem;
-                box-shadow: var(--shadow-sm);
-                border: 1px solid #eef2f7;
-                height: 100%;
+            .header-actions {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                flex-wrap: wrap;
             }
 
-                .detail-card .card-title {
-                    font-weight: 600;
-                    font-size: 1.1rem;
-                    color: #2d3748;
-                    margin-bottom: 1rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
+            .btn-header {
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #fff;
+                border-radius: 50px;
+                padding: 0.5rem 1.4rem;
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: var(--transition);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                backdrop-filter: blur(4px);
+            }
+
+                .btn-header:hover {
+                    background: rgba(255, 255, 255, 0.25);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+                    color: #fff;
                 }
 
-                    .detail-card .card-title i {
-                        color: #0d6efd;
+            /* ────────────────────────────────────────────────────────── */
+            /* Toast / Notification                                     */
+            /* ────────────────────────────────────────────────────────── */
+            .toast-container {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+            }
+
+            .toast-custom {
+                background: var(--white);
+                border-radius: var(--radius-sm);
+                padding: 1rem 1.5rem;
+                box-shadow: var(--shadow-lg);
+                border-left: 4px solid var(--primary);
+                min-width: 300px;
+                animation: slideInRight 0.5s ease-out;
+                margin-bottom: 0.75rem;
+            }
+
+                .toast-custom.success {
+                    border-left-color: var(--success);
+                }
+
+                .toast-custom.error {
+                    border-left-color: var(--danger);
+                }
+
+                .toast-custom .toast-title {
+                    font-weight: 700;
+                    font-size: 0.95rem;
+                }
+
+                .toast-custom .toast-message {
+                    font-size: 0.85rem;
+                    color: var(--gray);
+                }
+
+            @@keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Body                                                     */
+            /* ────────────────────────────────────────────────────────── */
+            .body-content {
+                padding: 2rem 3rem 2.5rem;
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Alert Messages                                           */
+            /* ────────────────────────────────────────────────────────── */
+            .alert-custom {
+                border-radius: var(--radius-sm);
+                padding: 1rem 1.5rem;
+                border: none;
+                box-shadow: var(--shadow-sm);
+                margin-bottom: 1.5rem;
+            }
+
+                .alert-custom.alert-danger {
+                    background: #fee2e2;
+                    color: #991b1b;
+                    border-left: 4px solid var(--danger);
+                }
+
+                .alert-custom.alert-success {
+                    background: #dcfce7;
+                    color: #166534;
+                    border-left: 4px solid var(--success);
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Stats Row - Modern Cards                                */
+            /* ────────────────────────────────────────────────────────── */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                background: var(--gray-bg);
+                border-radius: var(--radius-sm);
+                padding: 1.25rem 1.5rem;
+                text-align: center;
+                border: 1px solid var(--gray-light);
+                transition: var(--transition);
+                position: relative;
+                overflow: hidden;
+            }
+
+                .stat-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, var(--primary), var(--info));
+                    opacity: 0;
+                    transition: var(--transition);
+                }
+
+                .stat-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: var(--shadow-md);
+                    border-color: var(--primary);
+                }
+
+                    .stat-card:hover::before {
+                        opacity: 1;
                     }
 
+                .stat-card .stat-number {
+                    font-size: 1.6rem;
+                    font-weight: 800;
+                    color: var(--dark);
+                    display: block;
+                    letter-spacing: -0.02em;
+                }
+
+                .stat-card .stat-label {
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    color: var(--gray);
+                    font-weight: 600;
+                    display: block;
+                    margin-top: 0.25rem;
+                }
+
+                .stat-card .stat-icon {
+                    font-size: 1.2rem;
+                    color: var(--primary);
+                    opacity: 0.4;
+                    position: absolute;
+                    right: 0.75rem;
+                    bottom: 0.5rem;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Detail Cards                                            */
+            /* ────────────────────────────────────────────────────────── */
+            .detail-card {
+                background: var(--white);
+                border-radius: var(--radius-sm);
+                padding: 1.75rem 2rem;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid var(--gray-light);
+                margin-bottom: 1.5rem;
+                transition: var(--transition);
+            }
+
+                .detail-card:hover {
+                    border-color: var(--primary);
+                    box-shadow: var(--shadow-md);
+                }
+
+                .detail-card .card-header-custom {
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    color: var(--dark);
+                    margin-bottom: 1.5rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding-bottom: 0.75rem;
+                    border-bottom: 2px solid var(--gray-light);
+                }
+
+                    .detail-card .card-header-custom i {
+                        color: var(--primary);
+                        font-size: 1.3rem;
+                    }
+
+                    .detail-card .card-header-custom .badge-count {
+                        background: var(--primary-light);
+                        color: var(--primary);
+                        padding: 0.1rem 0.75rem;
+                        border-radius: 50px;
+                        font-size: 0.75rem;
+                        font-weight: 600;
+                        margin-left: auto;
+                    }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Detail Grid                                             */
+            /* ────────────────────────────────────────────────────────── */
             .detail-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 1rem 1.8rem;
+                gap: 1.25rem 2rem;
             }
 
             .detail-item {
@@ -132,365 +408,874 @@
             }
 
                 .detail-item .label {
-                    font-size: 0.75rem;
+                    font-size: 0.7rem;
                     text-transform: uppercase;
-                    letter-spacing: 0.05em;
-                    color: #6b7a8e;
+                    letter-spacing: 0.06em;
+                    color: var(--gray);
                     font-weight: 600;
                 }
 
                 .detail-item .value {
-                    font-size: 1.05rem;
+                    font-size: 1rem;
                     font-weight: 500;
-                    color: #1a2634;
+                    color: var(--dark);
                     word-break: break-word;
+                    margin-top: 0.1rem;
                 }
 
+                    .detail-item .value .sub {
+                        font-weight: 400;
+                        color: var(--gray);
+                        font-size: 0.85rem;
+                        display: block;
+                    }
+
+                        .detail-item .value .sub i {
+                            margin-right: 0.25rem;
+                            color: var(--gray);
+                        }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Status Badge                                            */
+            /* ────────────────────────────────────────────────────────── */
             .badge-status {
-                font-weight: 500;
-                padding: 0.3rem 0.9rem;
+                font-weight: 600;
+                padding: 0.35rem 1.2rem;
                 border-radius: 50px;
                 font-size: 0.8rem;
                 display: inline-flex;
                 align-items: center;
-                gap: 0.4rem;
+                gap: 0.5rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
             }
 
-                .badge-status.bg-success {
-                    background: #dcfce7 !important;
-                    color: #166534;
-                }
-
-                .badge-status.bg-danger {
-                    background: #fee2e2 !important;
-                    color: #991b1b;
-                }
-
-                .badge-status.bg-warning {
-                    background: #fef3c7 !important;
+                .badge-status.bg-pending {
+                    background: #fef3c7;
                     color: #b45309;
                 }
 
-                .badge-status.bg-info {
-                    background: #e0f2fe !important;
+                .badge-status.bg-inprogress {
+                    background: #e0f2fe;
                     color: #0369a1;
                 }
 
-                .badge-status.bg-primary {
-                    background: #dbeafe !important;
-                    color: #1d4ed8;
+                .badge-status.bg-completed {
+                    background: #dcfce7;
+                    color: #166534;
                 }
 
-                .badge-status i {
-                    font-size: 0.7rem;
+                .badge-status.bg-cancelled {
+                    background: #fee2e2;
+                    color: #991b1b;
                 }
 
-            .customer-detail {
+            /* ────────────────────────────────────────────────────────── */
+            /* Status Timeline                                         */
+            /* ────────────────────────────────────────────────────────── */
+            .status-timeline {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-top: 1.25rem;
+                padding-top: 1.25rem;
+                border-top: 1px solid var(--gray-light);
+                flex-wrap: wrap;
+            }
+
+            .status-step {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.8rem;
+                color: var(--gray);
                 font-weight: 500;
-                color: #1a2634;
+                padding: 0.25rem 0.5rem;
+                border-radius: 50px;
+                transition: var(--transition);
             }
 
-                .customer-detail .phone,
-                .customer-detail .email {
-                    font-weight: 400;
-                    color: #4a5568;
-                    font-size: 0.9rem;
-                }
-
-            .action-card {
-                background: #f9fafc;
-                border-radius: var(--radius-sm);
-                padding: 1.25rem 1.5rem;
-                box-shadow: var(--shadow-sm);
-                border: 1px solid #eef2f7;
-                height: 100%;
-            }
-
-                .action-card .card-title {
-                    font-weight: 600;
-                    font-size: 1rem;
-                    color: #2d3748;
-                    margin-bottom: 0.75rem;
+                .status-step .step-circle {
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 50%;
+                    background: var(--gray-light);
                     display: flex;
                     align-items: center;
-                    gap: 0.5rem;
-                }
-
-                    .action-card .card-title i {
-                        color: #0d6efd;
-                    }
-
-                .action-card .btn {
-                    border-radius: 40px;
-                    padding: 0.45rem 1.2rem;
-                    font-weight: 500;
+                    justify-content: center;
+                    font-size: 0.65rem;
+                    font-weight: 700;
+                    color: var(--gray);
                     transition: var(--transition);
+                    flex-shrink: 0;
+                    border: 2px solid transparent;
                 }
 
-                .action-card .btn-primary {
-                    background: var(--primary-gradient);
-                    border: none;
-                    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.25);
+                .status-step.active .step-circle {
+                    background: var(--primary);
+                    color: #fff;
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.2);
                 }
 
-                    .action-card .btn-primary:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 8px 24px rgba(13, 110, 253, 0.35);
+                .status-step.done .step-circle {
+                    background: var(--success);
+                    color: #fff;
+                    border-color: var(--success);
+                }
+
+                .status-step.active {
+                    color: var(--dark);
+                }
+
+                .status-step.done {
+                    color: var(--success);
+                }
+
+            .status-line {
+                flex: 1;
+                min-width: 20px;
+                height: 2px;
+                background: var(--gray-light);
+                border-radius: 2px;
+                transition: var(--transition);
+            }
+
+                .status-line.done {
+                    background: var(--success);
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Service Table                                           */
+            /* ────────────────────────────────────────────────────────── */
+            .service-table-wrapper {
+                overflow-x: auto;
+                margin-top: 0.5rem;
+            }
+
+            .service-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                font-size: 0.9rem;
+                border-radius: var(--radius-xs);
+                overflow: hidden;
+            }
+
+                .service-table thead {
+                    background: var(--gray-bg);
+                }
+
+                .service-table th {
+                    padding: 0.75rem 1rem;
+                    text-align: left;
+                    font-weight: 600;
+                    color: var(--dark);
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    border-bottom: 2px solid var(--gray-light);
+                }
+
+                .service-table td {
+                    padding: 0.75rem 1rem;
+                    border-bottom: 1px solid var(--gray-light);
+                    color: var(--dark);
+                }
+
+                .service-table tr:last-child td {
+                    border-bottom: none;
+                }
+
+                .service-table tr:hover td {
+                    background: var(--gray-bg);
+                }
+
+                .service-table .total-row {
+                    background: var(--gray-bg);
+                    font-weight: 700;
+                    border-top: 2px solid var(--gray-light);
+                }
+
+                    .service-table .total-row td {
+                        padding-top: 1rem;
                     }
 
-                .action-card .form-control,
-                .action-card .form-select {
-                    border-radius: 10px;
-                    border: 1px solid #dce2ec;
-                    padding: 0.5rem 1rem;
-                    transition: var(--transition);
-                }
-
-                    .action-card .form-control:focus,
-                    .action-card .form-select:focus {
-                        border-color: #0d6efd;
-                        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.12);
-                    }
-
+            /* ────────────────────────────────────────────────────────── */
+            /* Action Footer                                           */
+            /* ────────────────────────────────────────────────────────── */
             .action-footer {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 0.75rem;
-                margin-top: 1.75rem;
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+                border-top: 2px solid var(--gray-light);
                 align-items: center;
-                justify-content: flex-start;
             }
 
                 .action-footer .btn {
                     border-radius: 50px;
-                    padding: 0.5rem 1.5rem;
-                    font-weight: 500;
+                    padding: 0.6rem 1.8rem;
+                    font-weight: 600;
+                    font-size: 0.9rem;
                     transition: var(--transition);
                     display: inline-flex;
                     align-items: center;
-                    gap: 0.5rem;
+                    gap: 0.6rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
                 }
 
-                .action-footer .btn-primary {
-                    background: var(--primary-gradient);
+                    .action-footer .btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: var(--shadow-md);
+                    }
+
+                .action-footer .btn-success {
+                    background: linear-gradient(135deg, #22c55e, #16a34a);
                     border: none;
-                    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.30);
+                    color: #fff;
+                    box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
+                }
+
+                    .action-footer .btn-success:hover {
+                        box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
+                    }
+
+                .action-footer .btn-primary {
+                    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+                    border: none;
+                    color: #fff;
+                    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.3);
                 }
 
                     .action-footer .btn-primary:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 8px 24px rgba(13, 110, 253, 0.40);
+                        box-shadow: 0 6px 24px rgba(13, 110, 253, 0.4);
                     }
 
-                .action-footer .btn-outline-success {
-                    border-color: #86efac;
-                    color: #15803d;
+                .action-footer .btn-outline-secondary {
+                    border-color: var(--gray-light);
+                    color: var(--gray);
                 }
 
-                    .action-footer .btn-outline-success:hover {
-                        background: #dcfce7;
-                        border-color: #15803d;
+                    .action-footer .btn-outline-secondary:hover {
+                        background: var(--gray-bg);
+                        border-color: var(--gray);
+                        color: var(--dark);
                     }
 
-                .action-footer .btn-outline-danger {
-                    border-color: #fca5a5;
-                    color: #b91c1c;
+                .action-footer .btn-danger {
+                    background: linear-gradient(135deg, #ef4444, #dc2626);
+                    border: none;
+                    color: #fff;
+                    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
                 }
 
-                    .action-footer .btn-outline-danger:hover {
-                        background: #fee2e2;
-                        border-color: #b91c1c;
-                    }
-
-                .action-footer .btn-secondary {
-                    border-color: #d1d9e6;
-                }
-
-                    .action-footer .btn-secondary:hover {
-                        background: #eef2f7;
-                        border-color: #b0bcca;
+                    .action-footer .btn-danger:hover {
+                        box-shadow: 0 6px 24px rgba(239, 68, 68, 0.4);
                     }
 
                 .action-footer .btn-warning {
-                    background: #fbbf24;
+                    background: linear-gradient(135deg, #f59e0b, #d97706);
                     border: none;
-                    color: #1a2634;
-                    box-shadow: 0 4px 14px rgba(251, 191, 36, 0.30);
+                    color: #fff;
+                    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
                 }
 
                     .action-footer .btn-warning:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 8px 24px rgba(251, 191, 36, 0.40);
+                        box-shadow: 0 6px 24px rgba(245, 158, 11, 0.4);
                     }
 
-            @@media (max-width: 576px) {
+            /* ────────────────────────────────────────────────────────── */
+            /* Empty State                                             */
+            /* ────────────────────────────────────────────────────────── */
+            .empty-state {
+                text-align: center;
+                padding: 2rem 1rem;
+                color: var(--gray);
+            }
+
+                .empty-state i {
+                    font-size: 3rem;
+                    opacity: 0.3;
+                    display: block;
+                    margin-bottom: 0.5rem;
+                }
+
+                .empty-state p {
+                    font-size: 0.9rem;
+                    margin: 0;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Responsive                                               */
+            /* ────────────────────────────────────────────────────────── */
+            @@media (max-width: 992px) {
+                .header-premium {
+                    padding: 2rem 1.5rem 1.5rem;
+                }
+
+                .body-content {
+                    padding: 1.5rem 1.5rem 2rem;
+                }
+
+                .detail-grid {
+                    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                    gap: 1rem;
+                }
+            }
+
+            @@media (max-width: 768px) {
+                body {
+                    padding: 1rem 0.75rem;
+                }
+
+                .details-wrapper {
+                    border-radius: var(--radius-sm);
+                }
+
+                .header-premium {
+                    padding: 1.5rem 1.25rem 1.25rem;
+                }
+
+                .header-title h1 {
+                    font-size: 1.3rem;
+                }
+
+                .header-title .icon-wrapper {
+                    width: 44px;
+                    height: 44px;
+                    font-size: 1.3rem;
+                }
+
+                .header-title .booking-number {
+                    font-size: 0.75rem;
+                    padding: 0.15rem 0.75rem;
+                }
+
+                .header-content {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .header-actions {
+                    width: 100%;
+                    justify-content: flex-start;
+                }
+
+                .body-content {
+                    padding: 1rem 1rem 1.5rem;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.75rem;
+                }
+
+                .stat-card {
+                    padding: 1rem 0.75rem;
+                }
+
+                    .stat-card .stat-number {
+                        font-size: 1.3rem;
+                    }
+
+                .detail-card {
+                    padding: 1.25rem 1rem;
+                    border-radius: var(--radius-xs);
+                }
+
                 .detail-grid {
                     grid-template-columns: 1fr;
-                    gap: 0.8rem;
+                    gap: 0.75rem;
                 }
 
-                .action-footer .btn {
-                    flex: 1;
-                    justify-content: center;
+                .detail-card .card-header-custom {
+                    font-size: 0.95rem;
                 }
 
-                .page-header h1 {
-                    font-size: 1.4rem;
+                .status-timeline {
+                    gap: 0.25rem;
                 }
 
-                    .page-header h1 i {
-                        font-size: 1.5rem;
+                .status-step {
+                    font-size: 0.7rem;
+                    gap: 0.3rem;
+                }
+
+                    .status-step .step-circle {
+                        width: 22px;
+                        height: 22px;
+                        font-size: 0.55rem;
                     }
 
-                .action-card .btn {
-                    width: 100%;
-                    justify-content: center;
+                .status-line {
+                    min-width: 10px;
                 }
 
-                .action-card .d-flex.gap-2 {
+                .service-table th,
+                .service-table td {
+                    padding: 0.5rem 0.75rem;
+                    font-size: 0.8rem;
+                }
+
+                .action-footer {
                     flex-direction: column;
                     align-items: stretch;
+                }
+
+                    .action-footer .btn {
+                        justify-content: center;
+                        padding: 0.6rem 1.2rem;
+                    }
+
+                .badge-status {
+                    font-size: 0.7rem;
+                    padding: 0.2rem 0.8rem;
+                }
+
+                .toast-custom {
+                    min-width: 250px;
+                    margin: 0 0.5rem 0.75rem;
+                }
+            }
+
+            @@media (max-width: 480px) {
+                body {
+                    padding: 0.5rem 0.5rem;
+                }
+
+                .header-premium {
+                    padding: 1rem 1rem 1rem;
+                    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+                }
+
+                .header-title h1 {
+                    font-size: 1.1rem;
+                }
+
+                .header-title .icon-wrapper {
+                    width: 36px;
+                    height: 36px;
+                    font-size: 1rem;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.5rem;
+                }
+
+                .stat-card {
+                    padding: 0.75rem 0.5rem;
+                }
+
+                    .stat-card .stat-number {
+                        font-size: 1.1rem;
+                    }
+
+                    .stat-card .stat-label {
+                        font-size: 0.6rem;
+                    }
+
+                .body-content {
+                    padding: 0.75rem 0.75rem 1rem;
+                }
+
+                .detail-card {
+                    padding: 1rem 0.75rem;
+                }
+
+                .detail-item .value {
+                    font-size: 0.9rem;
+                }
+
+                .toast-custom {
+                    min-width: 200px;
+                    padding: 0.75rem 1rem;
                 }
             }
     </style>
 </head>
 <body>
 
+    <!-- ─── Toast Container ─── -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <div class="details-wrapper">
 
-        <div class="page-header">
-            <h1>
-                <i class="bi bi-calendar-check"></i>
-                Booking Details
-                <span class="text-muted" style="font-size:1.2rem;">#@Model.BookingNumber</span>
-            </h1>
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to List
-            </a>
+        <!-- ─── HEADER ─── -->
+        <div class="header-premium">
+            <div class="header-content">
+                <div class="header-title">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+                    <div>
+                        <h1>Booking Details</h1>
+                        <span class="booking-number">#@Model.BookingNumber</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a asp-action="Index" class="btn-header">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <!-- ─── MAIN INFORMATION ─── -->
-        <div class="detail-card mb-4">
-            <div class="card-title">
-                <i class="bi bi-info-circle"></i> Booking Information
-            </div>
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <span class="label">Customer</span>
-                    <span class="value customer-detail">
-                        @Model.CustomerName
-                        <span class="phone">
-                            <i class="bi bi-telephone-fill" style="font-size:0.8rem;"></i> @Model.PhoneNumber
-                        </span>
-                        @if (!string.IsNullOrEmpty(Model.Email))
-                        {
-                            <span class="email">
-                                <i class="bi bi-envelope-fill" style="font-size:0.8rem;"></i> @Model.Email
-                            </span>
+        <!-- ─── BODY ─── -->
+        <div class="body-content">
+
+            <!-- Alerts -->
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert-custom alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                    @TempData["Error"]
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert-custom alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    @TempData["Success"]
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- ─── Stats ─── -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">@Model.TotalAmount.ToString("C")</span>
+                    <span class="stat-label">Total Amount</span>
+                    <i class="bi bi-currency-rupee stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">
+                        @{
+                            string statusDisplay = Model.Status switch
+                            {
+                                "Pending" => "⏳ Pending",
+                                "InProgress" => "🔄 In Progress",
+                                "Completed" => "✅ Completed",
+                                "Cancelled" => "❌ Cancelled",
+                                _ => Model.Status
+                            };
                         }
+                        @statusDisplay
                     </span>
+                    <span class="stat-label">Current Status</span>
+                    <i class="bi bi-info-circle stat-icon"></i>
                 </div>
-                <div class="detail-item">
-                    <span class="label">Vehicle</span>
-                    <span class="value">@Model.VehicleRegistrationNumber <span class="text-muted" style="font-weight:400;">(@Model.VehicleModel)</span></span>
+                <div class="stat-card">
+                    <span class="stat-number">@Model.BookingDate.ToString("dd/MM/yyyy")</span>
+                    <span class="stat-label">Booking Date</span>
+                    <i class="bi bi-calendar3 stat-icon"></i>
                 </div>
-                <div class="detail-item">
-                    <span class="label">Services</span>
-                    <span class="value">
-                        @if (Model.Services != null && Model.Services.Any())
+                <div class="stat-card">
+                    <span class="stat-number">@(Model.DeliveryDate?.ToString("dd/MM/yyyy") ?? "—")</span>
+                    <span class="stat-label">Delivery Date</span>
+                    <i class="bi bi-truck stat-icon"></i>
+                </div>
+            </div>
+
+            <!-- ─── Booking Info ─── -->
+            <div class="detail-card">
+                <div class="card-header-custom">
+                    <i class="bi bi-info-circle"></i>
+                    Booking Information
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="label">Customer</span>
+                        <span class="value">
+                            @Model.CustomerName
+                            <span class="sub"><i class="bi bi-telephone-fill"></i> @Model.PhoneNumber</span>
+                            @if (!string.IsNullOrEmpty(Model.Email))
+                            {
+                                <span class="sub"><i class="bi bi-envelope-fill"></i> @Model.Email</span>
+                            }
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Vehicle</span>
+                        <span class="value">
+                            @Model.VehicleRegistrationNumber
+                            <span class="sub">@Model.VehicleModel</span>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Mechanic</span>
+                        <span class="value">@(string.IsNullOrEmpty(Model.MechanicName) ? "Not assigned" : Model.MechanicName)</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Booking Date</span>
+                        <span class="value">@Model.BookingDate.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Expected Delivery</span>
+                        <span class="value">@(Model.ExpectedDeliveryDate?.ToString("dd/MM/yyyy") ?? "—")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Delivery Date</span>
+                        <span class="value">@(Model.DeliveryDate?.ToString("dd/MM/yyyy HH:mm") ?? "—")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Odometer</span>
+                        <span class="value">@(Model.OdometerReading?.ToString() ?? "—")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Complaint</span>
+                        <span class="value">@(string.IsNullOrEmpty(Model.Complaint) ? "—" : Model.Complaint)</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Remarks</span>
+                        <span class="value">@(string.IsNullOrEmpty(Model.Remarks) ? "—" : Model.Remarks)</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Status</span>
+                        <span class="value">
+                            @{
+                                string statusClass = Model.Status switch
+                                {
+                                    "Pending" => "bg-pending",
+                                    "InProgress" => "bg-inprogress",
+                                    "Completed" => "bg-completed",
+                                    "Cancelled" => "bg-cancelled",
+                                    _ => "bg-secondary"
+                                };
+                                string statusIcon = Model.Status switch
+                                {
+                                    "Pending" => "bi-clock",
+                                    "InProgress" => "bi-arrow-repeat",
+                                    "Completed" => "bi-check-circle",
+                                    "Cancelled" => "bi-x-circle",
+                                    _ => "bi-dot"
+                                };
+                            }
+                            <span class="badge-status @statusClass">
+                                <i class="bi @statusIcon"></i> @Model.Status
+                            </span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ─── Timeline ─── -->
+                <div class="status-timeline">
+                    @{
+                        var steps = new[] { "Pending", "InProgress", "Completed" };
+                        var currentStep = Model.Status;
+                        bool isCompleted = currentStep == "Completed";
+                        bool isCancelled = currentStep == "Cancelled";
+
+                        if (isCancelled)
                         {
-                            @string.Join(", ", Model.Services.Select(s => s.ServiceName))
+                            <span class="badge-status bg-cancelled">
+                                <i class="bi bi-x-circle-fill"></i> Cancelled
+                            </span>
                         }
                         else
                         {
-                            <text>—</text>
-                        }
-                    </span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Mechanic</span>
-                    <span class="value">@Model.MechanicName</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Booking Date</span>
-                    <span class="value">@Model.BookingDate.ToString("dd/MM/yyyy HH:mm")</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Expected Delivery</span>
-                    <span class="value">@(Model.ExpectedDeliveryDate?.ToString("dd/MM/yyyy") ?? "—")</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Delivery Date</span>
-                    <span class="value">@(Model.DeliveryDate?.ToString("dd/MM/yyyy HH:mm") ?? "—")</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Odometer</span>
-                    <span class="value">@Model.OdometerReading</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Complaint</span>
-                    <span class="value">@Model.Complaint</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Amount</span>
-                    <span class="value">@Model.TotalAmount.ToString("C")</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Remarks</span>
-                    <span class="value">@(string.IsNullOrEmpty(Model.Remarks) ? "—" : Model.Remarks)</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Status</span>
-                    <span class="value">
-                        @{
-                            string statusBadgeClass = Model.Status switch
+                            for (int i = 0; i < steps.Length; i++)
                             {
-                                "Pending" => "bg-warning",
-                                "InProgress" => "bg-info",
-                                "Completed" => "bg-success",
-                                "Cancelled" => "bg-danger",
-                                _ => "bg-secondary"
-                            };
-                            string statusIcon = Model.Status switch
-                            {
-                                "Pending" => "bi-clock-fill",
-                                "InProgress" => "bi-arrow-repeat",
-                                "Completed" => "bi-check-circle-fill",
-                                "Cancelled" => "bi-x-circle-fill",
-                                _ => "bi-dot"
-                            };
+                                var step = steps[i];
+                                bool isActive = step == currentStep;
+                                bool isDone = isCompleted || (Array.IndexOf(steps, currentStep) > i);
+                                <div class="status-step @(isActive ? "active" : "") @(isDone ? "done" : "")">
+                                    <span class="step-circle">@(i + 1)</span>
+                                    <span>@step</span>
+                                </div>
+                                if (i < steps.Length - 1)
+                                {
+                                    <div class="status-line @(isDone ? "done" : "")"></div>
+                                }
+                            }
                         }
-                        <span class="badge-status @statusBadgeClass">
-                            <i class="bi @statusIcon"></i> @Model.Status
-                        </span>
-                    </span>
+                    }
                 </div>
             </div>
-        </div>
 
-        <!-- ─── FOOTER ACTIONS ─── -->
-        <div class="action-footer">
-            @if (!Model.HasJobCard)
+            <!-- ─── Services ─── -->
+            @if (Model.Services != null && Model.Services.Count > 0)
             {
-                <a asp-controller="JobCard" asp-action="Create" asp-route-bookingId="@Model.Id" class="btn btn-outline-success">
-                    <i class="bi bi-file-earmark-plus"></i> Create Job Card
-                </a>
+                <div class="detail-card">
+                    <div class="card-header-custom">
+                        <i class="bi bi-tools"></i>
+                        Services &amp; Spare Parts
+                        <span class="badge-count">@Model.Services.Count items</span>
+                    </div>
+                    <div class="service-table-wrapper">
+                        <table class="service-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Service / Part</th>
+                                    <th style="text-align:right;">Price</th>
+                                    <th style="text-align:center;">Qty</th>
+                                    <th style="text-align:right;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int srNo = 1;
+                                    decimal grandTotal = 0;
+                                }
+                                @foreach (var service in Model.Services)
+                                {
+                                    grandTotal += service.TotalAmount;
+                                    <tr>
+                                        <td>@srNo</td>
+                                        <td>
+                                            <span style="font-weight:500;">@service.ServiceName</span>
+                                        </td>
+                                        <td style="text-align:right;">@service.Price.ToString("N2")</td>
+                                        <td style="text-align:center;">@service.Quantity</td>
+                                        <td style="text-align:right;font-weight:600;">@service.TotalAmount.ToString("N2")</td>
+                                    </tr>
+                                    srNo++;
+                                }
+                                <tr class="total-row">
+                                    <td colspan="4" style="text-align:right;font-size:0.9rem;">
+                                        <i class="bi bi-receipt"></i> Grand Total
+                                    </td>
+                                    <td style="text-align:right;font-size:1.1rem;color:var(--primary);">
+                                        @grandTotal.ToString("C")
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="detail-card">
+                    <div class="card-header-custom">
+                        <i class="bi bi-tools"></i>
+                        Services &amp; Spare Parts
+                    </div>
+                    <div class="empty-state">
+                        <i class="bi bi-box"></i>
+                        <p>No services or spare parts added yet.</p>
+                    </div>
+                </div>
             }
 
-            @if (!Model.HasInvoice)
-            {
-                <a asp-controller="Invoice" asp-action="Create" asp-route-bookingId="@Model.Id" class="btn btn-outline-success">
-                    <i class="bi bi-receipt"></i> Generate Invoice
+            <!-- ─── Actions ─── -->
+            <div class="action-footer">
+                @if (!Model.HasJobCard && Model.Status != "Cancelled" && Model.Status != "Completed")
+                {
+                    <a asp-action="Create" asp-controller="JobCard" asp-route-bookingId="@Model.Id" class="btn btn-success">
+                        <i class="bi bi-file-earmark-plus"></i> Create Job Card
+                    </a>
+                }
+
+                @if (!Model.HasInvoice && Model.Status == "Completed")
+                {
+                    <a asp-action="Create" asp-controller="Invoice" asp-route-bookingId="@Model.Id" class="btn btn-primary">
+                        <i class="bi bi-receipt"></i> Generate Invoice
+                    </a>
+                }
+
+                <!-- Status Update Buttons -->
+                @if (Model.Status != "Completed" && Model.Status != "Cancelled")
+                {
+                    <form asp-action="UpdateStatus" asp-controller="ServiceBooking" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <input type="hidden" name="status" value="InProgress" />
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-arrow-right-circle"></i> Start Progress
+                        </button>
+                    </form>
+
+                    <form asp-action="UpdateStatus" asp-controller="ServiceBooking" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <input type="hidden" name="status" value="Completed" />
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Mark this booking as completed?')">
+                            <i class="bi bi-check-circle"></i> Complete
+                        </button>
+                    </form>
+                }
+
+                <!-- Cancel Button -->
+                @if (Model.Status != "Completed" && Model.Status != "Cancelled")
+                {
+                    <form asp-action="Cancel" asp-controller="ServiceBooking" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <input type="hidden" name="reason" value="Cancelled by user" />
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">
+                            <i class="bi bi-x-circle"></i> Cancel Booking
+                        </button>
+                    </form>
+                }
+
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
                 </a>
-            }
+            </div>
 
-            <a asp-action="Index" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back to List
-            </a>
-        </div>
-
-    </div>
+        </div> <!-- /body-content -->
+    </div> <!-- /details-wrapper -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+            // ─── Toast Notification ───
+            function showToast(message, type) {
+                var container = document.getElementById('toastContainer');
+                var toast = document.createElement('div');
+                toast.className = 'toast-custom ' + (type || 'success');
+                toast.innerHTML = `
+                            <div class="toast-title">
+                                <i class="bi ${type === 'error' ? 'bi-exclamation-circle-fill text-danger' : 'bi-check-circle-fill text-success'}"></i>
+                                ${type === 'error' ? 'Error' : 'Success'}
+                            </div>
+                            <div class="toast-message">${message}</div>
+                        `;
+                container.appendChild(toast);
+
+                setTimeout(function() {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100px)';
+                    toast.style.transition = '0.5s ease-out';
+                    setTimeout(function() { toast.remove(); }, 500);
+                }, 5000);
+            }
+
+            // ─── Show TempData Messages ───
+            @if (TempData["Error"] != null)
+                {
+                    <text>showToast('@TempData["Error"]', 'error');</text>
+            }
+
+                @if (TempData["Success"] != null)
+                {
+                    <text>showToast('@TempData["Success"]', 'success');</text>
+            }
+
+                // ─── Form Submit Confirmations ───
+                document.querySelectorAll('form[action*="UpdateStatus"], form[action*="Cancel"]').forEach(function(form) {
+                    form.addEventListener('submit', function(e) {
+                        var btn = this.querySelector('button[type="submit"]');
+                        if (btn && btn.textContent.includes('Cancel')) {
+                            if (!confirm('Are you sure you want to cancel this booking?')) {
+                                e.preventDefault();
+                            }
+                        }
+                        if (btn && btn.textContent.includes('Complete')) {
+                            if (!confirm('Mark this booking as completed?')) {
+                                e.preventDefault();
+                            }
+                        }
+                    });
+                });
+    </script>
+
 </body>
 </html>
