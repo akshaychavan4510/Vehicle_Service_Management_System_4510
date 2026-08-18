@@ -1,5 +1,6 @@
 ﻿@{
     Layout = null;
+    ViewData["Title"] = "Reports Dashboard";
 }
 
 <!DOCTYPE html>
@@ -10,19 +11,42 @@
     <title>Reports | Vehicle Service Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
+            /* ────────────────────────────────────────────────────────── */
+            /* Root Variables                                          */
+            /* ────────────────────────────────────────────────────────── */
             :root {
-                --primary-gradient: linear-gradient(135deg, #0d6efd, #0a58ca);
-                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
-                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.14);
-                --radius: 16px;
-                --radius-sm: 10px;
-                --transition: 0.25s ease;
+                --primary: #0d6efd;
+                --primary-dark: #0a58ca;
+                --primary-light: #e8f0fe;
+                --success: #22c55e;
+                --danger: #ef4444;
+                --warning: #f59e0b;
+                --info: #0dcaf0;
+                --dark: #1a2634;
+                --gray: #6b7a8e;
+                --gray-light: #eef2f7;
+                --gray-bg: #f0f2f5;
+                --white: #ffffff;
+                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
+                --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+                --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.16);
+                --radius: 20px;
+                --radius-sm: 12px;
+                --radius-xs: 8px;
+                --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
+            /* ────────────────────────────────────────────────────────── */
+            /* Base Styles                                             */
+            /* ────────────────────────────────────────────────────────── */
             * {
                 box-sizing: border-box;
+                margin: 0;
+                padding: 0;
             }
 
             html, body {
@@ -30,75 +54,276 @@
             }
 
             body {
-                background: #f4f6fa;
-                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-                padding: clamp(1rem, 3vw, 2rem) clamp(0.75rem, 2vw, 1.5rem);
+                background: var(--gray-bg);
+                font-family: 'Inter', -apple-system, system-ui, sans-serif;
+                padding: 2rem 1.5rem;
                 min-height: 100vh;
                 display: flex;
                 align-items: flex-start;
                 justify-content: center;
+                color: var(--dark);
+                line-height: 1.6;
             }
 
             .reports-wrapper {
                 max-width: 1400px;
                 width: 100%;
-                background: #ffffff;
+                background: var(--white);
                 border-radius: var(--radius);
-                box-shadow: var(--shadow-lg);
-                padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 3vw, 2rem) clamp(1.5rem, 4vw, 2.5rem);
-                transition: var(--transition);
+                box-shadow: var(--shadow-xl);
+                overflow: hidden;
+                animation: slideUp 0.5s ease-out;
             }
 
-            /* ── Header ── */
-            .page-header {
-                margin-bottom: clamp(1.25rem, 3vw, 2rem);
+            @@keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
 
-                .page-header h1 {
-                    font-weight: 700;
-                    font-size: clamp(1.4rem, 4vw, 1.85rem);
-                    letter-spacing: -0.02em;
-                    color: #1a2634;
-                    margin: 0 0 0.25rem 0;
+            /* ────────────────────────────────────────────────────────── */
+            /* Header - Premium Gradient                               */
+            /* ────────────────────────────────────────────────────────── */
+            .header-premium {
+                background: linear-gradient(135deg, #0c0e1a 0%, #1a1a3e 40%, #0d6efd 100%);
+                padding: 2.5rem 3rem 2rem;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .header-premium::before {
+                    content: '';
+                    position: absolute;
+                    top: -60%;
+                    right: -10%;
+                    width: 500px;
+                    height: 500px;
+                    background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+                .header-premium::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -40%;
+                    left: -5%;
+                    width: 300px;
+                    height: 300px;
+                    background: radial-gradient(circle, rgba(13, 202, 240, 0.08) 0%, transparent 70%);
+                    border-radius: 50%;
+                    pointer-events: none;
+                }
+
+            .header-content {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+
+            .header-title {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+                .header-title .icon-wrapper {
+                    width: 56px;
+                    height: 56px;
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 50%;
                     display: flex;
                     align-items: center;
-                    gap: 0.5rem;
-                    flex-wrap: wrap;
+                    justify-content: center;
+                    font-size: 1.8rem;
+                    backdrop-filter: blur(4px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    flex-shrink: 0;
                 }
 
-                    .page-header h1 i {
-                        color: #0d6efd;
-                        font-size: clamp(1.5rem, 4.5vw, 2rem);
+                .header-title h1 {
+                    font-weight: 800;
+                    font-size: 1.8rem;
+                    margin: 0;
+                    letter-spacing: -0.02em;
+                    background: linear-gradient(135deg, #fff 60%, #94a3b8);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+
+                .header-title .subtitle {
+                    font-size: 0.9rem;
+                    font-weight: 400;
+                    color: rgba(255, 255, 255, 0.7);
+                    background: rgba(255, 255, 255, 0.1);
+                    padding: 0.25rem 1rem;
+                    border-radius: 50px;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    -webkit-text-fill-color: rgba(255, 255, 255, 0.7);
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Body                                                     */
+            /* ────────────────────────────────────────────────────────── */
+            .body-content {
+                padding: 2rem 3rem 2.5rem;
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Description                                              */
+            /* ────────────────────────────────────────────────────────── */
+            .description-box {
+                background: var(--gray-bg);
+                border-radius: var(--radius-sm);
+                padding: 1.25rem 1.5rem;
+                margin-bottom: 2rem;
+                border: 1px solid var(--gray-light);
+                border-left: 4px solid var(--primary);
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+                .description-box i {
+                    font-size: 1.5rem;
+                    color: var(--primary);
+                }
+
+                .description-box p {
+                    margin: 0;
+                    color: var(--gray);
+                    font-size: 0.95rem;
+                }
+
+                    .description-box p strong {
+                        color: var(--dark);
                     }
 
-                .page-header p {
-                    color: #6b7a8e;
-                    font-size: clamp(0.85rem, 2vw, 0.95rem);
-                    margin: 0;
+            /* ────────────────────────────────────────────────────────── */
+            /* Stats Row - Modern Cards                                */
+            /* ────────────────────────────────────────────────────────── */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                background: var(--gray-bg);
+                border-radius: var(--radius-sm);
+                padding: 1.25rem 1.5rem;
+                text-align: center;
+                border: 1px solid var(--gray-light);
+                transition: var(--transition);
+                position: relative;
+                overflow: hidden;
+            }
+
+                .stat-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, var(--primary), var(--info));
+                    opacity: 0;
+                    transition: var(--transition);
                 }
 
-            /* ── Report Cards ── */
+                .stat-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: var(--shadow-md);
+                    border-color: var(--primary);
+                }
+
+                    .stat-card:hover::before {
+                        opacity: 1;
+                    }
+
+                .stat-card .stat-number {
+                    font-size: 1.6rem;
+                    font-weight: 800;
+                    color: var(--dark);
+                    display: block;
+                    letter-spacing: -0.02em;
+                }
+
+                .stat-card .stat-label {
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    color: var(--gray);
+                    font-weight: 600;
+                    display: block;
+                    margin-top: 0.25rem;
+                }
+
+                .stat-card .stat-icon {
+                    font-size: 1.2rem;
+                    color: var(--primary);
+                    opacity: 0.4;
+                    position: absolute;
+                    right: 0.75rem;
+                    bottom: 0.5rem;
+                }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Report Cards                                             */
+            /* ────────────────────────────────────────────────────────── */
             .report-card {
                 display: block;
                 text-decoration: none;
                 color: inherit;
                 height: 100%;
                 width: 100%;
-                transition: transform var(--transition) ease, box-shadow var(--transition) ease;
-                border: 1px solid #eef2f7;
+                transition: all var(--transition) ease;
+                border: 1px solid var(--gray-light);
                 border-radius: var(--radius-sm);
-                background: #ffffff;
+                background: var(--white);
                 box-shadow: var(--shadow-sm);
+                position: relative;
+                overflow: hidden;
             }
+
+                .report-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, var(--primary), var(--info));
+                    opacity: 0;
+                    transition: var(--transition);
+                }
 
                 .report-card:hover {
                     transform: translateY(-6px);
-                    box-shadow: var(--shadow-md);
-                    border-color: #dbeafe;
+                    box-shadow: var(--shadow-lg);
+                    border-color: var(--primary);
                 }
 
+                    .report-card:hover::before {
+                        opacity: 1;
+                    }
+
                 .report-card .card-body {
-                    padding: clamp(1.1rem, 2.5vw, 1.5rem) clamp(1rem, 2.5vw, 1.25rem);
+                    padding: 1.5rem 1.5rem;
                     display: flex;
                     flex-direction: column;
                     align-items: flex-start;
@@ -106,13 +331,13 @@
                 }
 
                 .report-card .icon-wrapper {
-                    width: clamp(44px, 8vw, 56px);
-                    height: clamp(44px, 8vw, 56px);
-                    border-radius: 12px;
+                    width: 52px;
+                    height: 52px;
+                    border-radius: var(--radius-xs);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: clamp(1.3rem, 3vw, 1.8rem);
+                    font-size: 1.5rem;
                     margin-bottom: 0.75rem;
                     flex-shrink: 0;
                 }
@@ -147,31 +372,48 @@
                         color: #475569;
                     }
 
+                    .report-card .icon-wrapper.icon-purple {
+                        background: #f3e8ff;
+                        color: #7c3aed;
+                    }
+
                 .report-card .card-title {
-                    font-weight: 600;
-                    font-size: clamp(1.02rem, 2.5vw, 1.15rem);
-                    color: #1a2634;
+                    font-weight: 700;
+                    font-size: 1.05rem;
+                    color: var(--dark);
                     margin: 0 0 0.3rem 0;
                 }
 
                 .report-card .card-text {
-                    color: #6b7a8e;
-                    font-size: clamp(0.82rem, 2vw, 0.9rem);
+                    color: var(--gray);
+                    font-size: 0.85rem;
                     margin: 0;
                     line-height: 1.5;
                     flex: 1;
                 }
 
+                .report-card .card-badge {
+                    margin-top: 0.75rem;
+                    font-size: 0.65rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    padding: 0.2rem 0.7rem;
+                    border-radius: 50px;
+                    background: var(--gray-bg);
+                    color: var(--gray);
+                }
+
                 .report-card .card-arrow {
                     margin-top: 0.75rem;
-                    font-size: 0.9rem;
-                    color: #0d6efd;
+                    font-size: 0.85rem;
+                    color: var(--primary);
                     display: flex;
                     align-items: center;
-                    gap: 0.3rem;
-                    font-weight: 500;
+                    gap: 0.4rem;
+                    font-weight: 600;
                     opacity: 0;
-                    transition: opacity var(--transition) ease, transform var(--transition) ease;
+                    transition: all var(--transition) ease;
                     transform: translateX(-4px);
                 }
 
@@ -180,68 +422,207 @@
                     transform: translateX(0);
                 }
 
-            /* On touch/no-hover devices, always show the arrow since hover never fires */
-            @@media (hover: none) {
-                .report-card .card-arrow {
-                    opacity: 1;
-                    transform: translateX(0);
+            /* ────────────────────────────────────────────────────────── */
+            /* Responsive                                               */
+            /* ────────────────────────────────────────────────────────── */
+            @@media (max-width: 992px) {
+                .header-premium {
+                    padding: 2rem 1.5rem 1.5rem;
+                }
+
+                .body-content {
+                    padding: 1.5rem 1.5rem 2rem;
                 }
             }
 
-            /* Tablet tightening */
             @@media (max-width: 768px) {
+                body {
+                    padding: 1rem 0.75rem;
+                }
+
                 .reports-wrapper {
                     border-radius: var(--radius-sm);
                 }
 
-                .row.g-4 {
-                    --bs-gutter-x: 1rem;
-                    --bs-gutter-y: 1rem;
-                }
-            }
-
-            /* Small phones */
-            @@media (max-width: 576px) {
-                body {
-                    padding: 0.75rem 0.5rem;
+                .header-premium {
+                    padding: 1.5rem 1.25rem 1.25rem;
                 }
 
-                .reports-wrapper {
-                    padding: 1.1rem 0.9rem 1.5rem;
-                }
-
-                .page-header h1 {
+                .header-title h1 {
                     font-size: 1.3rem;
                 }
 
-                .report-card .card-body {
-                    padding: 1.1rem 0.9rem;
-                }
-
-                .report-card .icon-wrapper {
+                .header-title .icon-wrapper {
                     width: 44px;
                     height: 44px;
                     font-size: 1.3rem;
                 }
 
+                .header-title .subtitle {
+                    font-size: 0.75rem;
+                    padding: 0.15rem 0.75rem;
+                }
+
+                .header-content {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .body-content {
+                    padding: 1rem 1rem 1.5rem;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.75rem;
+                }
+
+                .stat-card {
+                    padding: 1rem 0.75rem;
+                }
+
+                    .stat-card .stat-number {
+                        font-size: 1.3rem;
+                    }
+
+                .description-box {
+                    padding: 1rem 1.25rem;
+                    flex-direction: column;
+                    text-align: center;
+                }
+
+                    .description-box i {
+                        font-size: 1.8rem;
+                    }
+
+                .report-card .card-body {
+                    padding: 1.25rem 1rem;
+                }
+
+                .report-card .icon-wrapper {
+                    width: 44px;
+                    height: 44px;
+                    font-size: 1.2rem;
+                }
+
                 .report-card .card-title {
-                    font-size: 1rem;
+                    font-size: 0.95rem;
                 }
 
                 .report-card .card-text {
-                    font-size: 0.85rem;
+                    font-size: 0.8rem;
+                }
+
+                .row.g-4 {
+                    --bs-gutter-y: 1rem;
                 }
             }
 
-            /* Extra-small phones */
-            @@media (max-width: 360px) {
-                .page-header h1 {
-                    font-size: 1.15rem;
+            @@media (max-width: 480px) {
+                body {
+                    padding: 0.5rem 0.5rem;
                 }
 
-                    .page-header h1 i {
-                        font-size: 1.3rem;
+                .header-premium {
+                    padding: 1rem 1rem 1rem;
+                    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+                }
+
+                .header-title h1 {
+                    font-size: 1.1rem;
+                }
+
+                .header-title .icon-wrapper {
+                    width: 36px;
+                    height: 36px;
+                    font-size: 1rem;
+                }
+
+                .body-content {
+                    padding: 0.75rem 0.75rem 1rem;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.5rem;
+                }
+
+                .stat-card {
+                    padding: 0.75rem 0.5rem;
+                }
+
+                    .stat-card .stat-number {
+                        font-size: 1.1rem;
                     }
+
+                    .stat-card .stat-label {
+                        font-size: 0.55rem;
+                    }
+
+                .description-box {
+                    padding: 0.75rem 1rem;
+                }
+
+                    .description-box p {
+                        font-size: 0.85rem;
+                    }
+
+                .report-card .card-body {
+                    padding: 1rem 0.75rem;
+                }
+
+                .report-card .icon-wrapper {
+                    width: 38px;
+                    height: 38px;
+                    font-size: 1rem;
+                }
+
+                .report-card .card-title {
+                    font-size: 0.9rem;
+                }
+
+                .report-card .card-text {
+                    font-size: 0.75rem;
+                }
+
+                .report-card .card-arrow {
+                    font-size: 0.75rem;
+                }
+
+                .report-card .card-badge {
+                    font-size: 0.55rem;
+                    padding: 0.1rem 0.5rem;
+                }
+            }
+
+            @@media (max-width: 360px) {
+                .stats-grid {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.4rem;
+                }
+
+                .stat-card {
+                    padding: 0.6rem 0.4rem;
+                }
+
+                    .stat-card .stat-number {
+                        font-size: 1rem;
+                    }
+            }
+
+            /* ────────────────────────────────────────────────────────── */
+            /* Touch Device Support                                     */
+            /* ────────────────────────────────────────────────────────── */
+            @@media (hover: none) {
+                .report-card .card-arrow {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+
+                .report-card::before {
+                    opacity: 1;
+                    height: 2px;
+                }
             }
     </style>
 </head>
@@ -249,118 +630,184 @@
 
     <div class="reports-wrapper">
 
-        <!-- ─── PAGE HEADER ─── -->
-        <div class="page-header">
-            <h1>
-                <i class="bi bi-bar-chart-line"></i>
-                Reports
-            </h1>
-            <p>Pick a report below. Every report has its own date-range filter and a CSV export you can open in Excel.</p>
+        <!-- ─── HEADER ─── -->
+        <div class="header-premium">
+            <div class="header-content">
+                <div class="header-title">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-bar-chart-line"></i>
+                    </div>
+                    <div>
+                        <h1>Reports Dashboard</h1>
+                        <span class="subtitle">6 Reports Available</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- ─── REPORT CARDS ─── -->
-        <div class="row g-4">
+        <!-- ─── BODY ─── -->
+        <div class="body-content">
 
-            <!-- Revenue Report -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <a class="report-card" asp-action="Revenue">
-                    <div class="card-body">
-                        <div class="icon-wrapper icon-success">
-                            <i class="bi bi-cash-coin"></i>
-                        </div>
-                        <h5 class="card-title">Revenue Report</h5>
-                        <p class="card-text">Invoiced vs. collected revenue, monthly trend, payment mode split.</p>
-                        <div class="card-arrow">
-                            View Report <i class="bi bi-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
+            <!-- ─── Description ─── -->
+            
+
+            <!-- ─── Stats ─── -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">Available Reports</span>
+                    <i class="bi bi-file-earmark-text stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">📊</span>
+                    <span class="stat-label">Data Insights</span>
+                    <i class="bi bi-graph-up stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">📈</span>
+                    <span class="stat-label">Trend Analysis</span>
+                    <i class="bi bi-trending-up stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">💾</span>
+                    <span class="stat-label">CSV Export</span>
+                    <i class="bi bi-download stat-icon"></i>
+                </div>
             </div>
 
-            <!-- Booking Report -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <a class="report-card" asp-action="Bookings">
-                    <div class="card-body">
-                        <div class="icon-wrapper icon-primary">
-                            <i class="bi bi-calendar-check"></i>
+            <!-- ─── Report Cards ─── -->
+            <div class="row g-4">
+
+                <!-- Revenue Report -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a class="report-card" asp-action="Revenue">
+                        <div class="card-body">
+                            <div class="icon-wrapper icon-success">
+                                <i class="bi bi-cash-coin"></i>
+                            </div>
+                            <h5 class="card-title">Revenue Report</h5>
+                            <p class="card-text">Invoiced vs. collected revenue, monthly trends, payment mode breakdown.</p>
+                            <span class="card-badge"><i class="bi bi-currency-rupee"></i> Financial</span>
+                            <div class="card-arrow">
+                                View Report <i class="bi bi-arrow-right"></i>
+                            </div>
                         </div>
-                        <h5 class="card-title">Booking Report</h5>
-                        <p class="card-text">Bookings by status and service type, full booking list.</p>
-                        <div class="card-arrow">
-                            View Report <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Booking Report -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a class="report-card" asp-action="Bookings">
+                        <div class="card-body">
+                            <div class="icon-wrapper icon-primary">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <h5 class="card-title">Booking Report</h5>
+                            <p class="card-text">Bookings by status, service type distribution, complete booking list.</p>
+                            <span class="card-badge"><i class="bi bi-calendar3"></i> Operations</span>
+                            <div class="card-arrow">
+                                View Report <i class="bi bi-arrow-right"></i>
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
+
+                <!-- Customer Report -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a class="report-card" asp-action="Customers">
+                        <div class="card-body">
+                            <div class="icon-wrapper icon-info">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <h5 class="card-title">Customer Report</h5>
+                            <p class="card-text">Top customers by spending, new customer acquisition, loyalty insights.</p>
+                            <span class="card-badge"><i class="bi bi-person"></i> CRM</span>
+                            <div class="card-arrow">
+                                View Report <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Vehicle Report -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a class="report-card" asp-action="Vehicles">
+                        <div class="card-body">
+                            <div class="icon-wrapper icon-warning">
+                                <i class="bi bi-car-front"></i>
+                            </div>
+                            <h5 class="card-title">Vehicle Report</h5>
+                            <p class="card-text">Fleet analysis by brand/type, most-serviced vehicles, service history.</p>
+                            <span class="card-badge"><i class="bi bi-truck"></i> Fleet</span>
+                            <div class="card-arrow">
+                                View Report <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Mechanic Performance -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a class="report-card" asp-action="Mechanics">
+                        <div class="card-body">
+                            <div class="icon-wrapper icon-danger">
+                                <i class="bi bi-person-workspace"></i>
+                            </div>
+                            <h5 class="card-title">Mechanic Performance</h5>
+                            <p class="card-text">Bookings handled, completion rate, revenue generated per mechanic.</p>
+                            <span class="card-badge"><i class="bi bi-tools"></i> Performance</span>
+                            <div class="card-arrow">
+                                View Report <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- GST Report -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a class="report-card" asp-action="Gst">
+                        <div class="card-body">
+                            <div class="icon-wrapper icon-purple">
+                                <i class="bi bi-receipt-cutoff"></i>
+                            </div>
+                            <h5 class="card-title">GST Report</h5>
+                            <p class="card-text">Invoice-wise taxable amount, GST collected, grand total summary.</p>
+                            <span class="card-badge"><i class="bi bi-file-earmark-text"></i> Tax</span>
+                            <div class="card-arrow">
+                                View Report <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
             </div>
 
-            <!-- Customer Report -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <a class="report-card" asp-action="Customers">
-                    <div class="card-body">
-                        <div class="icon-wrapper icon-info">
-                            <i class="bi bi-people"></i>
-                        </div>
-                        <h5 class="card-title">Customer Report</h5>
-                        <p class="card-text">Top customers by spend, new customers in range.</p>
-                        <div class="card-arrow">
-                            View Report <i class="bi bi-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Vehicle Report -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <a class="report-card" asp-action="Vehicles">
-                    <div class="card-body">
-                        <div class="icon-wrapper icon-warning">
-                            <i class="bi bi-car-front"></i>
-                        </div>
-                        <h5 class="card-title">Vehicle Report</h5>
-                        <p class="card-text">Fleet by brand/type, most-serviced vehicles.</p>
-                        <div class="card-arrow">
-                            View Report <i class="bi bi-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Mechanic Performance -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <a class="report-card" asp-action="Mechanics">
-                    <div class="card-body">
-                        <div class="icon-wrapper icon-danger">
-                            <i class="bi bi-person-workspace"></i>
-                        </div>
-                        <h5 class="card-title">Mechanic Performance</h5>
-                        <p class="card-text">Bookings handled, completion rate, revenue generated per mechanic.</p>
-                        <div class="card-arrow">
-                            View Report <i class="bi bi-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- GST Report -->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <a class="report-card" asp-action="Gst">
-                    <div class="card-body">
-                        <div class="icon-wrapper icon-secondary">
-                            <i class="bi bi-receipt-cutoff"></i>
-                        </div>
-                        <h5 class="card-title">GST Report</h5>
-                        <p class="card-text">Invoice-wise taxable amount, GST and grand total.</p>
-                        <div class="card-arrow">
-                            View Report <i class="bi bi-arrow-right"></i>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-        </div>
-
-    </div> <!-- /.reports-wrapper -->
+        </div> <!-- /body-content -->
+    </div> <!-- /reports-wrapper -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+            // ─── Optional: Add smooth hover effect for touch devices ───
+            document.addEventListener('DOMContentLoaded', function() {
+                const cards = document.querySelectorAll('.report-card');
+
+                cards.forEach(function(card) {
+                    card.addEventListener('touchstart', function() {
+                        // Small visual feedback for touch devices
+                        this.style.transform = 'translateY(-4px)';
+                        this.style.boxShadow = 'var(--shadow-md)';
+                    });
+
+                    card.addEventListener('touchend', function() {
+                        setTimeout(() => {
+                            this.style.transform = '';
+                            this.style.boxShadow = '';
+                        }, 200);
+                    });
+                });
+            });
+    </script>
+
 </body>
 </html>

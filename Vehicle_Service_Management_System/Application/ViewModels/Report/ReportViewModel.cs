@@ -139,6 +139,11 @@ namespace Vehicle_Service_Management_System.Application.ViewModels.Report
         public int TotalBookings { get; set; }
         public int CompletedBookings { get; set; }
         public decimal RevenueGenerated { get; set; }
+
+        // ✅ Added: Computed property for completion rate
+        public double CompletionRate => TotalBookings > 0
+            ? (double)CompletedBookings / TotalBookings * 100
+            : 0;
     }
 
     public class MechanicReportViewModel
