@@ -72,8 +72,7 @@ The main objectives of this project are:
 
 * **Visual Studio**
 * **SQL Server Management Studio**
-* **Git**
-* **GitHub**
+
 
 ---
 
