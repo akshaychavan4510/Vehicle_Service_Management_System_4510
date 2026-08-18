@@ -22,7 +22,7 @@ namespace Vehicle_Service_Management_System.Application.ViewModels.Invoice
 
         [Display(Name = "Spare Parts Total")]
         [DisplayFormat(DataFormatString = "{0:C}")]
-        public decimal SparePartsTotal { get; set; } // Calculated from items
+        public decimal SparePartsTotal { get; set; }
 
         [Range(0, 100, ErrorMessage = "GST percentage must be between 0 and 100")]
         [Display(Name = "GST Percentage")]
@@ -30,7 +30,7 @@ namespace Vehicle_Service_Management_System.Application.ViewModels.Invoice
 
         [Range(0, 100, ErrorMessage = "Discount percentage must be between 0 and 100")]
         [Display(Name = "Discount %")]
-        public decimal DiscountPercentage { get; set; } = 0m; // ✅ CLEAR: This is a percentage
+        public decimal DiscountPercentage { get; set; } = 0m;
 
         [StringLength(500, ErrorMessage = "Remarks cannot exceed 500 characters")]
         [Display(Name = "Remarks")]
@@ -82,39 +82,14 @@ namespace Vehicle_Service_Management_System.Application.ViewModels.Invoice
     public class InvoiceListViewModel
     {
         public int Id { get; set; }
-
-        [Display(Name = "Invoice #")]
         public string InvoiceNumber { get; set; } = string.Empty;
-
-        [Display(Name = "Booking #")]
         public int BookingId { get; set; }
-
-        [Display(Name = "Customer")]
         public string CustomerName { get; set; } = string.Empty;
-
-        [Display(Name = "Vehicle")]
         public string VehicleRegistrationNumber { get; set; } = string.Empty;
-
-        [Display(Name = "Grand Total")]
-        [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal GrandTotal { get; set; }
-
-        [Display(Name = "Amount Paid")]
-        [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal AmountPaid { get; set; }
-
-        [Display(Name = "Balance")]
-        [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal Balance => GrandTotal - AmountPaid;
-
-        [Display(Name = "Payment Status")]
         public bool IsPaid { get; set; }
-
-        public string PaymentStatus => IsPaid ? "Paid" : "Unpaid";
-        public string StatusBadge => IsPaid ? "bg-success" : "bg-warning";
-
-        [Display(Name = "Created")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime CreatedOn { get; set; }
     }
 
@@ -182,16 +157,22 @@ namespace Vehicle_Service_Management_System.Application.ViewModels.Invoice
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime? ModifiedOn { get; set; }
 
-        public List<InvoiceItemLineViewModel> Items { get; set; } = new();
-        public List<PaymentLineViewModel> Payments { get; set; } = new();
-
         [Display(Name = "Total Paid")]
         [DisplayFormat(DataFormatString = "{0:C}")]
-        public decimal AmountPaid => Payments.Sum(p => p.AmountPaid);
+        public decimal AmountPaid { get; set; }
 
         [Display(Name = "Balance")]
         [DisplayFormat(DataFormatString = "{0:C}")]
-        public decimal Balance => GrandTotal - AmountPaid;
+        public decimal Balance { get; set; }
+
+        [Display(Name = "Email")]
+        public string? Email { get; set; }
+
+        [Display(Name = "Phone Number")]
+        public string? PhoneNumber { get; set; }
+
+        public List<InvoiceItemLineViewModel> Items { get; set; } = new();
+        public List<PaymentLineViewModel> Payments { get; set; } = new();
 
         public string PaymentStatus => Balance <= 0 ? "Fully Paid" : "Partial Payment";
         public string StatusBadge => Balance <= 0 ? "bg-success" : "bg-warning";
@@ -322,8 +303,6 @@ namespace Vehicle_Service_Management_System.Application.ViewModels.Invoice
         [Display(Name = "Remarks")]
         public string? Remarks { get; set; }
 
-        public List<InvoiceItemPrintViewModel> Items { get; set; } = new();
-
         [Display(Name = "Amount Paid")]
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal AmountPaid { get; set; }
@@ -334,6 +313,8 @@ namespace Vehicle_Service_Management_System.Application.ViewModels.Invoice
 
         [Display(Name = "Amount in Words")]
         public string AmountInWords { get; set; } = string.Empty;
+
+        public List<InvoiceItemPrintViewModel> Items { get; set; } = new();
     }
 
     // ============================================================

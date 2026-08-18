@@ -18,7 +18,6 @@ using Vehicle_Service_Management_System.Domain.Enums;
 // Aliases to avoid ambiguity
 using VehicleBrandVM = Vehicle_Service_Management_System.Application.ViewModels.VehicleBrand;
 using VehicleTypeVM = Vehicle_Service_Management_System.Application.ViewModels.VehicleType;
-// Alias for the SparePartSummaryViewModel used in SparePartCategoryDetailsViewModel
 using CategorySummary = Vehicle_Service_Management_System.Application.ViewModels.SparePartCategory.SparePartSummaryViewModel;
 
 namespace Vehicle_Service_Management_System.Application.Mappings
@@ -383,7 +382,6 @@ namespace Vehicle_Service_Management_System.Application.Mappings
             // =========================================================
             //  SPARE PART
             // =========================================================
-            // Map SparePart → CategorySummary (used in Category Details view)
             CreateMap<SparePart, CategorySummary>()
                 .ForMember(dest => dest.IsActive,
                     opt => opt.MapFrom(src => src.IsActive))
@@ -400,7 +398,6 @@ namespace Vehicle_Service_Management_System.Application.Mappings
                 .ForMember(dest => dest.StockQuantity,
                     opt => opt.MapFrom(src => src.StockQuantity));
 
-            // Existing SparePart mappings
             CreateMap<SparePart, SparePartListViewModel>()
                 .ForMember(dest => dest.CategoryName,
                     opt => opt.MapFrom(src => src.SparePartCategory.CategoryName))
@@ -653,11 +650,12 @@ namespace Vehicle_Service_Management_System.Application.Mappings
             // =========================================================
             CreateMap<Invoice, InvoiceListViewModel>()
                 .ForMember(dest => dest.CustomerName,
-                    opt => opt.MapFrom(src => src.ServiceBooking.Customer.FullName))
+                    opt => opt.MapFrom(src => src.ServiceBooking != null ? src.ServiceBooking.Customer.FullName : "N/A"))
                 .ForMember(dest => dest.VehicleRegistrationNumber,
-                    opt => opt.MapFrom(src => src.ServiceBooking.Vehicle.RegistrationNumber))
+                    opt => opt.MapFrom(src => src.ServiceBooking != null ? src.ServiceBooking.Vehicle.RegistrationNumber : "N/A"))
                 .ForMember(dest => dest.AmountPaid,
-                    opt => opt.MapFrom(src => src.Payments != null ? src.Payments.Where(p => !p.IsDeleted).Sum(p => p.AmountPaid) : 0));
+                    opt => opt.MapFrom(src => src.Payments != null ?
+                        src.Payments.Where(p => !p.IsDeleted).Sum(p => p.AmountPaid) : 0));
 
             CreateMap<InvoiceItem, InvoiceItemLineViewModel>()
                 .ForMember(dest => dest.SparePartName,

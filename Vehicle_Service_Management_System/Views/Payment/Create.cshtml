@@ -330,12 +330,6 @@
                         color: var(--danger);
                     }
 
-                    .info-box .value .sub-text {
-                        font-size: 0.75rem;
-                        font-weight: 400;
-                        color: var(--gray);
-                    }
-
             /* ────────────────────────────────────────────────────────── */
             /* Form Card                                                */
             /* ────────────────────────────────────────────────────────── */
@@ -811,14 +805,18 @@
                             <span asp-validation-for="PaymentDate" class="text-danger"></span>
                         </div>
 
-                        <!-- Payment Mode -->
+                        <!-- Payment Mode - Now works correctly because PaymentMode is nullable -->
                         <div class="col-md-6 form-group">
                             <label asp-for="PaymentMode" class="control-label">
                                 <i class="bi bi-credit-card me-1"></i> Payment Mode
                                 <span class="required">*</span>
                             </label>
-                            <select asp-for="PaymentMode" class="form-select" asp-items="Html.GetEnumSelectList<PaymentMode>()">
+                            <select asp-for="PaymentMode" class="form-select" id="paymentModeSelect">
                                 <option value="">— Select Payment Mode —</option>
+                                @foreach (PaymentMode mode in Enum.GetValues(typeof(PaymentMode)))
+                                {
+                                    <option value="@mode">@mode</option>
+                                }
                             </select>
                             <span asp-validation-for="PaymentMode" class="text-danger"></span>
                         </div>
@@ -928,11 +926,25 @@
                             return false;
                         }
 
+                        // Validate Payment Mode is selected
+                        var paymentMode = $('#paymentModeSelect').val();
+                        if (!paymentMode || paymentMode === '') {
+                            e.preventDefault();
+                            showToast('Please select a payment mode.', 'error');
+                            $('#paymentModeSelect').addClass('is-invalid');
+                            return false;
+                        }
+
                         // Show spinner
                         $('#spinnerOverlay').addClass('active');
                         $('#submitBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span> Recording...');
                         return true;
                     });
+
+                // ─── Remove invalid class on change ───
+                $('#paymentModeSelect').on('change', function() {
+                    $(this).removeClass('is-invalid');
+                });
 
                 // ─── Auto-dismiss alerts ───
                 setTimeout(function() {

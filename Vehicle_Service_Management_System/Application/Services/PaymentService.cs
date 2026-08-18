@@ -33,11 +33,15 @@ namespace Vehicle_Service_Management_System.Application.Services
             if (model.AmountPaid > balance)
                 throw new InvalidOperationException($"Payment amount exceeds the outstanding balance of {balance:C}.");
 
+            // ✅ Fix: Handle nullable PaymentMode
+            if (!model.PaymentMode.HasValue)
+                throw new InvalidOperationException("Payment mode is required.");
+
             var payment = new Payment
             {
                 InvoiceId = model.InvoiceId,
                 PaymentDate = model.PaymentDate != default ? model.PaymentDate : DateTime.UtcNow,
-                PaymentMode = model.PaymentMode,
+                PaymentMode = model.PaymentMode.Value,  // ✅ Use .Value to convert PaymentMode? to PaymentMode
                 AmountPaid = model.AmountPaid,
                 TransactionReference = model.TransactionReference,
                 Remarks = model.Remarks,
@@ -351,6 +355,8 @@ namespace Vehicle_Service_Management_System.Application.Services
 
             await _context.SaveChangesAsync();
         }
+
+        // ─── GET DELETED ───
         public async Task<List<PaymentListViewModel>> GetDeletedAsync()
         {
             var payments = await _context.Payments

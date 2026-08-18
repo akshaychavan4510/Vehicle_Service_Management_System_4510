@@ -115,19 +115,24 @@ namespace Vehicle_Service_Management_System.Application.ViewModels.Payment
     {
         [Required(ErrorMessage = "Invoice is required")]
         public int InvoiceId { get; set; }
+
         [Required(ErrorMessage = "Payment date is required")]
         [Display(Name = "Payment Date")]
         public DateTime PaymentDate { get; set; } = DateTime.Now;
+
         [Required(ErrorMessage = "Payment mode is required")]
         [Display(Name = "Payment Mode")]
-        public PaymentMode PaymentMode { get; set; }
+        public PaymentMode? PaymentMode { get; set; }  // ✅ Changed to nullable
+
         [Required(ErrorMessage = "Amount paid is required")]
         [Range(0.01, 999999.99, ErrorMessage = "Amount must be between 0.01 and 999,999.99")]
         [Display(Name = "Amount Paid")]
         public decimal AmountPaid { get; set; }
+
         [StringLength(50, ErrorMessage = "Transaction reference cannot exceed 50 characters")]
         [Display(Name = "Transaction Reference")]
         public string? TransactionReference { get; set; }
+
         [StringLength(500, ErrorMessage = "Remarks cannot exceed 500 characters")]
         [Display(Name = "Remarks")]
         public string? Remarks { get; set; }
@@ -137,24 +142,28 @@ namespace Vehicle_Service_Management_System.Application.ViewModels.Payment
     {
         [Required]
         public int Id { get; set; }
+
         [Required(ErrorMessage = "Payment date is required")]
         [Display(Name = "Payment Date")]
         public DateTime PaymentDate { get; set; }
+
         [Required(ErrorMessage = "Payment mode is required")]
         [Display(Name = "Payment Mode")]
         public PaymentMode PaymentMode { get; set; }
+
         [Required(ErrorMessage = "Amount paid is required")]
         [Range(0.01, 999999.99, ErrorMessage = "Amount must be between 0.01 and 999,999.99")]
         [Display(Name = "Amount Paid")]
         public decimal AmountPaid { get; set; }
+
         [StringLength(50, ErrorMessage = "Transaction reference cannot exceed 50 characters")]
         [Display(Name = "Transaction Reference")]
         public string? TransactionReference { get; set; }
+
         [StringLength(500, ErrorMessage = "Remarks cannot exceed 500 characters")]
         [Display(Name = "Remarks")]
         public string? Remarks { get; set; }
     }
-
     public class PaymentSearchViewModel
     {
         [Display(Name = "Search")]
