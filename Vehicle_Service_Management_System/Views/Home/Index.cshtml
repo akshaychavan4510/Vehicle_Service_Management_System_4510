@@ -1,5 +1,4 @@
-﻿
-@model Vehicle_Service_Management_System.Application.ViewModels.Dashboard.DashboardViewModel
+﻿@model Vehicle_Service_Management_System.Application.ViewModels.Dashboard.DashboardViewModel
 @using Vehicle_Service_Management_System.Domain.Enums
 
 @{
@@ -28,8 +27,8 @@
 <style>
 
     /* =========================================================
-           RESET / GLOBAL
-           ========================================================= */
+               RESET / GLOBAL
+               ========================================================= */
 
     .service-dashboard {
         min-height: calc(100vh - 70px);
@@ -51,8 +50,8 @@
     }
 
     /* =========================================================
-           TOP BAR
-           ========================================================= */
+               TOP BAR
+               ========================================================= */
 
     .dashboard-header {
         display: flex;
@@ -118,8 +117,8 @@
         }
 
     /* =========================================================
-           HERO
-           ========================================================= */
+               HERO
+               ========================================================= */
 
     .hero {
         position: relative;
@@ -193,8 +192,8 @@
     }
 
     /* =========================================================
-           STATISTICS
-           ========================================================= */
+               STATISTICS
+               ========================================================= */
 
     .stats-grid {
         display: grid;
@@ -219,7 +218,8 @@
         transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
     }
 
-        .stat-card:hover {
+        .stat-card:hover,
+        .stat-card:focus-visible {
             transform: translateY(-6px);
             border-color: rgba(99,102,241,.15);
             box-shadow: 0 20px 40px rgba(15,23,42,.10);
@@ -354,8 +354,8 @@
     }
 
     /* =========================================================
-           REVENUE
-           ========================================================= */
+               REVENUE
+               ========================================================= */
 
     .revenue-card {
         position: relative;
@@ -427,8 +427,8 @@
         }
 
     /* =========================================================
-           CONTENT
-           ========================================================= */
+               CONTENT
+               ========================================================= */
 
     .content-grid {
         display: grid;
@@ -486,8 +486,8 @@
         }
 
     /* =========================================================
-           TABLE
-           ========================================================= */
+               TABLE
+               ========================================================= */
 
     .table-wrapper {
         width: 100%;
@@ -551,8 +551,8 @@
     }
 
     /* =========================================================
-           STATUS
-           ========================================================= */
+               STATUS
+               ========================================================= */
 
     .status-badge,
     .payment-badge {
@@ -633,8 +633,8 @@
     }
 
     /* =========================================================
-           EMPTY STATE
-           ========================================================= */
+               EMPTY STATE
+               ========================================================= */
 
     .empty-state {
         min-height: 180px;
@@ -665,8 +665,8 @@
     }
 
     /* =========================================================
-           QUICK ACTIONS
-           ========================================================= */
+               QUICK ACTIONS
+               ========================================================= */
 
     .quick-section {
         margin-top: 3px;
@@ -713,7 +713,8 @@
         transition: transform .25s ease, box-shadow .25s ease;
     }
 
-        .quick-action:hover {
+        .quick-action:hover,
+        .quick-action:focus-visible {
             transform: translateY(-5px);
             color: white;
             box-shadow: 0 20px 35px rgba(15,23,42,.16);
@@ -776,8 +777,8 @@
     }
 
     /* =========================================================
-           ANIMATION
-           ========================================================= */
+               ANIMATION
+               ========================================================= */
 
     .dashboard-wrapper > * {
         animation: dashboardFade .45s ease both;
@@ -812,8 +813,8 @@
     }
 
     /* =========================================================
-           RESPONSIVE
-           ========================================================= */
+               RESPONSIVE
+               ========================================================= */
 
     @@media (max-width: 1300px) {
 
@@ -949,6 +950,16 @@
         }
     }
 
+    @@media (prefers-reduced-motion: reduce) {
+
+        .service-dashboard *,
+        .service-dashboard *::before,
+        .service-dashboard *::after {
+            animation-duration: .001ms !important;
+            transition-duration: .001ms !important;
+        }
+    }
+
 </style>
 
 
@@ -964,7 +975,7 @@
 
             <div class="header-left">
 
-                <div class="header-logo">
+                <div class="header-logo" aria-hidden="true">
                     <i class="bi bi-speedometer2"></i>
                 </div>
 
@@ -984,7 +995,7 @@
 
             <div class="date-card">
 
-                <i class="bi bi-calendar3"></i>
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
 
                 @DateTime.Now.ToString("dddd, dd MMM yyyy")
 
@@ -1003,7 +1014,7 @@
 
                 <div class="hero-badge">
 
-                    <i class="bi bi-stars"></i>
+                    <i class="bi bi-stars" aria-hidden="true"></i>
 
                     ADMIN OVERVIEW
 
@@ -1038,11 +1049,11 @@
 
                 <div class="stat-top">
 
-                    <div class="stat-icon">
+                    <div class="stat-icon" aria-hidden="true">
                         <i class="bi bi-people"></i>
                     </div>
 
-                    <div class="stat-arrow">
+                    <div class="stat-arrow" aria-hidden="true">
                         <i class="bi bi-arrow-up-right"></i>
                     </div>
 
@@ -1058,7 +1069,7 @@
 
                 <div class="stat-footer">
                     View customers
-                    <i class="bi bi-arrow-right"></i>
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </div>
 
             </a>
@@ -1072,11 +1083,11 @@
 
                 <div class="stat-top">
 
-                    <div class="stat-icon">
+                    <div class="stat-icon" aria-hidden="true">
                         <i class="bi bi-car-front"></i>
                     </div>
 
-                    <div class="stat-arrow">
+                    <div class="stat-arrow" aria-hidden="true">
                         <i class="bi bi-arrow-up-right"></i>
                     </div>
 
@@ -1092,7 +1103,7 @@
 
                 <div class="stat-footer">
                     View vehicles
-                    <i class="bi bi-arrow-right"></i>
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </div>
 
             </a>
@@ -1106,11 +1117,11 @@
 
                 <div class="stat-top">
 
-                    <div class="stat-icon">
+                    <div class="stat-icon" aria-hidden="true">
                         <i class="bi bi-person-workspace"></i>
                     </div>
 
-                    <div class="stat-arrow">
+                    <div class="stat-arrow" aria-hidden="true">
                         <i class="bi bi-arrow-up-right"></i>
                     </div>
 
@@ -1126,7 +1137,7 @@
 
                 <div class="stat-footer">
                     View mechanics
-                    <i class="bi bi-arrow-right"></i>
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </div>
 
             </a>
@@ -1140,11 +1151,11 @@
 
                 <div class="stat-top">
 
-                    <div class="stat-icon">
+                    <div class="stat-icon" aria-hidden="true">
                         <i class="bi bi-calendar-check"></i>
                     </div>
 
-                    <div class="stat-arrow">
+                    <div class="stat-arrow" aria-hidden="true">
                         <i class="bi bi-arrow-up-right"></i>
                     </div>
 
@@ -1160,7 +1171,7 @@
 
                 <div class="stat-footer">
                     Manage bookings
-                    <i class="bi bi-arrow-right"></i>
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </div>
 
             </a>
@@ -1174,11 +1185,11 @@
 
                 <div class="stat-top">
 
-                    <div class="stat-icon">
+                    <div class="stat-icon" aria-hidden="true">
                         <i class="bi bi-file-earmark-text"></i>
                     </div>
 
-                    <div class="stat-arrow">
+                    <div class="stat-arrow" aria-hidden="true">
                         <i class="bi bi-arrow-up-right"></i>
                     </div>
 
@@ -1194,7 +1205,7 @@
 
                 <div class="stat-footer">
                     View job cards
-                    <i class="bi bi-arrow-right"></i>
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </div>
 
             </a>
@@ -1208,11 +1219,11 @@
 
                 <div class="stat-top">
 
-                    <div class="stat-icon">
+                    <div class="stat-icon" aria-hidden="true">
                         <i class="bi bi-receipt"></i>
                     </div>
 
-                    <div class="stat-arrow">
+                    <div class="stat-arrow" aria-hidden="true">
                         <i class="bi bi-arrow-up-right"></i>
                     </div>
 
@@ -1228,7 +1239,7 @@
 
                 <div class="stat-footer">
                     Manage invoices
-                    <i class="bi bi-arrow-right"></i>
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </div>
 
             </a>
@@ -1242,11 +1253,11 @@
 
                 <div class="stat-top">
 
-                    <div class="stat-icon">
+                    <div class="stat-icon" aria-hidden="true">
                         <i class="bi bi-cash-stack"></i>
                     </div>
 
-                    <div class="stat-arrow">
+                    <div class="stat-arrow" aria-hidden="true">
                         <i class="bi bi-arrow-up-right"></i>
                     </div>
 
@@ -1262,7 +1273,7 @@
 
                 <div class="stat-footer">
                     View payments
-                    <i class="bi bi-arrow-right"></i>
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </div>
 
             </a>
@@ -1276,11 +1287,11 @@
 
                 <div class="stat-top">
 
-                    <div class="stat-icon">
+                    <div class="stat-icon" aria-hidden="true">
                         <i class="bi bi-graph-up-arrow"></i>
                     </div>
 
-                    <div class="stat-arrow">
+                    <div class="stat-arrow" aria-hidden="true">
                         <i class="bi bi-arrow-up-right"></i>
                     </div>
 
@@ -1296,7 +1307,7 @@
 
                 <div class="stat-footer">
                     View revenue report
-                    <i class="bi bi-arrow-right"></i>
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </div>
 
             </a>
@@ -1312,7 +1323,7 @@
 
             <div class="revenue-left">
 
-                <div class="revenue-icon">
+                <div class="revenue-icon" aria-hidden="true">
                     <i class="bi bi-currency-rupee"></i>
                 </div>
 
@@ -1336,7 +1347,7 @@
 
                 Detailed Report
 
-                <i class="bi bi-arrow-right"></i>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
 
             </a>
 
@@ -1358,7 +1369,7 @@
 
                     <div class="panel-title">
 
-                        <div class="panel-title-icon">
+                        <div class="panel-title-icon" aria-hidden="true">
 
                             <i class="bi bi-calendar-check"></i>
 
@@ -1374,7 +1385,7 @@
 
                         View all
 
-                        <i class="bi bi-arrow-right"></i>
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
 
                     </a>
 
@@ -1385,7 +1396,7 @@
                 {
                     <div class="empty-state">
 
-                        <div class="empty-state-icon">
+                        <div class="empty-state-icon" aria-hidden="true">
 
                             <i class="bi bi-calendar-x"></i>
 
@@ -1449,7 +1460,7 @@
 
                                         <td>
 
-                                            <div class="complaint-text">
+                                            <div class="complaint-text" title="@item.Complaint">
 
                                                 @(string.IsNullOrWhiteSpace(item.Complaint)
                                                     ? "General Service"
@@ -1491,7 +1502,8 @@
                     <div class="panel-title">
 
                         <div class="panel-title-icon"
-                             style="background:#ecfdf5;color:#059669;">
+                             style="background:#ecfdf5;color:#059669;"
+                             aria-hidden="true">
 
                             <i class="bi bi-cash-stack"></i>
 
@@ -1508,7 +1520,7 @@
 
                         View all
 
-                        <i class="bi bi-arrow-right"></i>
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
 
                     </a>
 
@@ -1519,7 +1531,7 @@
                 {
                     <div class="empty-state">
 
-                        <div class="empty-state-icon">
+                        <div class="empty-state-icon" aria-hidden="true">
 
                             <i class="bi bi-wallet2"></i>
 
@@ -1614,7 +1626,7 @@
 
                 <h3>
 
-                    <i class="bi bi-lightning-charge-fill text-warning me-1"></i>
+                    <i class="bi bi-lightning-charge-fill text-warning me-1" aria-hidden="true"></i>
 
                     Quick Actions
 
@@ -1636,7 +1648,7 @@
                    asp-action="Create"
                    class="quick-action quick-purple">
 
-                    <div class="quick-icon">
+                    <div class="quick-icon" aria-hidden="true">
 
                         <i class="bi bi-person-plus"></i>
 
@@ -1663,7 +1675,7 @@
                    asp-action="Create"
                    class="quick-action quick-orange">
 
-                    <div class="quick-icon">
+                    <div class="quick-icon" aria-hidden="true">
 
                         <i class="bi bi-car-front"></i>
 
@@ -1690,7 +1702,7 @@
                    asp-action="Create"
                    class="quick-action quick-blue">
 
-                    <div class="quick-icon">
+                    <div class="quick-icon" aria-hidden="true">
 
                         <i class="bi bi-calendar-plus"></i>
 
@@ -1717,7 +1729,7 @@
                    asp-action="Create"
                    class="quick-action quick-red">
 
-                    <div class="quick-icon">
+                    <div class="quick-icon" aria-hidden="true">
 
                         <i class="bi bi-receipt"></i>
 
@@ -1744,4 +1756,3 @@
     </div>
 
 </div>
-

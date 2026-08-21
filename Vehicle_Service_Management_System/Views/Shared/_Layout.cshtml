@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0f172a" />
+    <meta name="description" content="Vehicle Service Management System - manage customers, vehicles, bookings, job cards, invoices and payments." />
 
     <title>@ViewData["Title"] - Vehicle Service Management</title>
 
@@ -18,6 +19,8 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
     <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
     <!-- Custom Styles -->
@@ -650,6 +653,43 @@
             }
 
             /* ============================================================
+                   BACK TO TOP
+                   ============================================================ */
+
+            .back-to-top {
+                position: fixed;
+                right: 22px;
+                bottom: 22px;
+                width: 44px;
+                height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: none;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #2563eb, #4f46e5);
+                color: white;
+                font-size: 1.1rem;
+                box-shadow: 0 10px 25px rgba(37,99,235,0.30);
+                cursor: pointer;
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(10px);
+                transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
+                z-index: 1030;
+            }
+
+                .back-to-top.visible {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(0);
+                }
+
+                .back-to-top:hover {
+                    transform: translateY(-3px);
+                }
+
+            /* ============================================================
                    SIDEBAR MOBILE OVERLAY
                    ============================================================ */
 
@@ -770,6 +810,13 @@
                 .sidebar {
                     width: 280px;
                 }
+
+                .back-to-top {
+                    right: 14px;
+                    bottom: 14px;
+                    width: 40px;
+                    height: 40px;
+                }
             }
 
             /* ============================================================
@@ -796,7 +843,8 @@
 
                 .sidebar,
                 .top-navbar,
-                .sidebar-overlay {
+                .sidebar-overlay,
+                .back-to-top {
                     display: none !important;
                 }
 
@@ -809,6 +857,8 @@
                 }
             }
     </style>
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body>
@@ -821,15 +871,15 @@
         <nav class="sidebar" id="sidebar" aria-label="Main navigation">
 
             <!-- Brand -->
-            <div class="sidebar-brand">
-                <div class="brand-icon">
+            <a asp-controller="Home" asp-action="Index" class="sidebar-brand" style="color:inherit;">
+                <div class="brand-icon" aria-hidden="true">
                     <i class="bi bi-car-front-fill"></i>
                 </div>
                 <div class="brand-text">
                     Vehicle Service
                     <small>Management System</small>
                 </div>
-            </div>
+            </a>
 
             <!-- Navigation -->
             <div class="sidebar-nav">
@@ -839,7 +889,7 @@
                     <li class="nav-item">
                         <a asp-controller="Home" asp-action="Index"
                            class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
-                            <i class="bi bi-speedometer2"></i>
+                            <i class="bi bi-speedometer2" aria-hidden="true"></i>
                             <span class="nav-label">Dashboard</span>
                         </a>
                     </li>
@@ -847,13 +897,15 @@
 
                 <!-- ─── MANAGEMENT ─── -->
                 <div class="nav-category nav-category-toggle"
+                     role="button"
+                     tabindex="0"
                      data-bs-toggle="collapse"
                      data-bs-target="#catManagement"
                      aria-expanded="true"
                      aria-controls="catManagement">
-                    <i class="bi bi-folder"></i>
+                    <i class="bi bi-folder" aria-hidden="true"></i>
                     Management
-                    <i class="bi bi-chevron-right chevron open"></i>
+                    <i class="bi bi-chevron-right chevron open" aria-hidden="true"></i>
                 </div>
 
                 <div class="category-collapse collapse show" id="catManagement">
@@ -861,35 +913,35 @@
                         <li class="nav-item">
                             <a asp-controller="Customer" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customer" ? "active" : "")">
-                                <i class="bi bi-people"></i>
+                                <i class="bi bi-people" aria-hidden="true"></i>
                                 <span class="nav-label">Customers</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a asp-controller="Vehicle" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Vehicle" ? "active" : "")">
-                                <i class="bi bi-car-front"></i>
+                                <i class="bi bi-car-front" aria-hidden="true"></i>
                                 <span class="nav-label">Vehicles</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a asp-controller="VehicleBrand" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "VehicleBrand" ? "active" : "")">
-                                <i class="bi bi-tags"></i>
+                                <i class="bi bi-tags" aria-hidden="true"></i>
                                 <span class="nav-label">Vehicle Brands</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a asp-controller="VehicleType" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "VehicleType" ? "active" : "")">
-                                <i class="bi bi-truck"></i>
+                                <i class="bi bi-truck" aria-hidden="true"></i>
                                 <span class="nav-label">Vehicle Types</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a asp-controller="Mechanic" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Mechanic" ? "active" : "")">
-                                <i class="bi bi-person-workspace"></i>
+                                <i class="bi bi-person-workspace" aria-hidden="true"></i>
                                 <span class="nav-label">Mechanics</span>
                             </a>
                         </li>
@@ -898,13 +950,15 @@
 
                 <!-- ─── SERVICES ─── -->
                 <div class="nav-category nav-category-toggle mt-2"
+                     role="button"
+                     tabindex="0"
                      data-bs-toggle="collapse"
                      data-bs-target="#catServices"
                      aria-expanded="true"
                      aria-controls="catServices">
-                    <i class="bi bi-tools"></i>
+                    <i class="bi bi-tools" aria-hidden="true"></i>
                     Services
-                    <i class="bi bi-chevron-right chevron open"></i>
+                    <i class="bi bi-chevron-right chevron open" aria-hidden="true"></i>
                 </div>
 
                 <div class="category-collapse collapse show" id="catServices">
@@ -912,21 +966,21 @@
                         <li class="nav-item">
                             <a asp-controller="ServiceBooking" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ServiceBooking" ? "active" : "")">
-                                <i class="bi bi-calendar-check"></i>
+                                <i class="bi bi-calendar-check" aria-hidden="true"></i>
                                 <span class="nav-label">Service Bookings</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a asp-controller="JobCard" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "JobCard" ? "active" : "")">
-                                <i class="bi bi-file-earmark-text"></i>
+                                <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                                 <span class="nav-label">Job Cards</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a asp-controller="ServiceType" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ServiceType" ? "active" : "")">
-                                <i class="bi bi-clipboard-check"></i>
+                                <i class="bi bi-clipboard-check" aria-hidden="true"></i>
                                 <span class="nav-label">Service Types</span>
                             </a>
                         </li>
@@ -935,13 +989,15 @@
 
                 <!-- ─── INVENTORY ─── -->
                 <div class="nav-category nav-category-toggle mt-2"
+                     role="button"
+                     tabindex="0"
                      data-bs-toggle="collapse"
                      data-bs-target="#catInventory"
                      aria-expanded="true"
                      aria-controls="catInventory">
-                    <i class="bi bi-box-seam"></i>
+                    <i class="bi bi-box-seam" aria-hidden="true"></i>
                     Inventory
-                    <i class="bi bi-chevron-right chevron open"></i>
+                    <i class="bi bi-chevron-right chevron open" aria-hidden="true"></i>
                 </div>
 
                 <div class="category-collapse collapse show" id="catInventory">
@@ -949,14 +1005,14 @@
                         <li class="nav-item">
                             <a asp-controller="SparePartCategory" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SparePartCategory" ? "active" : "")">
-                                <i class="bi bi-tag"></i>
+                                <i class="bi bi-tag" aria-hidden="true"></i>
                                 <span class="nav-label">Spare Categories</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a asp-controller="SparePart" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SparePart" ? "active" : "")">
-                                <i class="bi bi-gear"></i>
+                                <i class="bi bi-gear" aria-hidden="true"></i>
                                 <span class="nav-label">Spare Parts</span>
                             </a>
                         </li>
@@ -965,13 +1021,15 @@
 
                 <!-- ─── FINANCE ─── -->
                 <div class="nav-category nav-category-toggle mt-2"
+                     role="button"
+                     tabindex="0"
                      data-bs-toggle="collapse"
                      data-bs-target="#catFinance"
                      aria-expanded="true"
                      aria-controls="catFinance">
-                    <i class="bi bi-wallet2"></i>
+                    <i class="bi bi-wallet2" aria-hidden="true"></i>
                     Finance
-                    <i class="bi bi-chevron-right chevron open"></i>
+                    <i class="bi bi-chevron-right chevron open" aria-hidden="true"></i>
                 </div>
 
                 <div class="category-collapse collapse show" id="catFinance">
@@ -979,14 +1037,14 @@
                         <li class="nav-item">
                             <a asp-controller="Invoice" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Invoice" ? "active" : "")">
-                                <i class="bi bi-receipt"></i>
+                                <i class="bi bi-receipt" aria-hidden="true"></i>
                                 <span class="nav-label">Invoices</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a asp-controller="Payment" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payment" ? "active" : "")">
-                                <i class="bi bi-cash-stack"></i>
+                                <i class="bi bi-cash-stack" aria-hidden="true"></i>
                                 <span class="nav-label">Payments</span>
                             </a>
                         </li>
@@ -995,13 +1053,15 @@
 
                 <!-- ─── REPORTS ─── -->
                 <div class="nav-category nav-category-toggle mt-2"
+                     role="button"
+                     tabindex="0"
                      data-bs-toggle="collapse"
                      data-bs-target="#catReports"
                      aria-expanded="true"
                      aria-controls="catReports">
-                    <i class="bi bi-bar-chart-line"></i>
+                    <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
                     Reports
-                    <i class="bi bi-chevron-right chevron open"></i>
+                    <i class="bi bi-chevron-right chevron open" aria-hidden="true"></i>
                 </div>
 
                 <div class="category-collapse collapse show" id="catReports">
@@ -1009,7 +1069,7 @@
                         <li class="nav-item">
                             <a asp-controller="Report" asp-action="Index"
                                class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Report" ? "active" : "")">
-                                <i class="bi bi-bar-chart-line"></i>
+                                <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
                                 <span class="nav-label">All Reports</span>
                             </a>
                         </li>
@@ -1023,7 +1083,7 @@
                 <form asp-controller="Account" asp-action="Logout" method="post">
                     @Html.AntiForgeryToken()
                     <button type="submit" class="btn-logout">
-                        <i class="bi bi-box-arrow-right"></i>
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                         Logout
                     </button>
                 </form>
@@ -1045,8 +1105,8 @@
             <div class="navbar-left">
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
-                    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle sidebar">
-                        <i class="bi bi-list"></i>
+                    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar">
+                        <i class="bi bi-list" aria-hidden="true"></i>
                     </button>
                 }
                 <h1 class="page-title">@ViewData["Title"]</h1>
@@ -1055,17 +1115,20 @@
             <div class="navbar-right">
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
+                    var displayName = string.IsNullOrWhiteSpace(User.Identity.Name) ? "User" : User.Identity.Name;
+                    var initial = displayName.Trim().Substring(0, 1).ToUpper();
+
                     <div class="user-badge">
-                        <span class="avatar">
-                            @User.Identity.Name?.Substring(0, 1).ToUpper()
+                        <span class="avatar" aria-hidden="true">
+                            @initial
                         </span>
-                        <span class="user-email">@User.Identity.Name</span>
+                        <span class="user-email">@displayName</span>
                     </div>
 
                     <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn-logout-top">
-                            <i class="bi bi-box-arrow-right"></i>
+                            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                             <span>Logout</span>
                         </button>
                     </form>
@@ -1073,7 +1136,7 @@
                 else
                 {
                     <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-sm">
-                        <i class="bi bi-box-arrow-in-right"></i> Login
+                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Login
                     </a>
                 }
             </div>
@@ -1085,6 +1148,11 @@
         </main>
 
     </div>
+
+    <!-- ─── BACK TO TOP ─── -->
+    <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="bi bi-arrow-up" aria-hidden="true"></i>
+    </button>
 
     <!-- ============================================================ -->
     <!-- SCRIPTS                                                       -->
@@ -1099,12 +1167,16 @@
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('sidebarOverlay');
                 const hamburger = document.getElementById('hamburgerBtn');
+                const backToTop = document.getElementById('backToTop');
 
                 function toggleSidebar() {
                     if (!sidebar) return;
                     const isOpen = sidebar.classList.toggle('open');
                     if (overlay) {
                         overlay.classList.toggle('show', isOpen);
+                    }
+                    if (hamburger) {
+                        hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
                     }
                 }
 
@@ -1113,6 +1185,9 @@
                     sidebar.classList.remove('open');
                     if (overlay) {
                         overlay.classList.remove('show');
+                    }
+                    if (hamburger) {
+                        hamburger.setAttribute('aria-expanded', 'false');
                     }
                 }
 
@@ -1145,10 +1220,17 @@
 
                 // Category toggle chevron handling
                 document.querySelectorAll('.nav-category-toggle').forEach(function(toggle) {
-                    toggle.addEventListener('click', function(e) {
+                    toggle.addEventListener('click', function() {
                         const chevron = this.querySelector('.chevron');
                         if (chevron) {
                             chevron.classList.toggle('open');
+                        }
+                    });
+
+                    toggle.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            this.click();
                         }
                     });
 
@@ -1159,10 +1241,12 @@
                             targetEl.addEventListener('shown.bs.collapse', function() {
                                 const ch = toggle.querySelector('.chevron');
                                 if (ch) ch.classList.add('open');
+                                toggle.setAttribute('aria-expanded', 'true');
                             });
                             targetEl.addEventListener('hidden.bs.collapse', function() {
                                 const ch = toggle.querySelector('.chevron');
                                 if (ch) ch.classList.remove('open');
+                                toggle.setAttribute('aria-expanded', 'false');
                             });
                         }
                     }
@@ -1173,8 +1257,8 @@
                 if (activeLink) {
                     const collapseEl = activeLink.closest('.category-collapse');
                     if (collapseEl && !collapseEl.classList.contains('show')) {
-                        const toggle = document.querySelector(`[data-bs-target="#${collapseEl.id}"]`);
-                        if (toggle) {
+                        const toggle = document.querySelector('[data-bs-target="#' + collapseEl.id + '"]');
+                        if (toggle && window.bootstrap) {
                             new bootstrap.Collapse(collapseEl, { toggle: true, show: true });
                             const ch = toggle.querySelector('.chevron');
                             if (ch) ch.classList.add('open');
@@ -1188,6 +1272,16 @@
                     if (overlay) {
                         overlay.classList.remove('show');
                     }
+                }
+
+                // Back to top button
+                if (backToTop) {
+                    window.addEventListener('scroll', function() {
+                        backToTop.classList.toggle('visible', window.scrollY > 300);
+                    });
+                    backToTop.addEventListener('click', function() {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
                 }
             })();
     </script>
